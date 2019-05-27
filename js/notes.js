@@ -25,14 +25,10 @@ var _notes = function ( opt ){
 					
 						_vars["supportPHP"] = false;
 						if( res[0] === "4" ){
-							
 							_vars["supportPHP"] = true;
-							
-							var msg = this["successMsg"];
-							_log("<div class='alert alert-success'>" + msg + "</div>");
+							_alert( this["successMsg"], "success" );
 						} else {
-							var msg = this["errorMsg"];
-							_log("<div class='alert alert-danger'>" + msg + "</div>");
+							_alert( this["errorMsg"], "error" );
 						}
 					}//end callback
 				}, //end test
@@ -47,8 +43,7 @@ console.log(res, typeof res);
 						_vars["supportMySQL"] = false;
 						
 						if( typeof res !== "string"){
-							var msg = this["errorMsg"];
-							_log("<div class='alert alert-danger'>" + msg + "</div>");
+							_alert( this["errorMsg"], "error" );
 							return;
 						}
 
@@ -58,14 +53,13 @@ console.log(res, typeof res);
 							"jsonLog" : res,
 							"onSuccess" : function(){
 								_vars["supportMySQL"] = true;
-								var msg = this["successMsg"];
-								_log("<div class='alert alert-success'>" + msg + "</div>");
+								_alert( this["successMsg"], "success" );
 							},
 							"onError" : function( errorCode  ){
 //console.log(errorCode);
 								var msg = this["errorMsg"];
 								msg += ", error code: "+errorCode;
-								_log("<div class='alert alert-danger'>" + msg + "</div>");
+								_alert( msg, "error" );
 							}//,
 							//"callback" : function(){
 							//}//end callback
