@@ -66,9 +66,9 @@ $_vars["log"] = array();
 	$query = "SELECT * FROM PG_SETTINGS WHERE name='server_version';";
 	$result  = $connection->query( $query ) or die( $connection->errorInfo()[2] );
 	$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
-echo "<pre>";	
-print_r($rows);
-echo "</pre>";	
+// echo "<pre>";	
+// print_r($rows);
+// echo "</pre>";	
 	$_vars["dbInfo"][]["textMessage"] = "database server version: " . $rows[0]["setting"];
 	
 	unset ($_vars["link"]);
