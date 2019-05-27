@@ -24,23 +24,45 @@ $_vars["config"]["dbUser"] = "aejvwysqgsboeb";
 $_vars["config"]["dbPassword"] = "55b5c22131c1d612574edb5dea0b63433293d828ab1f77196f52eb0a849a577c";
 $_vars["config"]["dbName"] = "d7c534mf7866o2";
 
-$_vars["log"] = array();
 
+$_vars["config"]["phpversion"] = phpversion();
+$_vars["export"]["filename"] = "notes.xml";
+$_vars["uploadPath"] = "upload";
+
+$_vars["config"]["tableName"] = "notes";
+
+$_vars["sql"]["createDB"] = "";
+$_vars["sql"]["createTable"] = 'CREATE TABLE "public"."notes" (
+	"id" integer NOT NULL,
+	"author" character(20) NOT NULL,
+	"title" character(255),
+	"text_message" text,
+	"client_date" date,
+	"server_date" date,
+	"ip" character(20),
+	CONSTRAINT "notes_pkey" PRIMARY KEY (id)
+) WITHOUT OIDS;';
+
+
+$_vars["sql"]["removeTable"] = "";
+$_vars["sql"]["insertNote"] = "";
+$_vars["sql"]["insertAll"] = "";
+$_vars["sql"]["insertValues"] = "";
+
+$_vars["sql"]["updateNote"] = "";
+
+$_vars["sql"]["showTables"] = "";
+$_vars["sql"]["getNotes"] = "";
+$_vars["sql"]["deleteNote"] = "";
+$_vars["sql"]["clearNotes"] = "";
+
+$_vars["log"] = array();
 //========================================= connect to server
-	//check PDO support
-	// if (!defined('PDO::ATTR_DRIVER_NAME')) {
-		// $_vars["useMySQL"] = 1;
-		// $_vars["usePDO"] = 0;
-		// $_vars["link"] = connectDbMySQL();
-	// } else {
-		//$_vars["useMySQL"] = 0;
 		$_vars["usePDO"] = 1;
-		
 		$_vars["link"] = connectDbPDO();
-		
 		$connection = $_vars["link"];
-		
 		$_vars["dbVersion"] = "";
+
 		$query = "SELECT * FROM PG_SETTINGS WHERE name='server_version';";
 		$result  = $connection->query( $query ) or die( $connection->errorInfo()[2] );
 		$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
@@ -67,6 +89,7 @@ $_vars["log"][] = "{\"error_code\" : \"notSupportJSON\", \"message\" : \""+$msg+
 
 	viewLog();
 //=========================================== end
+
 
 //output log in JSON format
 function viewLog(){

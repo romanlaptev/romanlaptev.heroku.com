@@ -152,3 +152,38 @@ git push -u origin master (git push heroku master?)
 
 ---------------- BLOG
 	note --> post
+
+============================================ PostgreSQL
+CREATE TABLE "public"."notes" (
+    "id" integer NOT NULL,
+    "author" character(20) NOT NULL,
+    "title" character(255) DEFAULT 'no title'::bpchar,
+    "text_message" text,
+    "client_date" date,
+    "server_date" date,
+    "ip" character(20),
+    CONSTRAINT "notes_pkey" PRIMARY KEY (id)
+) WITHOUT OIDS;
+
+
+-- Indexes
+
+CREATE UNIQUE INDEX notes_pkey ON notes USING btree (id);
+
+-------------
+SET SESSION AUTHORIZATION 'aejvwysqgsboeb';
+
+SET search_path = "public", pg_catalog;
+
+-- Definition
+
+-- DROP TABLE "public"."t1";
+CREATE TABLE "public"."t1" (
+    "id" integer NOT NULL,
+    CONSTRAINT "t1_pkey" PRIMARY KEY (id)
+) WITHOUT OIDS;
+
+
+-- Indexes
+
+CREATE UNIQUE INDEX t1_pkey ON t1 USING btree (id);
