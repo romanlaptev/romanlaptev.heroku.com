@@ -87,54 +87,6 @@ function viewLog(){
 	}
 }//end viewLog
 	
-// function connectDbMySQL(){
-	// global $_vars;
-// // echo "<pre>";
-// // print_r($_vars);
-// // echo "</pre>";
-
-	// $dbHost = $_vars["config"]["dbHost"];
-	// $dbUser = $_vars["config"]["dbUser"];
-	// $dbPassword = $_vars["config"]["dbPassword"];
-	// $dbName = $_vars["config"]["dbName"];
-	
-	// try{
-		// $link = mysql_connect($dbHost, $dbUser, $dbPassword);
-		// if (!$link){
-			// throw new Exception('MySQL Connection Database Error: ' . mysql_error());
-		// } else{
-
-			// if ( function_exists("mysql_set_charset") ){
-				// //function mysql_set_charset() is available since PHP 5.2.3
-				// //MySQL => 5.0.7
-				// mysql_set_charset("utf8", $link);
-			// } else {
-// //mysql_query('SET NAMES utf8');
-// //mysql_query("SET CHARACTER SET utf8 ");
-				// mysql_query ("set character_set_client='utf8'");
-				// mysql_query ("set character_set_results='utf8'");
-				// mysql_query ("set collation_connection='utf8_general_ci'");
-			// }
-			
-// //SHOW VARIABLES LIKE  'char%'
-// //$db_info = "<li>MySQL server info: " . mysql_get_server_info() ."</li>";
-// // $db_info .= "<li>MySQL client info: " . mysql_get_client_info() ."</li>";
-// // $db_info .= "<li>MySQL host info: " . mysql_get_host_info() ."</li>";
-// // $db_info .= "<li>MySQL protocol version: " . mysql_get_proto_info() ."</li>";
-// //$db_info .= "<li>mysql_client_encoding: " . mysql_client_encoding($link) ."</li>";
-// //echo $db_info;
-
-			// return $link;
-		// }
-		
-	// }catch(Exception $e){
-		// //echo "exception: ",  $e->getMessage(), "\n";
-		// $_vars["log"][] = "{\"error_code\" : \"connectDBerror\", \"message\" : \"exception: " . $e->getMessage() . "\"}";
-		// viewLog();
-		// exit();
-	// }
-
-// }//end connectDbMySQL()
 
 function connectDbPDO(){
 	global $_vars;
@@ -152,16 +104,6 @@ function connectDbPDO(){
 	try{
 		$connection = new PDO( $dsn, $dbUser, $dbPassword );
 //echo "Connect!";		
-		
-		// $query = "set character_set_client='utf8'";
-		// $connection->query( $query ) or die( print_r($connection->errorInfo(), true) );
-		
-		// $query = "set character_set_results='utf8'";
-		// $connection->query( $query ) or die( print_r($connection->errorInfo(), true) );
-		
-		// $query = "set collation_connection='utf8_general_ci'";
-		// $connection->query( $query ) or die( print_r($connection->errorInfo(), true) );
-		//$_vars["log"][] = "{\"message\" : \"connection estableshed\"}";
 		
 		return $connection;
 	} catch( PDOException $exception ) {
