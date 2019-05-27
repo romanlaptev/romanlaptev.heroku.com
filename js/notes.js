@@ -19,8 +19,8 @@ var _notes = function ( opt ){
 		"tests" : [{
 				"name" : "checkPHP",
 				"url" : "api/test.php",
-				"successMsg" : "<p>test PHP success, suppored by server <b>" + window.location.host + "</b>...</p>",
-				"errorMsg" : "<p>test PHP failed, PHP not suppored by server <b>" + window.location.host + "</b>...</p>",
+				"successMsg" : "test PHP success, suppored by server <b>" + window.location.host + "</b>...",
+				"errorMsg" : "test PHP failed, PHP not suppored by server <b>" + window.location.host + "</b>...",
 				"callback" : function(res){
 					
 						_vars["supportPHP"] = false;
@@ -78,8 +78,7 @@ console.log(res, typeof res);
 						_vars["supportPostgreSQL"] = false;
 						
 						if( typeof res !== "string"){
-							var msg = this["errorMsg"];
-							_log("<div class='alert alert-danger'>" + msg + "</div>");
+							_alert( this["errorMsg"], "error" );
 							return;
 						}
 
@@ -89,13 +88,12 @@ console.log(res, typeof res);
 							"jsonLog" : res,
 							"onSuccess" : function(){
 								_vars["supportPostgreSQL"] = true;
-								var msg = this["successMsg"];
-								_log("<div class='alert alert-success'>" + msg + "</div>");
+								_alert( this["successMsg"], "success" );
 							},
 							"onError" : function( errorCode  ){
 								var msg = this["errorMsg"];
 								msg += ", error code: "+errorCode;
-								_log("<div class='alert alert-danger'>" + msg + "</div>");
+								_alert( msg, "error" );
 							}//,
 							//"callback" : function(){
 							//}//end callback
@@ -107,20 +105,17 @@ console.log(res, typeof res);
 				{
 				"name" : "checkASPX",
 				"url" : "api/test.aspx",
-				"successMsg" : "<p>test ASPX success, suppored by server <b>" + window.location.host + "</b>...</p>",
-				"errorMsg" : "<p>test ASPX failed, ASP.NET not suppored by server <b>" + window.location.host + "</b>...</p>",
+				"successMsg" : "test ASPX success, suppored by server <b>" + window.location.host + "</b>...",
+				"errorMsg" : "test ASPX failed, ASP.NET not suppored by server <b>" + window.location.host + "</b>...",
 				"callback" : function(res){
 					
 						_vars["supportASPX"] = false;
 						if( res[0] === "4" ){
 							
 							_vars["supportASPX"] = true;
-
-							var msg = this["successMsg"];
-							_log("<div class='alert alert-success'>" + msg + "</div>");
+							_alert( this["successMsg"], "success" );
 						} else {
-							var msg = this["errorMsg"];
-							_log("<div class='alert alert-danger'>" + msg + "</div>");
+							_alert( this["errorMsg"], "error" );
 						}
 					}//end callback
 				}, //end test
@@ -128,8 +123,8 @@ console.log(res, typeof res);
 				{
 				"name" : "checkMSSQL",
 				"url" : "api/test_mssql.aspx",
-				"successMsg" : "<p>test MSSQL success...</p>",
-				"errorMsg" : "<p>test MSSQL failed, cannot connect to database server...</p>",
+				"successMsg" : "test MSSQL success...",
+				"errorMsg" : "test MSSQL failed, cannot connect to database server...",
 				"callback" : function(res){
 //console.log(res);					
 						_vars["supportMSSQL"] = false;
@@ -139,13 +134,12 @@ console.log(res, typeof res);
 							"jsonLog" : res,
 							"onSuccess" : function(){
 								_vars["supportMSSQL"] = true;
-								var msg = this["successMsg"];
-								_log("<div class='alert alert-success'>" + msg + "</div>");
+								_alert( this["successMsg"], "success" );
 							},
 							"onError" : function( errorCode ){
 console.log(errorCode);
-								var msg = this["errorMsg"];
-								_log("<div class='alert alert-danger'>" + msg + "</div>");
+								var msg = this["errorMsg"] + errorCode;
+								_alert( msg, "error" );
 							}//,
 							//"callback" : function(){
 							//}//end callback
@@ -157,18 +151,16 @@ console.log(errorCode);
 				{
 				"name" : "checkJAVA",
 				"url" : "api/test_java.jsp",
-				"successMsg" : "<p>test JAVA success, suppored by server <b>" + window.location.host + "</b>...</p>",
-				"errorMsg" : "<p>test JAVA failed, not suppored by server <b>" + window.location.host + "</b>...</p>",
+				"successMsg" : "test JAVA success, suppored by server <b>" + window.location.host + "</b>...",
+				"errorMsg" : "test JAVA failed, not suppored by server <b>" + window.location.host + "</b>...",
 				"callback" : function(res){
 //console.log("res", res.charAt(0) );
 						if( res[0] === "4" ){
 							_vars["supportJAVA"] = true;
-							var msg = this["successMsg"];
-							_log("<div class='alert alert-success'>" + msg + "</div>");
+							_alert( this["successMsg"], "success" );
 						} else {
 							_vars["supportJAVA"] = false;
-							var msg = this["errorMsg"];
-							_log("<div class='alert alert-danger'>" + msg + "</div>");
+							_alert( this["errorMsg"], "error" );
 						}
 					}//end callback
 				} //end test
