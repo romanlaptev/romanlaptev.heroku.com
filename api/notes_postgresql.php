@@ -58,26 +58,20 @@ $_vars["sql"]["clearNotes"] = "";
 
 $_vars["log"] = array();
 //========================================= connect to server
-		$_vars["usePDO"] = 1;
-		$_vars["link"] = connectDbPDO();
-		$connection = $_vars["link"];
-		$_vars["dbVersion"] = "";
+	$_vars["usePDO"] = 1;
+	$_vars["link"] = connectDbPDO();
+	$connection = $_vars["link"];
+	$_vars["dbVersion"] = "";
 
-		$query = "SELECT * FROM PG_SETTINGS WHERE name='server_version';";
-		$result  = $connection->query( $query ) or die( $connection->errorInfo()[2] );
-		$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
-// echo "<pre>";	
-// print_r($rows);
-// echo "</pre>";	
-		$_vars["dbInfo"][]["message"] = "database server version: " . $rows[0]["setting"];
-	//}
+	$query = "SELECT * FROM PG_SETTINGS WHERE name='server_version';";
+	$result  = $connection->query( $query ) or die( $connection->errorInfo()[2] );
+	$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
+echo "<pre>";	
+print_r($rows);
+echo "</pre>";	
+	$_vars["dbInfo"][]["textMessage"] = "database server version: " . $rows[0]["setting"];
 	
-	// if($_vars["useMySQL"] == 1){
-		// mysql_close ( $_vars["link"] );
-	// }
-	//if($_vars["usePDO"] == 1){
-		unset ($_vars["link"]);
-	//}
+	unset ($_vars["link"]);
 	
 	if ( function_exists("json_encode") ){	//PHP 5 >= 5.2.0
 		$json = json_encode($_vars["dbInfo"]);
