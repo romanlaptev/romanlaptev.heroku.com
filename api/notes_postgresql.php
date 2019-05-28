@@ -57,6 +57,7 @@ $_vars["sql"]["deleteNote"] = "";
 $_vars["sql"]["clearNotes"] = "";
 
 $_vars["log"] = array();
+exit();
 //========================================= connect to server
 	$_vars["usePDO"] = 1;
 	$_vars["link"] = connectDbPDO();
