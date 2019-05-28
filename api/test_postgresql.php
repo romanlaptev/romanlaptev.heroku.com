@@ -40,6 +40,10 @@ $_vars["log"] = array();
 		$_vars["dbInfo"][]["message"] = "database server version: " . $rows[0]["setting"];
 	//}
 	
+//--------------------------------------
+
+//--------------------------------------
+
 	// if($_vars["useMySQL"] == 1){
 		// mysql_close ( $_vars["link"] );
 	// }

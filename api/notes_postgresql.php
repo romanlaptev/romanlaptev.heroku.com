@@ -12,18 +12,11 @@ ini_set('display_errors', 1);
 //echo "</pre>";
 
 $_vars=array();
-// $_vars["config"]["dbHost"] = "localhost";
-// $_vars["config"]["dbUser"] = "root";
-// $_vars["config"]["dbPassword"] = "master";
-// $_vars["config"]["dbName"] = "db1";
 
-//https://romanlaptev.herokuapp.com/
-$_vars["config"]["dbHost"] = "ec2-184-73-189-190.compute-1.amazonaws.com";
-$_vars["config"]["dbPort"] = "5432";
-$_vars["config"]["dbUser"] = "aejvwysqgsboeb";
-$_vars["config"]["dbPassword"] = "55b5c22131c1d612574edb5dea0b63433293d828ab1f77196f52eb0a849a577c";
-$_vars["config"]["dbName"] = "d7c534mf7866o2";
-
+include("auth_postgresql.php");
+//if( $_SERVER["SERVER_NAME"] !== "romanlaptev.herokuapp.com"){
+	//$_vars["config"]["dbName"] = "notes";
+//}
 
 $_vars["config"]["phpversion"] = phpversion();
 $_vars["export"]["filename"] = "notes.xml";
@@ -32,8 +25,8 @@ $_vars["uploadPath"] = "upload";
 $_vars["config"]["tableName"] = "notes";
 
 $_vars["sql"]["createDB"] = "";
-$_vars["sql"]["createTable"] = 'CREATE TABLE "public"."notes" (
-	"id" integer NOT NULL,
+$_vars["sql"]["createTable"] = 'CREATE TABLE IF NOT EXISTS "public"."notes" (
+	"id" SERIAL,
 	"author" character(20) NOT NULL,
 	"title" character(255),
 	"text_message" text,
@@ -43,45 +36,128 @@ $_vars["sql"]["createTable"] = 'CREATE TABLE "public"."notes" (
 	CONSTRAINT "notes_pkey" PRIMARY KEY (id)
 ) WITHOUT OIDS;';
 
+$_vars["sql"]["removeTable"] = 'DROP TABLE \"'.$_vars["config"]["tableName"].'\"';
 
-$_vars["sql"]["removeTable"] = "";
-$_vars["sql"]["insertNote"] = "";
-$_vars["sql"]["insertAll"] = "";
-$_vars["sql"]["insertValues"] = "";
+$_vars["sql"]["insertNote"] = "INSERT INTO notes (\"author\", \"title\", \"text_message\", \"client_date\", \"server_date\", \"ip\") 
+VALUES (
+'authorName', 
+'title', 
+'textMessage',
+'12-12-12', 
+'12-12-12', 
+'ip'
+);
+";
 
-$_vars["sql"]["updateNote"] = "";
+$_vars["sql"]["insertAll"] = "INSERT INTO `".$_vars["config"]["tableName"]."` VALUES {{values}};";
+$_vars["sql"]["insertValues"] = "(
+NULL, 
+'{{authorName}}', 
+'{{title}}', 
+'{{textMessage}}',
+'{{client_date}}', 
+'{{server_date}}', 
+'{{ip}}'
+)";
 
-$_vars["sql"]["showTables"] = "";
-$_vars["sql"]["getNotes"] = "";
-$_vars["sql"]["deleteNote"] = "";
-$_vars["sql"]["clearNotes"] = "";
+$_vars["sql"]["updateNote"] = "UPDATE ".$_vars["config"]["tableName"]." SET 
+author = '{{authorName}}', 
+title = '{{title}}', 
+text_message = '{{textMessage}}',
+client_date = '{{client_date}}', 
+server_date = '{{server_date}}', 
+ip = '{{ip}}' WHERE id={{id}}";
+
+$_vars["sql"]["getNotes"] = 'SELECT id, author, title, text_message, client_date, server_date, ip FROM ".$_vars["config"]["tableName"]." ORDER BY "client_date" DESC';
+$_vars["sql"]["deleteNote"] = 'DELETE FROM ".$_vars["config"]["tableName"]." WHERE "id"={{id}};';
+$_vars["sql"]["clearNotes"] = "TRUNCATE TABLE ".$_vars["config"]["tableName"].";";
 
 $_vars["log"] = array();
-exit();
-//========================================= connect to server
-	$_vars["usePDO"] = 1;
-	$_vars["link"] = connectDbPDO();
-	$connection = $_vars["link"];
-	$_vars["dbVersion"] = "";
 
-	$query = "SELECT * FROM PG_SETTINGS WHERE name='server_version';";
-	$result  = $connection->query( $query ) or die( $connection->errorInfo()[2] );
-	$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
+	$action = "";
+	if( !empty($_REQUEST['action']) ){
+		$action = $_REQUEST['action'];
+	} else {
+		$_vars["log"][] = "{\"error_code\" : \"noaction\", \"message\" : \"error, undefined var 'action'\"}";
+	}
+	
+//========================================= connect to server
+	$_vars["link"] = connectDbPDO();
+	createTable();
+	
+	switch ($action){
+		case "save_note":
+			//saveNote();
+		break;
+		
+		case "get_notes":
+/*		
+			$notes = getNotes();
+// echo count($notes);	
 // echo "<pre>";	
-// print_r($rows);
-// echo "</pre>";	
-	$_vars["dbInfo"][]["textMessage"] = "database server version: " . $rows[0]["setting"];
+// print_r($notes);
+// echo "</pre>";
+			if( count($notes) > 0 ){
+					if ( function_exists("json_encode") ){
+						//PHP 5 >= 5.2.0
+						$json = json_encode($notes);
+						
+						//restore formatting after json_encode
+						$json = str_replace("&amp;gt;", "&gt;", $json);
+						$json = str_replace("&amp;lt;", "&lt;", $json);
+						$json = str_replace("&amp;quot;", "&quot;", $json);
+
+						//$error = json_last_error();		
+						echo $json;
+					} else {
+		//https://www.abeautifulsite.net/using-json-encode-and-json-decode-in-php4
+		//http://www.epigroove.com/blog/how-to-use-json-in-php-4-or-php-51x
+		//https://gist.github.com/jorgeatorres/1239453
+//echo "error, not support function json_encode(). incorrect PHP version - ".$_vars["config"]["phpversion"].", need PHP >= 5.2.0";
+$msg = "error, not support function json_encode(). incorrect PHP version - ".$_vars["config"]["phpversion"].", need PHP >= 5.2.0";
+$_vars["log"][] = "{\"error_code\" : \"notSupportJSON\", \"message\" : \""+$msg+"\"}";
+					}
+			}
+*/
+		break;
+
+		case "delete_note":
+			// if( !empty($_REQUEST['id']) ){
+				// $id = $_REQUEST["id"];
+				// deleteNote($id);
+			// }
+		break;
+
+		case "edit_note":
+			//updateNote();
+		break;
+		
+		case "clear_notes":
+			//clearNotes();
+		break;
+		
+		case "remove_table":
+			//removeTable();
+		break;
+		
+		case "export_notes":
+			//exportTable( $_vars["export"]["filename"] );
+		break;
+		
+		case "upload":
+			//uploadFile();
+		break;
+		
+		case "import_notes":
+			// $foldername = $_vars["uploadPath"];
+			// chdir("../");
+			// $fullPath = getcwd() . "/".$foldername;
+			// importTable( $fullPath."/". $_vars["export"]["filename"]);
+		break;
+		
+	}//end switch
 	
 	unset ($_vars["link"]);
-	
-	if ( function_exists("json_encode") ){	//PHP 5 >= 5.2.0
-		$json = json_encode($_vars["dbInfo"]);
-		echo $json;
-	} else {
-$msg = "error, not support function json_encode(). incorrect PHP version - ".phpversion().", need PHP >= 5.2.0";
-$_vars["log"][] = "{\"error_code\" : \"notSupportJSON\", \"message\" : \""+$msg+"\"}";
-	}
-
 	viewLog();
 //=========================================== end
 
@@ -131,4 +207,26 @@ function connectDbPDO(){
 		exit();
 	}
 }//end connectDbPDO()
+
+
+//======================================== create table (CREATE TABLE IF NOT EXISTS)
+function createTable(){
+	global $_vars;
+	
+	$tableName = $_vars["config"]["tableName"];
+	$query = $_vars["sql"]["createTable"];
+	$msg_success = "$tableName created succesfully, ". "SQL: " . $query;
+	
+	$connection = $_vars["link"];
+	try{
+		$connection->query( $query );
+//echo $msg_success;
+	} catch( PDOException $exception ){
+		print_r($connection->errorInfo(), true);
+		echo $exception->getMessage();
+		exit();
+	}
+	
+}//end createTable()
+
 ?>
