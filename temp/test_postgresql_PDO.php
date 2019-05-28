@@ -20,6 +20,12 @@ $_vars=array();
 	<meta charset="utf-8"/>
 	<meta name="viewport" content="width=device-width, inital-scale=1.0">
 	<link rel="stylesheet" href="../css/bootstrap337.min.css">
+<style>
+.alert {
+	margin-bottom: 3px !important;
+	padding: 10px !important;
+}
+</style>
 </head>
 <body>
 	<div class="container">
@@ -39,17 +45,14 @@ echo PHP_VERSION;
 			</div>
 			
 			<div class="panel-body">
-SERVER_ADDR:<?php echo $_SERVER["SERVER_ADDR"] ?>
+<p class="alert alert-info">SERVER_ADDR:<?php echo $_SERVER["SERVER_ADDR"] ?></p>
+<p class="alert alert-info">SERVER_NAME:<?php echo $_SERVER["SERVER_NAME"] ?></p>
 			</div>
 			
 		<div>
 
 <?php
-// $_vars["config"]["dbHost"] = "ec2-184-73-189-190.compute-1.amazonaws.com";
-// $_vars["config"]["dbPort"] = "5432";
-// $_vars["config"]["dbUser"] = "aejvwysqgsboeb";
-// $_vars["config"]["dbPassword"] = "55b5c22131c1d612574edb5dea0b63433293d828ab1f77196f52eb0a849a577c";
-// $_vars["config"]["dbName"] = "d7c534mf7866o2";
+include("../api/auth_postgresql.php");
 
 //Port    
 //URI    postgres://aejvwysqgsboeb:55b5c22131c1d612574edb5dea0b63433293d828ab1f77196f52eb0a849a577c@ec2-184-73-189-190.compute-1.amazonaws.com:5432/d7c534mf7866o2
@@ -64,14 +67,7 @@ SERVER_ADDR:<?php echo $_SERVER["SERVER_ADDR"] ?>
                // )
 // );
 
-if( $_SERVER["SERVER_ADDR"] == "192.168.56.102"){
-	$_vars["config"]["dbHost"] = "localhost";
-	$_vars["config"]["dbPort"] = "5432";
-	$_vars["config"]["dbUser"] = "postgres";
-	$_vars["config"]["dbPassword"] = "master";
-}
-
-echo PDO::ATTR_DRIVER_NAME;
+echo "<p class='alert alert-info'>PDO::ATTR_DRIVER_NAME: ".PDO::ATTR_DRIVER_NAME."<p>";
 if (!defined('PDO::ATTR_DRIVER_NAME')) {
 	$PDOstate = "PDO unavailable";
 } else {
@@ -210,7 +206,7 @@ return;
 		</div>
 		
 		<div class="panel-body">
-			<h3> Connect to <?php echo $_vars["config"]["dbHost"] ?></h3>
+			<p class="alert alert-info">Connect to <?php echo $_vars["config"]["dbHost"] ?></p>
 		</div>
 <!--		
 		<div class="panel-body">
