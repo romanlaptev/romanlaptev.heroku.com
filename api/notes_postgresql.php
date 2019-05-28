@@ -82,8 +82,13 @@ $_vars["log"] = array();
 	}
 	
 //========================================= connect to server
-	$_vars["link"] = connectDbPDO();
-	createTable();
+	if (!defined('PDO::ATTR_DRIVER_NAME')) {
+exit();		
+	} else {
+		$_vars["usePDO"] = 1;
+		$_vars["link"] = connectDbPDO();
+		createTable();
+	}
 	
 	switch ($action){
 		case "save_note":
@@ -109,9 +114,9 @@ $_vars["log"] = array();
 						//$error = json_last_error();		
 						echo $json;
 					} else {
-		//https://www.abeautifulsite.net/using-json-encode-and-json-decode-in-php4
-		//http://www.epigroove.com/blog/how-to-use-json-in-php-4-or-php-51x
-		//https://gist.github.com/jorgeatorres/1239453
+//https://www.abeautifulsite.net/using-json-encode-and-json-decode-in-php4
+//http://www.epigroove.com/blog/how-to-use-json-in-php-4-or-php-51x
+//https://gist.github.com/jorgeatorres/1239453
 //echo "error, not support function json_encode(). incorrect PHP version - ".$_vars["config"]["phpversion"].", need PHP >= 5.2.0";
 $msg = "error, not support function json_encode(). incorrect PHP version - ".$_vars["config"]["phpversion"].", need PHP >= 5.2.0";
 $_vars["log"][] = "{\"error_code\" : \"notSupportJSON\", \"message\" : \""+$msg+"\"}";
@@ -121,14 +126,14 @@ $_vars["log"][] = "{\"error_code\" : \"notSupportJSON\", \"message\" : \""+$msg+
 		break;
 
 		case "delete_note":
-			// if( !empty($_REQUEST['id']) ){
-				// $id = $_REQUEST["id"];
-				// deleteNote($id);
-			// }
+			if( !empty($_REQUEST['id']) ){
+				$id = $_REQUEST["id"];
+				deleteNote($id);
+			}
 		break;
 
 		case "edit_note":
-			//updateNote();
+			updateNote();
 		break;
 		
 		case "clear_notes":
@@ -245,5 +250,101 @@ function getNotes(){
 	return $messages;
 		
 }//end getNotes()	
+
+
+function deleteNote( $id ){
+	global $_vars;
+
+	$query = $_vars["sql"]["deleteNote"];
+	$query = str_replace("{{id}}", $id, $query);
+//echo $query;
+	$msg_success = "record $id was deleted, ". "SQL: " . $query;
+
+	$connection = $_vars["link"];
+	try{
+		$connection->query( $query );
+		$_vars["log"][] = "{\"message\" : \"$msg_success\"}";
+	} catch( PDOException $exception ){
+		print_r($connection->errorInfo(), true);
+		echo $exception->getMessage();
+		exit();
+	}
+		
+}//end deleteNote()	
+
+
+function updateNote(){
+	global $_vars;
+	
+	if( empty( $_REQUEST["text_message"]) ){
+echo "error, not found text note...";
+echo "<pre>";
+print_r ($_REQUEST);
+echo "</pre>";
+exit();
+	}
+	$textNote = $_REQUEST["text_message"];
+	//$textMessage = strip_tags( $_REQUEST["text_message"], "<h1>" );
+	//$textMessage = nl2br( $_REQUEST["text_message"] );
+//echo $textMessage;
+
+	//filter
+	//remove old special symbols ( for correct htmlspecialchars() )
+	$textNote = str_replace("&quot;", "\"", $textNote);
+	$textNote = str_replace("&amp;", "&", $textNote);
+	$textNote = str_replace("&lt;", "<", $textNote);
+	$textNote = str_replace("&gt;", ">", $textNote);
+
+	//$textMessage = addslashes(htmlspecialchars("<script>alert('test');</script>"));
+	$textMessage = addslashes( htmlspecialchars($textNote) );
+					
+	if( empty( $_REQUEST["id"]) ){
+echo "error, not found id note...";
+echo "<pre>";
+print_r ($_REQUEST);
+echo "</pre>";
+exit();
+	}
+	$id = $_REQUEST["id"];
+	
+	$authorName = addslashes( htmlspecialchars($_REQUEST["author_name"]) );
+	$title = addslashes( htmlspecialchars($_REQUEST["title"]) );
+	$clientDate = $_REQUEST["date"];
+	$serverDate = date(DATE_ATOM);
+	$ip = $_SERVER["REMOTE_ADDR"];
+	
+	$query = $_vars["sql"]["updateNote"];
+	$query = str_replace("{{authorName}}", $authorName, $query);
+	$query = str_replace("{{title}}", $title, $query);
+	$query = str_replace("{{textMessage}}", $textMessage, $query);
+	$query = str_replace("{{client_date}}", $clientDate, $query);
+	$query = str_replace("{{server_date}}", $serverDate, $query);
+	$query = str_replace("{{ip}}", $ip, $query);
+	$query = str_replace("{{id}}", $id, $query);
+
+	$msg_success = "record $id was updated. ";
+	if($_vars["useMySQL"] == 1){
+
+		if (mysql_query($query, $_vars["link"]) ) {
+			$_vars["log"][] = "{\"message\" : \"$msg_success\"}";
+		} else {
+			echo "error INSERT: " . mysql_error() . "<br>";
+			echo "SQL: " . $query;
+			exit();
+		}
+	}
+	
+	if($_vars["usePDO"] == 1){
+		$connection = $_vars["link"];
+		try{
+			$connection->query( $query );
+			$_vars["log"][] = "{\"message\" : \"$msg_success\"}";
+		} catch( PDOException $exception ){
+			print_r($connection->errorInfo(), true);
+			echo $exception->getMessage();
+			exit();
+		}
+	}
+}//end updateNote()	
 
 ?>
