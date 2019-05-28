@@ -45,8 +45,8 @@ echo PHP_VERSION;
 			</div>
 			
 			<div class="panel-body">
-<p class="alert alert-info">SERVER_ADDR:<?php echo $_SERVER["SERVER_ADDR"] ?></p>
-<p class="alert alert-info">SERVER_NAME:<?php echo $_SERVER["SERVER_NAME"] ?></p>
+<p class="alert alert-info">SERVER_ADDR: <?php echo $_SERVER["SERVER_ADDR"] ?></p>
+<p class="alert alert-info">SERVER_NAME: <?php echo $_SERVER["SERVER_NAME"] ?></p>
 			</div>
 			
 		<div>
@@ -77,11 +77,10 @@ if (!defined('PDO::ATTR_DRIVER_NAME')) {
 	$dbPort = $_vars["config"]["dbPort"];
 	$dbUser = $_vars["config"]["dbUser"];
 	$dbPassword = $_vars["config"]["dbPassword"];
-	//$dbName = $_vars["config"]["dbName"];
+	$dbName = $_vars["config"]["dbName"];
 	
-	//$dsn = "mysql:host={$dbHost};dbname={$dbName}";
-	//$dsn = "pgsql:dbname='{$dbName}'; host='{$dbHost}'; port='{$dbPort}'";
-	$dsn = "pgsql:host='{$dbHost}'; port='{$dbPort}'";
+	$dsn = "pgsql:dbname='{$dbName}'; host='{$dbHost}'; port='{$dbPort}'";
+	//$dsn = "pgsql:host='{$dbHost}'; port='{$dbPort}'";
 	
 	try{
 		$_vars["link"] = new PDO( $dsn, $dbUser, $dbPassword );
