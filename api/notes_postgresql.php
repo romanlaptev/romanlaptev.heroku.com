@@ -68,8 +68,8 @@ client_date = '{{client_date}}',
 server_date = '{{server_date}}', 
 ip = '{{ip}}' WHERE id={{id}}";
 
-$_vars["sql"]["getNotes"] = 'SELECT id, author, title, text_message, client_date, server_date, ip FROM ".$_vars["config"]["tableName"]." ORDER BY "client_date" DESC';
-$_vars["sql"]["deleteNote"] = 'DELETE FROM ".$_vars["config"]["tableName"]." WHERE "id"={{id}};';
+$_vars["sql"]["getNotes"] = 'SELECT id, author, title, text_message, client_date, server_date, ip FROM '.$_vars["config"]["tableName"].' ORDER BY "client_date" DESC';
+$_vars["sql"]["deleteNote"] = 'DELETE FROM '.$_vars["config"]["tableName"].' WHERE "id"={{id}};';
 $_vars["sql"]["clearNotes"] = "TRUNCATE TABLE ".$_vars["config"]["tableName"].";";
 
 $_vars["log"] = array();
@@ -91,12 +91,11 @@ $_vars["log"] = array();
 		break;
 		
 		case "get_notes":
-/*		
 			$notes = getNotes();
-// echo count($notes);	
-// echo "<pre>";	
-// print_r($notes);
-// echo "</pre>";
+//echo count($notes);	
+//echo "<pre>";	
+//print_r($notes);
+//echo "</pre>";
 			if( count($notes) > 0 ){
 					if ( function_exists("json_encode") ){
 						//PHP 5 >= 5.2.0
@@ -118,7 +117,7 @@ $msg = "error, not support function json_encode(). incorrect PHP version - ".$_v
 $_vars["log"][] = "{\"error_code\" : \"notSupportJSON\", \"message\" : \""+$msg+"\"}";
 					}
 			}
-*/
+
 		break;
 
 		case "delete_note":
@@ -228,5 +227,23 @@ function createTable(){
 	}
 	
 }//end createTable()
+
+
+function getNotes(){
+	global $_vars;
+	
+	$messages = array();
+	$query = $_vars["sql"]["getNotes"];
+	
+	$connection = $_vars["link"];
+	$result  = $connection->query( $query ) or die( print_r($connection->errorInfo(), true) );
+	$messages  = $result->fetchAll( PDO::FETCH_OBJ );
+// echo count($messages);	
+// echo "<pre>";	
+// print_r($messages);
+// echo "</pre>";	
+	return $messages;
+		
+}//end getNotes()	
 
 ?>
