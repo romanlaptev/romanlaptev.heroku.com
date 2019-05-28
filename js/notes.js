@@ -960,7 +960,7 @@ _log("<div class='alert alert-warning'>" + msg + "</div>");
 									"jsonLog" : data, 
 									"callback" : function(){
 //console.log( jsonArr, jsonArr.length, jsonArr[0]["error_code"] );
-										_vars["messagesList"].innerHTML = "<h2>no added notes</h2>";
+										_vars["messagesList"].innerHTML = "<h2>no notes added....</h2>";
 										_vars["$num_notes"].innerHTML  = "0";//set number of notes
 										_vars["$btn_export"].className += " disabled";
 									}
@@ -977,7 +977,7 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 						}//end catch
 
 				} else {
-					_vars["messagesList"].innerHTML = "<h2>no added notes</h2>";
+					_vars["messagesList"].innerHTML = "<h2>no notes added...</h2>";
 					_vars["$num_notes"].innerHTML  = "0";//set number of notes
 					_vars["$btn_export"].className += " disabled";
 				}
@@ -1016,7 +1016,7 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 						"data": xmlNotes
 					});
 				} else {
-					_vars["messagesList"].innerHTML = "<h2>no added notes</h2>";
+					_vars["messagesList"].innerHTML = "<h2>no notes added...</h2>";
 					_vars["$num_notes"].innerHTML  = "0";//set number of notes
 					_vars["$btn_export"].className += " disabled";
 				}
