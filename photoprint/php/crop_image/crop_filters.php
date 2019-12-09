@@ -1,4 +1,11 @@
 ﻿<?php 
+//https://www.php.net/manual/ru/refs.utilspec.image.php
+//https://www.php.net/manual/ru/intro.image.php
+//https://www.php.net/manual/ru/function.imagecreate.php
+//http://www.php.su/imagecreate
+
+//https://www.php.net/manual/ru/function.gd-info.php
+
 //error_reporting(E_ALL ^ E_DEPRECATED);
 //error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 error_reporting(E_ALL|E_STRICT);
@@ -11,22 +18,21 @@ ini_set('display_errors', 1);
 //print_r( gd_info() );
 //echo "</pre>";
 
-//try{
+echo "loaded_extensions:<pre>";
+print_r( get_loaded_extensions() );
+echo "</pre>";
+
+	if ( function_exists("gd_info") ){
 echo "<pre>";
 print_r( gd_info() );
 echo "</pre>";
-//} catch( Exception $e ) {
-//echo "error..";
-//echo $e->getMessage();
-	//exit();
-//}
+	} else {
+$msg = "error, not support function gd_info(),  not  GD Support ...";
+echo $msg;
+		exit();
+	}
 
-//https://www.php.net/manual/ru/refs.utilspec.image.php
-//https://www.php.net/manual/ru/intro.image.php
-//https://www.php.net/manual/ru/function.imagecreate.php
-//http://www.php.su/imagecreate
 
-//https://www.php.net/manual/ru/function.gd-info.php
 /*
 header ("Content-type: image/png");
 
