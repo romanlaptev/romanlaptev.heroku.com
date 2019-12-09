@@ -1,10 +1,25 @@
 ﻿<?php 
-echo "<pre>";
+//error_reporting(E_ALL ^ E_DEPRECATED);
+//error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
+error_reporting(E_ALL|E_STRICT);
+ini_set('display_errors', 1);
+
+//echo "<pre>";
 // print_r ($_SERVER);
 // print_r ($_REQUEST);
 // //print_r($_FILES);
+//print_r( gd_info() );
+//echo "</pre>";
+
+try{
+echo "<pre>";
 print_r( gd_info() );
 echo "</pre>";
+} catch( Exception $e ) {
+echo "error..";
+echo $e->getMessage();
+	exit();
+}
 
 //https://www.php.net/manual/ru/refs.utilspec.image.php
 //https://www.php.net/manual/ru/intro.image.php
