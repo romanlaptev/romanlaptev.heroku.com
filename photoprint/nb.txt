@@ -22,6 +22,13 @@ files/crop_image/crop_filters.php?filename=images/WP-14-1093.jpg&sepia=&desatura
 сделать админку с авторизацией
 
 
+//---------------------------
 https://devcenter.heroku.com/articles/php-support#using-optional-extensions
 https://stackoverflow.com/questions/39184760/how-to-install-gd-on-heroku
 https://www.sitepoint.com/install-custom-php-extensions-heroku/
+{
+	"name": "herrera-io/silex-pdo",
+	"require": {
+		"ext-gd": "*"
+	}
+}
