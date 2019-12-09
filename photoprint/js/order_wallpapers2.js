@@ -2116,7 +2116,7 @@ function save_image()
 			var h_cm = $('input[name=h_cm]').val();
 			
 //-------------------------------------------------
-			var url = '/files/crop_image/crop_filters.php';
+			var url = "crop_image/crop_filters.php";
 			url += '?filename=' + filename_src;
 			url += '&sepia=' + sepia_check;
 			url += '&desaturate=' + desaturate_check;
@@ -2160,7 +2160,7 @@ function save_image_pre()
 	var w_cm = $('input[name=w_cm]').val();
 	var h_cm = $('input[name=h_cm]').val();
 
-	var url = '/files/crop_image/crop_filters.php';
+	var url = "crop_image/crop_filters.php";
 	url += '?filename=' + filename_src;
 	url += '&sepia=' + sepia_check;
 	url += '&desaturate=' + desaturate_check;
