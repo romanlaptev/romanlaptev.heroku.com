@@ -1,5 +1,18 @@
 var init_w = 300;
 var init_h = 250;
+var support = false;
+var logMsg;
+
+//console.log("module sharedFunc:", typeof sharedFunc, sharedFunc);
+var func = sharedFunc();
+//console.log("func:", func);
+
+window.onload = function(){
+	logMsg = navigator.userAgent;
+	func.logAlert( logMsg, "info" );
+//----------------------
+	defineEvents();
+};//end window.load
 
 $(document).ready( function(){
 console.log("jQuery version:" + $.fn.jquery);
@@ -75,3 +88,22 @@ console.log("jQuery UI version:" + $.ui.version);
 
 
 });//end ready
+
+
+function defineEvents(){
+
+	var btn_clear_log = func.getById("btn-clear-log");
+	var logPanel = func.getById("log");
+	btn_clear_log.onclick = function( event ){
+//console.log("click...", e);			
+		event = event || window.event;
+		var target = event.target || event.srcElement;
+		if (event.preventDefault) { 
+			event.preventDefault();
+		} else {
+			event.returnValue = false;				
+		}
+		logPanel.innerHTML = "";
+	};//end event
+
+}//end defineEvents()

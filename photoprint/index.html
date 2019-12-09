@@ -37,7 +37,8 @@
 	<link rel="stylesheet" href="js/fancybox/jquery.fancybox.css">
 	<script src="js/fancybox/jquery.fancybox.pack.js"></script>
 
-    <script src="js/main.js"></script>
+	<script src="js/functions.js"></script>
+	<script src="js/main.js"></script>
 	<script src="js/calc_wallpapers.js"></script>
 	<script src="js/order_wallpapers2.js"></script>
 
@@ -56,13 +57,21 @@
 		</div>
 	</div>
 
+	<div class="log-panel panel">
+		<div class="panel-body">
+			<span class="pull-right">
+				<a id="btn-clear-log" href="#" title="Clear log" class="">x</a>
+			</span>
+			<div id="log" class="panel-body"></div>
+		</div>
+	</div>
 
+<form id="add-to-cart" name="addtocart" method="post" action="php/send_order.php">
 	<div class="container">
 	
 		<div class="content">
 			<div class="wrapper">
 
-<form id="addtocart-decor-wallpapers" name="addtocart" method="post" action="index.php">
 <div class="row">
 			<div class="panel panel-img pull-left w65">
 				<div class="im-product">
@@ -97,7 +106,7 @@
 					<span class="help-text">Как клеим:</span>
 					<a id="left-right" href="javascript:void(0)" class="btn mn">слева направо</a> 
 					<a id="right-left" href="javascript:void(0)" class="btn mn">справа налево</a> 
-					<input type="button" value="Сохранить изображение" class="save-image-btn btn">
+					<a id="btn-save-image" href="javascript:void(0)" class="save-image-btn btn">Сохранить изображение</a>
 				</div>
 
 				<div class=""> 
@@ -138,9 +147,6 @@
 			
 
 </div>
-</form>
-
-			
 
 		</div>
 	
@@ -298,7 +304,7 @@
 </div>
 				<p class="choose-texture" style="display: none;">Выбрана текстура: <span id="texture-name"></span>
 				<input type="button" value="Убрать текстуру" class="remove-texture btn"></p>
-				<input type="button" value="Сохранить изображение" class="modal-save-image-btn btn">
+				<a id="btn-modal-save-image" href="#" class="btn">Сохранить изображение</a>
              </div>
 
               <a name="inter" id="inter"></a>
@@ -401,7 +407,8 @@
 		  </div><!-- end wrapper -->
 		</div><!-- end sidebar -->
 
-	</div><!-- end main -->
+	</div><!-- end container -->
+</form>
 
 	<div class="footer container">
 		<div class="wrapper">

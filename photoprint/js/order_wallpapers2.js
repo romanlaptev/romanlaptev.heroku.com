@@ -15,6 +15,25 @@ var init_roll_width = 90;
 var action = "";
 var rest_left = 0;
 
+_vars = {
+	"cropUrl" : "php/crop_image/crop_filters.php"//,
+/*
+	"cropUrlTpl" :"crop_filters.php?\
+filename=images/WP-14-1093.jpg&\
+sepia=&\
+desaturate=&\
+transform=&\
+texture=sites/romanlaptev.heroku.com/photoprint/images/t_volokno.png&\
+texture_name=линии&\
+x=0&\
+y=0&\
+w=511.2000000000001&\
+h=426&\
+w_cm=300&\
+h_cm=250"
+*/
+}//end _vars object
+console.log(_vars);
 
 $(window).load(
     function() 
@@ -219,7 +238,7 @@ function()
 						$("#product-texture_modal").css('top','-'+img_hh+'px');
 						
 						$(".select_tov").clone(true).appendTo(".fancybox-inner").addClass("select-tov-modal");
-						$(".modal-save-image-btn").show();
+						//$("#btn-modal-save-image").show();
 //---------------------------------
 						var texture_name = $("input[name=texture]").val();
 						$(".select_tov .item_block .item").each(
@@ -340,7 +359,7 @@ function()
 			}, 
 			afterClose:	function() { //Called after closing animation has ended
 //console.log('.fancybox afterClose');
-				$(".modal-save-image-btn").hide();
+				//$("#btn-modal-save-image").hide();
 				
 				//-------------------							
 				if ( $('#product-texture').is(":visible") )
@@ -736,21 +755,15 @@ console.log(filename);
 		}
 	);
 //----------------------------	Сохранение изображения с наложенными фильтрами/текстурами и параметрами ширины/высоты
-	$(".save-image-btn").click(
-		function()
-		{
+	$("#btn-save-image").click(function(){
 			save_image_pre();
 			return false;
-		}
-	);
+	});
 	
-	$(".modal-save-image-btn").click(
-		function()
-		{
+	$("#btn-modal-save-image").click(function(){
 			save_image();
 			return false;
-		}
-	);
+	});
 	
 	//-----------------------------------	
 	$(".choose-texture").hide();
@@ -1138,50 +1151,42 @@ console.log(filename);
 		{
 			return false;
 		}
-	});
+	});//end event()
 
-    	$("#addtocart-decor-wallpapers").on("submit", 
-		function()
-		{
-			var error=false;
-			if ($("#no-material").is(":selected")) 
-			{
-alert( "Пожалуйста, выберите из выпадающего списка материал товара.");	
+
+	$("#add-to-cart").on("submit", function(e){
+console.log(e);			
+		var error=false;
+			
+//console.log( $("#flizelin").is(":selected") );
+		if ( $("#flizelin").is(":selected") ){
+			if ( $("input[name=texture]").val()=="" ){
+				logMsg = "Выберите текстуру материала.";
+				func.logAlert( logMsg, "error" );
 				error=true;
 			}
-
-			if ($("#flizelin").is(":selected")) 
-			{
-				if ($("input[name=texture]").val()=="") 
-				{
-alert( "Пожалуйста, выберите текстуру материала.");	
-					error=true;
-				}
-			}
-
-			if (error)
-			{
-				return false;
-			}
-			else
-			{
-//$("#addtocart-decor-wallpapers").submit();
-				//получить ссылку для кадрированого фрагмента изображения
-				if ( parseInt($('#w').val()) ) 
-				{
-					get_crop_url();
-				}
-				
-				//------------------------
-				var texture_name = $("input[name=texture]").val();
-				texture_name = texture_name;
-				$("input[name=texture]").val(texture_name);
-				
-//return false;
-			}
 		}
-	);
+		
+		if (error){
+			return false;
+		} else {
+
+			//получить ссылку для кадрированого фрагмента изображения
+			//if ( parseInt($('#w').val()) ) {
+				//get_crop_url();
+			//}
+			
+			//------------------------
+			var texture_name = $("input[name=texture]").val();
+			texture_name = texture_name;
+			$("input[name=texture]").val(texture_name);
+//return false;
+		}
+	});//end event()
+
 //=======================================
+
+/*
     	$("#addtocart-decor-design").on("submit", 
 		function()
 		{
@@ -1218,7 +1223,7 @@ alert( "Пожалуйста, выберите текстуру материал
 			}
 		}
 	);
-
+*/
 
 //--------------------------------------
 	$("#rapport").change(
@@ -2064,8 +2069,7 @@ function in_interior_design_mod()
 }//------------------- end func
 
 // Сохранение изображения с наложенными фильтрами/текстурами и параметрами ширины/высоты
-function save_image()
-{
+function save_image(){
 //console.log ("function save_image()");
 			var filename_src = $("#large-img").attr("href");
 			var sepia_check = $("input[name=sepia_check]").val();
@@ -2116,7 +2120,7 @@ function save_image()
 			var h_cm = $('input[name=h_cm]').val();
 			
 //-------------------------------------------------
-			var url = "crop_image/crop_filters.php";
+			var url = _vars["cropUrl"];
 			url += '?filename=' + filename_src;
 			url += '&sepia=' + sepia_check;
 			url += '&desaturate=' + desaturate_check;
@@ -2132,11 +2136,10 @@ function save_image()
 //console.log(url);
 
 			location.href=url;
-}//------------------ end func
+}//end save_image()
 
 //функция без пересчета координат для учета масштабирования изображения
-function save_image_pre()
-{
+function save_image_pre(){
 	var filename_src = $("#large-img").attr("href");
 	filename_src = filename_src.replace("water","pre_320");
 	
@@ -2160,7 +2163,7 @@ function save_image_pre()
 	var w_cm = $('input[name=w_cm]').val();
 	var h_cm = $('input[name=h_cm]').val();
 
-	var url = "crop_image/crop_filters.php";
+	var url = _vars["cropUrl"];
 	url += '?filename=' + filename_src;
 	url += '&sepia=' + sepia_check;
 	url += '&desaturate=' + desaturate_check;
@@ -2176,7 +2179,7 @@ function save_image_pre()
 //console.log(url);
 
 	location.href=url;
-}//------------------ end func
+}//end save_image_pre()
 
 function view_filters_ie8(filename_src, id)
 {
