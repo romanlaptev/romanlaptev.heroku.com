@@ -11,15 +11,15 @@ ini_set('display_errors', 1);
 //print_r( gd_info() );
 //echo "</pre>";
 
-try{
+//try{
 echo "<pre>";
 print_r( gd_info() );
 echo "</pre>";
-} catch( Exception $e ) {
-echo "error..";
-echo $e->getMessage();
-	exit();
-}
+//} catch( Exception $e ) {
+//echo "error..";
+//echo $e->getMessage();
+	//exit();
+//}
 
 //https://www.php.net/manual/ru/refs.utilspec.image.php
 //https://www.php.net/manual/ru/intro.image.php
