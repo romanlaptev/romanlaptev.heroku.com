@@ -76,51 +76,75 @@ echo $msg;
 		exit();
 	}
 */	
-	$filename = "test.png";
-	header ("Content-type: image/png");
-	header("Content-Disposition: attachment; filename=".$filename.'');
-	header('Content-Transfer-Encoding: binary');
 
-	$im = @imagecreate (200, 200) or die ("Cannot Initialize new GD image stream");
-	$im2 = @imagecreate (200, 200) or die ("Cannot Initialize new GD image stream");
+	$src = "../../images/WP-14-1093.jpg";
+	$filename = "test.jpg";
+	$jpeg_quality = 90;
+/*
+	$src_image = imagecreatefromjpeg( $src );
+	$src_x = 0;
+	$src_y = 0;
+	$src_w = imagesx($src_image);//1024;
+	$src_h = imagesy($src_image);//768;
+//echo 	$src_w;
+//echo 	$src_h;
+//exit;
 
-	$background_color = imagecolorallocate ($im, 255, 255, 255);
-	$text_color = imagecolorallocate ($im, 233, 14, 91);
-	$color2 = imagecolorallocate ($im, 233, 14, 91);
+	$dst_x = 0;
+	$dst_y = 0;
+	$dst_w = 500;
+	$dst_h = 500;
+	$dst_image = ImageCreateTrueColor( $dst_w, $dst_h );
+	
+	//https://www.php.net/manual/ru/function.imagecopyresampled.php
+	imagecopyresampled( 
+$dst_image, $src_image, 
+$dst_x, $dst_y, 
+$src_x, $src_y, 
+$dst_w, $dst_h, 
+$src_w , $src_h
+);
+*/
 
-	imagestring ($im, 1, 5, 5,"Circle", $text_color);
+	$src_x = 488;
+	$src_y = 222;
+	$src_image = imagecreatefromjpeg( $src );
 
-	$x0 = 100;
-	$y0 = 100;
-	$px = 60;
-	$py = 60;
-	for ($t = 0; $t < 360; $t++){
-		$x = cos($t) * $px;
-		$y = sin($t) * $py;
-		$x = $x + $x0;
-		$y = $y + $y0;
-		imagesetpixel ($im, $x, $y, $color2);
-	}//next
+	$dst_x = 0;
+	$dst_y = 0;
+	$dst_w = 100;
+	$dst_h = 100;
+	$dst_image = imagecreatetruecolor( $dst_w, $dst_h );
+	
+	imagecopy(
+$dst_image, $src_image, 
+$dst_x, $dst_y, 
+$src_x, $src_y, 
+$dst_w, $dst_h 
+);
 
-	imagepng ($im);
-
-
-	/*
-	header("Content-Type: image/png");
-	$im = @imagecreate(110, 20) or die("Cannot Initialize new GD image stream");
-	$background_color = imagecolorallocate($im, 255, 255, 255);
-	$text_color = imagecolorallocate($im, 233, 14, 91);
-	imagestring($im, 1, 5, 5,  "A Simple Text String", $text_color);
-	imagepng($im);
-	//imagedestroy($im);
-	*/
+	header ("Content-type: image/jpeg");
+	//header("Content-Disposition: attachment; filename=".$filename.'');
+	//header('Content-Transfer-Encoding: binary');
+ 	imagejpeg( $dst_image, null, $jpeg_quality );
+	
+	imagedestroy($dst_image);
+	imagedestroy($src_image);
 
 /*
-	header ("Content-type: image/png"); 
-	$im = ImageCreate (200, 100) 
-			or die ("РћС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё РёР·РѕР±СЂР°Р¶РµРЅРёСЏ");         
-	$couleur_fond = ImageColorAllocate ($im, 255, 0, 0); 
-	ImagePng ($im); 
+//(PHP 5 >= 5.5.0, PHP 7)
+//https://www.php.net/manual/ru/function.imagecrop.php
+	$src_image = imagecreatefromjpeg( $src );
+	$crop_width = imagesx($src_image);
+	$crop_height = imagesy($src_image);
+	$size = min($crop_width, $crop_height);
+	
+	$crop_image = imagecrop( $src_image, ['x' => 0, 'y' => 0, 'width' => $size, 'height' => $size]);
+	if ($crop_image !== FALSE) {
+		//imagejpeg( $crop_image, null, $jpeg_quality );
+		imagejpeg( $crop_image, $filename, $jpeg_quality );
+		imagedestroy($crop_image);
+	}
 */
 	
 }//end runApp()
