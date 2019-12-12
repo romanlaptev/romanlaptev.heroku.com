@@ -532,7 +532,7 @@ return '
 	<div class="row">
 		Index of <b>'.$path_html.'</b>
 	</div>
-
+<!--
 	<div class="row file-action">
 		<input type=button onClick="javascript:select_checkbox();" value="select all files">
 		<input type=button onClick="javascript:clear_checkbox();" value="clear all">
@@ -540,7 +540,7 @@ return '
 		<input type=submit name="action" value="delete">
 		<input type=submit name="action" value="select_upload">
 	</div>
-
+-->
 	<div class="row head-filelist">
 		<div class="columns  col-action">
 			<b>v</b>
@@ -599,8 +599,8 @@ function viewFolderInfo( $file,
 <a href='?dir_path=$dir_path/$filename'> + <b>$file</b></a>
 			</div>
 			<div class='file-action'>
-				<a href='$url' target=_blank>open http</a>
 <!--
+				<a href='$url' target=_blank>open</a>
 				<a href='$local_url' target=_blank>file</a>
 				<br>
 				<a href='?action=test_delete&dir_path=$dir_path&filename=$filename'> delete </a>
@@ -632,15 +632,15 @@ function viewFileInfo( $file,
 		<div class='columns col-file'>
 			<div class='file'>".$file."</div>
 			<div class='file-action' id='file".$num_file."'>
-				<a href='$url' target=_blank>open http</a>
-				<a href='$url' download=''>download file</a>
 <!--
+				<a href='$url' target=_blank>open</a>
+				<a href='$url' download=''>download file</a>
 				<a href='$local_url' target=_blank>file</a>
 				<br>
 <a href='?action=test_delete&dir_path=$dir_path&filename=$filename'> delete </a>
--->
 <a href='?action=edit&dir_path=$dir_path&filename=$filename' target=''> edit </a>
 <a href='?action=rename&dir_path=$dir_path&filename=$filename'> rename </a>
+-->
 			</div>
 		</div>
 ";
@@ -668,9 +668,11 @@ return '
 		<p class="full-perms">'.$full_perms_info.'</p>
 		<div class="fileperms-info">
 				<input type="text" size="3" name="rights[]" value="'.$octal_perms.'">
+<!--				
 				<input type="hidden" name="files[]" value="'.$dir_path.'/'.$file.'">
 				<input type="radio" name="chmod_file" value="'.$dir_path.'/'.$file.'">
 				<input type="submit" name="action" value="chmod">
+-->				
 		</div>
 	</div>
 </div>

@@ -1,3 +1,16 @@
+a:link{
+	/*color: orange; */
+	font:12px Verdana, Arial;
+	text-decoration: none;
+}
+a:visited {
+}
+a:hover{
+	/*font:bold 15.2px Verdana, Arial;*/
+	color: black; 
+	background:gold;
+}
+
 .row
 {
 	clear:both;
@@ -71,22 +84,6 @@ float: none;
 }
 
 
-
-a:link	
-{
-	/*color: orange; */
-	font:16px Verdana, Arial;
-	text-decoration: none;
-}
-a:visited 
-{
-}
-a:hover	
-{
-	/*font:bold 15.2px Verdana, Arial;*/
-	color: black; 
-	background:gold;
-}
 
 #system-disk-info
 {
