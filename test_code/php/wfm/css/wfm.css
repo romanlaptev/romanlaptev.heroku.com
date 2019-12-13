@@ -67,8 +67,8 @@ text-align:center;
 .panel {
 	margin: 5px;
 	padding: 5px;
-  width: 100%;
 /*
+  width: 100%;
   width: 48%;
 float:left;
 */
@@ -82,14 +82,10 @@ float:left;
   border: 1px solid;
 }
 
-.columns {
-  float: left;
-}
-
 .row.head-filelist {
   display: table-row;
 }
-.head-filelist .columns {
+.head-filelist .pull-left {
 background-color: #7ba2d2;
 border-bottom: 10px solid #7ba2d2;
 border-top: 10px solid #7ba2d2;
@@ -125,7 +121,7 @@ text-align: center;
 .filelist-row {
 display: table-row;
 }
-.filelist .columns {
+.filelist .pull-left {
 border: 1px solid;
 display: table-cell;
 float: none;

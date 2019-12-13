@@ -124,7 +124,6 @@ $html_editor = "";
 $server_root="http://".$_SERVER['SERVER_NAME'];
 
 function initApp( $vars ){
-//var_dump($vars);
 	
 	if ( !empty($vars['dir_path']) ){
 		$dir_path = $vars['dir_path']; 
@@ -143,6 +142,9 @@ function initApp( $vars ){
 		$vars["fsInitDir"] = $fs_init_dir;
 	}
 	
+// echo "initApp(), vars: <pre>";
+// print_r ($vars);
+// echo "</pre>";
 
 	if ($dir_path == "/"){
 		$dir_path = "";
@@ -560,31 +562,31 @@ return '
 	</div>
 -->
 	<div class="row head-filelist">
-		<div class="columns  col-action">
+		<div class="pull-left  col-action">
 			<b>v</b>
 		</div>
 
-		<div class="columns col-file">
+		<div class="pull-left col-file">
 			<b> file </b>
 		</div>
 
-		<div class="columns col-filesize">
+		<div class="pull-left col-filesize">
 			<b> filesize </b>
 		</div>
 
-		<div class="columns col-fileperms">
+		<div class="pull-left col-fileperms">
 			<b> fileperms </b>
 		</div>
 
-		<div class="columns col-filegroup">
+		<div class="pull-left col-filegroup">
 			<b> filegroup </b>
 		</div>
 
-		<div class="columns col-fileowner">
+		<div class="pull-left col-fileowner">
 			<b> fileowner </b>
 		</div>
 							       
-		<div class="columns col-filetime">
+		<div class="pull-left col-filetime">
 			<b> filemtime </b>
 		</div>
 	</div><!-- end head filelist-->
@@ -609,10 +611,10 @@ function viewFolderInfo( $file,
 	//global $fs_init_dir;
 	$html = "
 	<div class='$line_class row filelist-row'>
-		<div class='columns col-action'>
+		<div class='pull-left col-action'>
 			<input type='checkbox' name='foldername[]' value='$dir_path/$filename'>
 		</div>
-		<div class='columns col-file'>
+		<div class='pull-left col-file'>
 			<div class='folder'>
 <a href='?dir_path=$dir_path/$filename'> + <b>$file</b></a>
 			</div>
@@ -644,10 +646,10 @@ function viewFileInfo( $file,
 	//global $fs_init_dir;
 	$html= "
 <div class='$line_class row filelist-row'>
-		<div class='columns col-action'>
+		<div class='pull-left col-action'>
 			<input type='checkbox' name='filename[]' value='$dir_path/$filename'>
 		</div>
-		<div class='columns col-file'>
+		<div class='pull-left col-file'>
 			<div class='file'>
 <span>".$file."</span>
 <a href='$url' target=_blank>open</a>
@@ -681,10 +683,10 @@ function viewFileAttr( $dir_path, $file, $file_attr ){
 	$fileowner = $file_attr["fileowner"];
 	$filetime = $file_attr["filetime"];
 return '
-<div class="columns col-filesize">
+<div class="pull-left col-filesize">
 	<div class="filesize">'.	$size_mb.' Mb ('.$size_kb.' Kb)</div>
 </div>
-<div class="columns col-fileperms">
+<div class="pull-left col-fileperms">
 	<div class="fileperms">
 		<p class="full-perms">'.$full_perms_info.'</p>
 		<div class="fileperms-info">
@@ -698,13 +700,13 @@ return '
 	</div>
 </div>
 
-<div class="columns col-filegroup">
+<div class="pull-left col-filegroup">
 	<div class="filegroup">'.$filegroup.'</div>
 </div>
-<div class="columns col-fileowner">
+<div class="pull-left col-fileowner">
 	<div class="fileowner">'.$fileowner.'</div>
 </div>
-<div class="columns col-filetime">
+<div class="pull-left col-filetime">
 	<div class="filetime">'.$filetime.'</div>
 </div>
 ';
