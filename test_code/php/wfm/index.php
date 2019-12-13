@@ -74,14 +74,33 @@ function showForm() {
 	//$html .= "<h4>enter password</h4>";
 	
 	$html .= "<form name='form_auth' action='' method='post' class='form-control'>";
+	$html .= "<div class='panel'>";
+
+	$html .= "<div>";
 	$html .= "<label>Username: </label>";
+	$html .= "</div>";
+
+	$html .= "<div>";
 	$html .= "<input type='text' name='username'>";
-	$html .= "<br />";
+	$html .= "</div>";
+
+	$html .= "</div>";
+
+	$html .= "<div class='panel'>";
+	$html .= "<div>";
 	$html .= "<label>Password: </label>";
+	$html .= "</div>";
+
+	$html .= "<div>";
 	$html .= "<input type='password' name='pass'>";
-	$html .= "<br />";
+	$html .= "</div>";
+	$html .= "</div>";
+
+	$html .= "<div class='panel text-center'>";
 	$html .= "<input type='hidden' name='action' value='checkAuth'>";
 	$html .= "<input type='submit' value='Enter'>";
+	$html .= "</div>";
+
 	$html .= "</form>";
 					
 	$html .= "</div>";
@@ -644,6 +663,12 @@ function viewFileInfo( $file,
 						$line_class
 						){
 	//global $fs_init_dir;
+//------------------- fix url
+//echo "DOCUMENT_ROOT:" . $_SERVER['DOCUMENT_ROOT'];
+//echo "<br>";
+$url = str_replace($_SERVER['DOCUMENT_ROOT'], "", $url);
+//--------------------
+
 	$html= "
 <div class='$line_class row filelist-row'>
 		<div class='pull-left col-action'>
@@ -922,7 +947,11 @@ function getFilelist($vars){
  			if (is_file($fs_path."/".$file)) { 
 				$filename = str_replace ("&","%26",$file);
 				$filename = str_replace ("'","%27",$filename);
+				
+				//$url = $server_root.$dir_path."/".$filename;
+				
 				$url = $server_root.$dir_path."/".$filename;
+				
 				$local_url = "file://".$dir_path."/".$filename;
 	// -----------------------------------------------------
 	// Получить атрибуты файла
