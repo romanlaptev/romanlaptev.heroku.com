@@ -1,17 +1,28 @@
+<html>
+<head>
+	<title>web file-manager</title>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
+	<meta http-equiv="Pragma" content="no-cache">
+	<meta http-equiv="Expires" content="0">	
+	<meta http-equiv="X-UA-Compatible" content="IE=10">
+	
+	<link rel="stylesheet" href="css/wfm.css" type="text/css">
+	<script src="js/wfm.js"></script>
+</head>
+<body>
 <?php
-error_reporting(E_ALL|E_STRICT);
-ini_set('display_errors', 1);
-
-session_start();
-
-
 //echo "<pre>";
 //print_r($_REQUEST);
 //print_r($_SERVER);
 //print_r($_SESSION);
 //print_r ($_COOKIE);
 //echo "</pre>";
+error_reporting(E_ALL|E_STRICT);
+ini_set('display_errors', 1);
 
+session_start();
 
 if( !empty($_REQUEST['action'])){
 	$action = $_REQUEST['action']; 
@@ -53,9 +64,16 @@ if( !$_SESSION['is_auth'] ){
 
 
 
-
 function showForm() {
-	$html = "<form name='form_auth' action='' method='post' class='form-control'>";
+	
+	$html = "";
+	$html .= "<div class='dm-table'>";
+	$html .= "<div class='dm-cell'>";
+	$html .= "<div class='dm-modal'>";
+	$html .= "<div class='center-align'>";
+	//$html .= "<h4>enter password</h4>";
+	
+	$html .= "<form name='form_auth' action='' method='post' class='form-control'>";
 	$html .= "<label>Username: </label>";
 	$html .= "<input type='text' name='username'>";
 	$html .= "<br />";
@@ -65,8 +83,14 @@ function showForm() {
 	$html .= "<input type='hidden' name='action' value='checkAuth'>";
 	$html .= "<input type='submit' value='Enter'>";
 	$html .= "</form>";
+					
+	$html .= "</div>";
+	$html .= "</div>";
+	$html .= "</div>";
+	$html .= "</div>";
+	
 	return $html;
-}
+}//end showForm()
 
 function check($username, $pass) {
 	$login = "admin";
@@ -94,7 +118,6 @@ function logout(){
 
 
 
-
 $log = "";
 $html_dialog = "";
 $html_editor = "";
@@ -112,8 +135,8 @@ function initApp( $vars ){
 			$dir_path = $fs_init_dir; 
 			$fs_path = $dir_path;
 		} else {
-			$fs_init_dir = dirname(__FILE__);
-			//$fs_init_dir = $_SERVER['DOCUMENT_ROOT'];
+			//$fs_init_dir = dirname(__FILE__);
+			$fs_init_dir = $_SERVER['DOCUMENT_ROOT'];
 			$dir_path = $fs_init_dir; 
 			$fs_path = $dir_path;
 		}
@@ -482,20 +505,18 @@ function view_page( $left_panel, $right_panel, $vars){
 	$logoutUrl = $vars["logoutUrl"];
 	$username = $vars["username"];
 echo <<<EOF
-<html>
-<head>
-	<meta http-equiv=Expires content=0>
-	<meta http-equiv=Pragma content=no-cache>
-	<title>web file-manager</title>
-	<meta charset="utf-8">
-	<link rel="stylesheet" href="css/wfm.css" type="text/css">
-	<script src="js/wfm.js"></script>
-</head>
-<body>
 <div class='panel'>
 $username, $logoutUrl
 </div>
-	<div class="row log" id="log-messages">$log</div>
+	
+	<div class="log-panel panel">
+		<div class="panel-body">
+			<span class="pull-right">
+				<a id="btn-clear-log" href="#" title="Clear log" class="btn">x</a>
+			</span>
+			<div id="log" class="panel-body">$log</div>
+		</div>
+	</div>
 
 	<div class="row dialog">
 $html_dialog
@@ -514,9 +535,6 @@ $left_panel
 $right_panel
 		</div> <!-- end panel -->
 	</div> 
-
-</body>
-</html>
 EOF;
 
 }//end view_page()
@@ -630,7 +648,10 @@ function viewFileInfo( $file,
 			<input type='checkbox' name='filename[]' value='$dir_path/$filename'>
 		</div>
 		<div class='columns col-file'>
-			<div class='file'>".$file."</div>
+			<div class='file'>
+<span>".$file."</span>
+<a href='$url' target=_blank>open</a>
+			</div>
 			<div class='file-action' id='file".$num_file."'>
 <!--
 				<a href='$url' target=_blank>open</a>
@@ -1059,7 +1080,6 @@ function RemoveTree( $dir ){
 	} 
 }// end RemoveTree
 
-
-
 ?>
-
+</body>
+</html>

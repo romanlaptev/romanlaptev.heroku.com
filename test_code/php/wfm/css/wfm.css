@@ -1,0 +1,296 @@
+/*
+a:link{
+	font:12px Verdana, Arial;
+	text-decoration: none;
+}
+a:visited {
+}
+a:hover{
+	color: black; 
+	background:gold;
+}
+*/
+
+/*================================*/
+.w10{
+	width:10%;
+}
+.w20{
+	width:20%;
+}
+.w25{
+	width:25%;
+}
+.w30{
+	width:30%;
+}
+.w33{
+	width:33%;
+}
+.w50{
+	width:50%;
+}
+.w60{
+	width:60%;
+}
+.w65{
+	width:65%;
+}
+.w70{
+	width:70%;
+}
+.w80{
+	width:80%;
+}
+.w90{
+	width:90%;
+}
+
+.row {
+	/* float: none; */
+	clear: both;
+	overflow: hidden;
+}
+.pull-left {
+	float: left;
+}
+.pull-right {
+	float: right;
+}
+.text-right{
+text-align:right;
+}
+.text-center{
+text-align:center;
+}
+
+.panel {
+	margin: 5px;
+	padding: 5px;
+  width: 100%;
+/*
+  width: 48%;
+float:left;
+*/
+}
+.panel .filelist {
+  height: 80%;
+  overflow: scroll;
+  width: 100%;
+}
+.filelist td {
+  border: 1px solid;
+}
+
+.columns {
+  float: left;
+}
+
+.row.head-filelist {
+  display: table-row;
+}
+.head-filelist .columns {
+background-color: #7ba2d2;
+border-bottom: 10px solid #7ba2d2;
+border-top: 10px solid #7ba2d2;
+color: #ffffff;
+display: table-cell;
+float: none;
+text-align: center;
+}
+
+
+.col-file {
+  width: 20%;
+}
+.col-action {
+  width: 2%;
+}
+.col-filesize {
+  width: 15%;
+}
+.col-fileperms {
+  width: 12%;
+}
+.col-filegroup {
+  width: 7%;
+}
+.col-fileowner {
+  width: 7%;
+}
+.col-filetime {
+  width: 20%;
+}
+
+.filelist-row {
+display: table-row;
+}
+.filelist .columns {
+border: 1px solid;
+display: table-cell;
+float: none;
+/*padding: 10px;*/
+}
+
+
+
+#system-disk-info
+{
+	display:none;
+	border:1px solid;
+/*
+	position: fixed;
+	left: 50%;
+	top: 20%;
+*/
+	padding:10px;
+	width: 400px;
+	background:#bebeb0;
+}
+
+/* LOG panel */
+.log-panel {
+	margin-bottom: 0;
+	margin-top: 5px;
+	background-color: #b0c4de;
+	position: fixed;
+	bottom: 0;
+	right:0;
+	z-index: 999;
+	opacity: 0.9;
+	border-radius: 4px;
+}
+.log-panel .panel-body{
+	padding: 5px;
+}
+
+.log-panel span a{
+text-decoration:none;
+outline: none;
+}
+
+#log .alert {
+margin-bottom: 0;
+padding: 10px;
+}
+
+#log p{
+margin: 0;
+}
+
+.alert {
+	padding: 15px;
+	margin-bottom: 20px;
+	border: 1px solid transparent;
+	border-radius: 4px;
+}
+.alert-warning {
+	color: #000;
+	background-color: #ffb515;
+	/*border-color: #8a6d3b;*/
+}
+.alert-info {
+	color: #31708f;
+	background-color: #d9edf7;
+	border-color: #bce8f1;
+}
+.alert-success {
+	color: #3c763d;
+	background-color: #dff0d8;
+	border-color: #d6e9c6;
+}
+.alert-danger {
+	color: #a94442;
+	background-color: #f2dede;
+	border-color: #ebccd1;
+}
+
+
+.error {
+	color: red;
+	font:bold 14px Verdana, Arial, Helvetica, sans-serif;
+}
+.ok 
+{
+	color: green;
+	font:bold 14px Verdana, Arial, Helvetica, sans-serif;
+}
+
+
+
+
+.head
+{
+	color: #ffffff;
+      background: #7ba2d2;
+      font: 16px Verdana, Arial, Helvetica, sans-serif;
+	text-align: center;
+}
+
+
+.folder
+{
+	/*float:left;*/
+    margin: 5px;
+    padding: 5px;
+}
+.file
+{
+    margin: 5px;
+}
+.file-action
+{
+	/*float:right;*/
+	/*background:palegreen;*/
+    margin: 5px;
+    padding: 5px;
+	font-size:  12px;
+}
+
+
+
+.even
+{
+	background:#ffffff;
+}
+.odd
+{
+	background:#C9d9c9;
+}
+
+.fileperms-info
+{
+}
+
+
+/*=========================== AUTH */
+.dm-table {
+	display: table;
+	width: 100%;
+	height: 100%;
+}
+
+.dm-cell {
+	display: table-cell;
+	padding: 0 1em;
+	vertical-align: middle;
+	text-align: center;
+}
+	
+.dm-modal {
+	display: inline-block;
+	max-width: 50em;
+	/*background: #607d8b;*/
+	/*background-color: rgb(200, 200, 250);*/
+	background-color: #b0c4de;
+	border-radius: 10px;
+	padding: 25px;
+	/* width: 300px; */
+	z-index: 1042;
+	-webkit-box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.22), 0px 19px 60px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.22), 0px 19px 60px rgba(0, 0, 0, 0.3);
+	box-shadow: 0px 15px 20px rgba(0, 0, 0, 0.22), 0px 19px 60px rgba(0, 0, 0, 0.3);
+	/*color: #cfd8dc;*/
+	color: #000;
+	text-align: left;
+}	
