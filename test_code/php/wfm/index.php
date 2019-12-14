@@ -26,6 +26,11 @@ ini_set('display_errors', 1);
 $_vars=array();
 $_vars["config"]["phpversion"] = phpversion();
 
+$_vars["html_dialog"] = "";
+$_vars["html_editor"] = "";
+$_vars["server_root"]="http://".$_SERVER['SERVER_NAME'];
+$_vars["logoutUrl"] = "<a href='?is_exit=1'>logout</a>";
+
 
 $_vars["templates"]["formAuth"] = "<div class='dm-table'>
 	<div class='dm-cell'>
@@ -80,6 +85,42 @@ $_vars["templates"]["formEdit"] = "<div class=''>
 		</div>
 	</form>
 </div>	
+";
+
+$_vars["templates"]["pageContent"] = "
+	<div id='block-user' class='panel'>
+{{username}}, {{logoutUrl}}
+	</div>
+	
+	<div class='log-panel panel'>
+		<div class='panel-body'>
+			<span class='pull-right'>
+				<a id='btn-clear-log' href='#' title='Clear log' class='btn'>x</a>
+			</span>
+			<div id='log' class='panel-body'>
+{{log}}
+			</div>
+		</div>
+	</div>
+
+	<div id='window-dialog' class='panel'>
+{{html_dialog}}
+	</div>
+
+	<div id='window-edit' class='panel'>
+{{html_editor}}
+	</div>
+
+	<div class='row'>
+		<div class='panel'>
+{{left_panel}}
+		</div>
+<!--
+		<div class='panel'>
+{{right_panel}}
+		</div>
+-->		
+	</div> 
 ";
 
 
@@ -159,11 +200,9 @@ function logout(){
 
 
 $log = "";
-$html_dialog = "";
-$html_editor = "";
-$server_root="http://".$_SERVER['SERVER_NAME'];
 
 function initApp( $vars ){
+	global $_vars;
 	
 	if ( !empty($vars['dir_path']) ){
 		$dir_path = $vars['dir_path']; 
@@ -192,16 +231,17 @@ function initApp( $vars ){
 
 	$vars["fsPath"] = $fs_path;
 	$vars["dirPath"] = $dir_path;
-	$vars["logoutUrl"] = "<a href='?is_exit=1'>Exit</a>";
-	$vars["username"] = "Hi, ". $_SESSION['user'];
+	
+	$_vars["username"] = "User ". $_SESSION['user'];
 	
 	runAction( $vars );
 }//end initApp
 
 
 function runAction( $vars ){
-	global $html_dialog;
-	global $html_editor;
+	//global $html_dialog;
+	//global $html_editor;
+	global $_vars;
 	global $log;
 	
 	if( !empty($vars['action'])){
@@ -215,7 +255,8 @@ function runAction( $vars ){
 	// ****************************************
 	if ($_vars["request"]["action"] == "rename") {
 		if (isset($vars['filename'])){
-			$html_dialog = viewFormRename( $vars["dirPath"], $vars["filename"] );
+			//$html_dialog = viewFormRename( $vars["dirPath"], $vars["filename"] );
+			$_vars["html_dialog"] = viewFormRename( $vars["dirPath"], $vars["filename"] );
 		} else {
 			$log .= "<span class='error'>filename undefined...</span>";
 		}
@@ -249,7 +290,8 @@ function runAction( $vars ){
 	//****************************************
 	if ($_vars["request"]["action"] == "select_upload"){
 		$upload_max_filesize = ini_get('upload_max_filesize'); 
-		$html_dialog = viewFormUpload( $upload_max_filesize );
+		//$html_dialog = viewFormUpload( $upload_max_filesize );
+		$_var["html_dialog"] = viewFormUpload( $upload_max_filesize );
 	}// end action upload
 
 
@@ -370,7 +412,8 @@ function runAction( $vars ){
 	//Создать каталог
 	//****************************************
 	if ($_vars["request"]["action"] == "new_folder"){
-		$html_dialog = viewFormNewfolder();
+		//$html_dialog = viewFormNewfolder();
+		$_vars["html_dialog"] = viewFormNewfolder();
 	}
 
 	if ($_vars["request"]["action"] == "mkdir"){
@@ -457,7 +500,8 @@ function runAction( $vars ){
 				// Заменить html special chars (кавычки, слеши...) на код, для правильного отображения в форме
 				//$textbox =  htmlspecialchars ($file_content);
 				$textbox = $file_content;
-				$html_editor = viewEditFile( $full_filename, $textbox );
+				//$html_editor = viewEditFile( $full_filename, $textbox );
+				$_vars["html_editor"] = viewEditFile( $full_filename, $textbox );
 			} else {
 				$log .= "<span class='error'>file_get_contents() error $full_filename </span>";
 			}
@@ -532,54 +576,33 @@ function runAction( $vars ){
 	
 	$left_panel = getFilelist( $vars );  
 	$right_panel = "";//getFilelist( $fs_path );  
-	view_page( $left_panel, $right_panel, $vars );
+	//view_page( $left_panel, $right_panel, $vars );
+	echo viewPage( $left_panel );
 	
 }//end runAction
 
 
 
 //VIEWS
-function view_page( $left_panel, $right_panel, $vars){
+//function view_page( $left_panel, $right_panel, $vars){
+function viewPage( $left_panel){
 
-	global $html_dialog;
-	global $html_editor;
+	//global $html_dialog;
+	//global $html_editor;
+	global $_vars;
 	global $log;
-	$logoutUrl = $vars["logoutUrl"];
-	$username = $vars["username"];
-echo <<<EOF
-<div class='panel'>
-$username, $logoutUrl
-</div>
 	
-	<div class="log-panel panel">
-		<div class="panel-body">
-			<span class="pull-right">
-				<a id="btn-clear-log" href="#" title="Clear log" class="btn">x</a>
-			</span>
-			<div id="log" class="panel-body">$log</div>
-		</div>
-	</div>
-
-	<div class="row dialog">
-$html_dialog
-	</div>
-
-	<div class="row editor">
-$html_editor
-	</div>
-
-	<div class="row">
-		<div class="panel">
-$left_panel
-		</div> <!-- end panel -->
-
-		<div class="panel">
-$right_panel
-		</div> <!-- end panel -->
-	</div> 
-EOF;
-
-}//end view_page()
+	$html = $_vars["templates"]["pageContent"];
+	$html = str_replace("{{username}}", $_vars["username"], $html);
+	$html = str_replace("{{logoutUrl}}", $_vars["logoutUrl"], $html);
+	$html = str_replace("{{log}}", $log, $html);
+	$html = str_replace("{{html_dialog}}", $_vars["html_dialog"], $html);
+	$html = str_replace("{{html_editor}}", $_vars["html_editor"], $html);
+	$html = str_replace("{{left_panel}}", $left_panel, $html);
+	//$html = str_replace("{{right_panel}}", $right_panel, $html);
+	return $html;
+	
+}//end viewPage()
 
 
 function viewFilelist( $path_html, $up, $html_filelist){
@@ -710,6 +733,7 @@ $url = str_replace($_SERVER['DOCUMENT_ROOT'], "", $url);
 <a href='?action=edit&dir_path=$dir_path&filename=$filename' target=''> edit </a>
 <a href='?action=rename&dir_path=$dir_path&filename=$filename'> rename </a>
 -->
+<a href='?action=edit&dir_path=$dir_path&filename=$filename' target=''> edit </a>
 			</div>
 		</div>
 ";
