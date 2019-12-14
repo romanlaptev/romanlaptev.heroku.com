@@ -1,3 +1,6 @@
+<?php
+session_start();
+?>
 <html>
 <head>
 	<title>web file-manager</title>
@@ -30,7 +33,7 @@ $_vars["html_dialog"] = "";
 $_vars["html_editor"] = "";
 $_vars["server_root"]="http://".$_SERVER['SERVER_NAME'];
 $_vars["logoutUrl"] = "<a href='?is_exit=1'>logout</a>";
-
+date_default_timezone_set("Asia/Novosibirsk");
 
 $_vars["templates"]["formAuth"] = "<div class='dm-table'>
 	<div class='dm-cell'>
@@ -125,8 +128,6 @@ $_vars["templates"]["pageContent"] = "
 
 
 
-session_start();
-
 $_vars["request"] = $_REQUEST;
 if( empty($_REQUEST['action'])){
 	$_vars["request"]["action"]=""; 
@@ -163,6 +164,7 @@ if( !$_SESSION['is_auth'] ){
 } else {
 	initApp( $_REQUEST );
 }
+
 
 //echo "vars:<pre>";	
 //print_r($_vars);
@@ -1035,18 +1037,23 @@ function dumpFile($file){
     $group=filegroup($file);
 //echo $group;
 //print_r ( posix_getgrgid ($group));
+	$file_attr["filegroup"] = "";
+if( function_exists("posix_getgrgid") ){
     $str_group= posix_getgrgid ($group);
 	$file_attr["filegroup"] = $str_group["name"];
-
+}
     $owner=fileowner($file);
 //echo $owner;
+	$file_attr["fileowner"] = "";
+if( function_exists("posix_getgrgid") ){
 	$str_owner= posix_getgrgid ($owner);
 //print_r ($str_owner[name]);
 	$file_attr["fileowner"] = $str_owner["name"];
+}
 
     $mtime=filemtime($file);
 	$file_attr["filetime"] = date ("F d Y H:i:s.", $mtime);
-
+//date_default_timezone_set()
 	return $file_attr;
 
 }// end dumpFile()
