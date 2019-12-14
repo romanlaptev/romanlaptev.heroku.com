@@ -123,9 +123,9 @@ if( !$_SESSION['is_auth'] ){
 	initApp( $_REQUEST );
 }
 
-echo "vars:<pre>";	
-print_r($_vars);
-echo "</pre>";
+//echo "vars:<pre>";	
+//print_r($_vars);
+//echo "</pre>";
 
 function showForm() {
 	global $_vars;
