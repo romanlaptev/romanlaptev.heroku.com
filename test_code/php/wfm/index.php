@@ -19,27 +19,88 @@
 //print_r($_SESSION);
 //print_r ($_COOKIE);
 //echo "</pre>";
+
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 
+$_vars=array();
+$_vars["config"]["phpversion"] = phpversion();
+
+
+$_vars["templates"]["formAuth"] = "<div class='dm-table'>
+	<div class='dm-cell'>
+		<div class='dm-modal'>
+			<div class='center-align'>
+<form name='form_auth' action='' method='post' class='form-control'>
+<div class='panel'>
+	<div>
+		<label>Username: </label>
+	</div>
+	<div>
+		<input type='text' name='username'>
+	</div>
+</div>
+
+<div class='panel'>
+	<div>
+		<label>Password: </label>
+	</div>
+
+	<div>
+		<input type='password' name='pass'>
+	</div>
+</div>
+
+<div class='panel text-center'>
+	<input type='hidden' name='action' value='auth'>
+	<input type='submit' value='Enter'>
+</div>
+
+</form>
+
+			</div>
+		</div>
+	</div>
+</div>
+";
+
+$_vars["templates"]["formEdit"] = "<div class=''>
+	<form name='form_edit' method='post'  action=''>
+		<div>
+			<input type='text' size='120' name='full_filename' value='{{full_filename}}'>
+		</div>
+		<div>
+			<input type='submit' name='action' value='save_changes'>
+			<input type='checkbox'  name='backup_copy' />make backup copy
+		</div>
+		<div>
+			<textarea name='textbox' id='textbox' rows='40' cols='140'>
+{{textbox}}
+			</textarea>
+		</div>
+	</form>
+</div>	
+";
+
+
+
 session_start();
 
-if( !empty($_REQUEST['action'])){
-	$action = $_REQUEST['action']; 
-} else {
-	$action=""; 
+$_vars["request"] = $_REQUEST;
+if( empty($_REQUEST['action'])){
+	$_vars["request"]["action"]=""; 
 }
 
 if( !isset( $_SESSION['is_auth'] ) ){
 	$_SESSION['is_auth'] = false;
 }
 
-if($action == "checkAuth"){
+if($_vars["request"]["action"] == "auth"){
 	$username = $_POST['username'];
 	//$pass = md5($_POST['pass']);
 	$pass = $_POST['pass'];
 	
-	if ( check($username, $pass) ) {
+	if ( verifyUser($username, $pass) ) {
 		$_SESSION['is_auth'] = true;
 		$_SESSION['user'] = $username;
 	}
@@ -62,56 +123,16 @@ if( !$_SESSION['is_auth'] ){
 	initApp( $_REQUEST );
 }
 
-
+echo "vars:<pre>";	
+print_r($_vars);
+echo "</pre>";
 
 function showForm() {
-	
-	$html = "";
-	$html .= "<div class='dm-table'>";
-	$html .= "<div class='dm-cell'>";
-	$html .= "<div class='dm-modal'>";
-	$html .= "<div class='center-align'>";
-	//$html .= "<h4>enter password</h4>";
-	
-	$html .= "<form name='form_auth' action='' method='post' class='form-control'>";
-	$html .= "<div class='panel'>";
-
-	$html .= "<div>";
-	$html .= "<label>Username: </label>";
-	$html .= "</div>";
-
-	$html .= "<div>";
-	$html .= "<input type='text' name='username'>";
-	$html .= "</div>";
-
-	$html .= "</div>";
-
-	$html .= "<div class='panel'>";
-	$html .= "<div>";
-	$html .= "<label>Password: </label>";
-	$html .= "</div>";
-
-	$html .= "<div>";
-	$html .= "<input type='password' name='pass'>";
-	$html .= "</div>";
-	$html .= "</div>";
-
-	$html .= "<div class='panel text-center'>";
-	$html .= "<input type='hidden' name='action' value='checkAuth'>";
-	$html .= "<input type='submit' value='Enter'>";
-	$html .= "</div>";
-
-	$html .= "</form>";
-					
-	$html .= "</div>";
-	$html .= "</div>";
-	$html .= "</div>";
-	$html .= "</div>";
-	
-	return $html;
+	global $_vars;
+	return $_vars["templates"]["formAuth"];
 }//end showForm()
 
-function check($username, $pass) {
+function verifyUser($username, $pass) {
 	$login = "admin";
 	$password = "9c48d9ddcdb6e2ca17b2f6fc5f3eb5f4";//md5 hash g***0***
 	
@@ -127,7 +148,7 @@ function check($username, $pass) {
 	} else {
 		return false;
 	}
-}
+}//end verifyUser()
 
 function logout(){
 	$_SESSION = array();//clear session
@@ -184,15 +205,15 @@ function runAction( $vars ){
 	global $log;
 	
 	if( !empty($vars['action'])){
-		$action = $vars['action']; 
+		$_vars["request"]["action"] = $vars['action']; 
 	} else {
-		$action=""; 
+		$_vars["request"]["action"]=""; 
 	}
 	
 	// ****************************************
 	// RENAME FILE
 	// ****************************************
-	if ($action == "rename") {
+	if ($_vars["request"]["action"] == "rename") {
 		if (isset($vars['filename'])){
 			$html_dialog = viewFormRename( $vars["dirPath"], $vars["filename"] );
 		} else {
@@ -200,7 +221,7 @@ function runAction( $vars ){
 		}
 	}// end if action rename
 
-	if ($action == "change_name"){
+	if ($_vars["request"]["action"] == "change_name"){
 		if (!empty($vars['old_name'])){
 			$oldfile = $vars["dirPath"]."/".$vars['old_name']; 
 		} else {
@@ -226,13 +247,13 @@ function runAction( $vars ){
 	//****************************************
 	// Загрузить файл в текущий каталог
 	//****************************************
-	if ($action == "select_upload"){
+	if ($_vars["request"]["action"] == "select_upload"){
 		$upload_max_filesize = ini_get('upload_max_filesize'); 
 		$html_dialog = viewFormUpload( $upload_max_filesize );
 	}// end action upload
 
 
-	if ($action == "upload"){
+	if ($_vars["request"]["action"] == "upload"){
 //echo "<pre>";
 //print_r($_FILES);
 //echo "</pre>";
@@ -309,7 +330,7 @@ function runAction( $vars ){
 	# ****************************************
 	# удаление выбранных файлов и папок
 	# ****************************************
-	if ($action == "delete"){
+	if ($_vars["request"]["action"] == "delete"){
 		
 		if ( !empty($vars['foldername']) ){
 				$n2 = count($vars['foldername']);
@@ -348,11 +369,11 @@ function runAction( $vars ){
 	//****************************************
 	//Создать каталог
 	//****************************************
-	if ($action == "new_folder"){
+	if ($_vars["request"]["action"] == "new_folder"){
 		$html_dialog = viewFormNewfolder();
 	}
 
-	if ($action == "mkdir"){
+	if ($_vars["request"]["action"] == "mkdir"){
 		if (isset($vars['newfoldername'] )){
 			$foldername = $vars["fsPath"]."/".$vars['newfoldername']; 
 			$perms=substr(sprintf('%o', fileperms( $vars["fsPath"] )), -4);
@@ -375,7 +396,7 @@ function runAction( $vars ){
 	// ****************************************
 	// изменить права доступа
 	// ****************************************
-	if ($action == "chmod") {
+	if ($_vars["request"]["action"] == "chmod") {
 		if ( !empty($vars['chmod_file']) ) {
 			$filename = $vars['chmod_file']; 
 			if ( !empty($vars['rights']) ){
@@ -417,7 +438,7 @@ function runAction( $vars ){
 	//****************************************
 	//Редактировать текстовую форму
 	//****************************************
-	if ($action == "edit"){
+	if ($_vars["request"]["action"] == "edit"){
 		
 		if (isset($vars['filename'])){
 			$full_filename = $vars["dirPath"]."/".$vars['filename']; 
@@ -450,7 +471,7 @@ function runAction( $vars ){
 	//****************************************
 	// Сохранить текстовую форму в файл
 	//****************************************
-	if ($action == "save_changes"){
+	if ($_vars["request"]["action"] == "save_changes"){
 		
 		if (isset($vars['full_filename']))
 		{
@@ -819,25 +840,12 @@ enter folder name:
 
 
 function viewEditFile( $full_filename, $textbox ){
-return '
-	<form name="form_edit" method="post"  action="">
-		<div>
-			<input type="text" size=120 name="full_filename" value="'.$full_filename.'">
-		</div>
-		<div>
-			<input type="submit" name="action" value="save_changes">
-			<input type="checkbox"  name="backup_copy" />make backup copy
-		</div>
-		<div>
-			<textarea name="textbox" id="textbox" rows=40 cols=140>
-'.$textbox.'
-			</textarea>
-		</div>
-	</form>
-';
+	global $_vars;
+	$html = $_vars["templates"]["formEdit"];
+	$html = str_replace("{{full_filename}}", $full_filename, $html);
+	$html = str_replace("{{textbox}}", $textbox, $html);
+	return $html;
 }// end viewEditFile()
-
-
 
 
 
