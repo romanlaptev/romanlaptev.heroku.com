@@ -8,9 +8,12 @@
 //session.cookie_httponly=On 
 //session.cookie_secure=On 
 //session.referer_check=http://example.com/
-//session.cache_limiter=nocache 
 //session.sid_length="48" 
 //session.hash_function="sha256" 
+
+// Don't send HTTP headers using PHP's session handler.
+//session.cache_limiter=nocache 
+//ini_set('session.cache_limiter', 'none');
 
 //ini_set('session.gc_maxlifetime', 3600*24*30);
 //ini_set('session.cookie_lifetime', 3600*24*30);
