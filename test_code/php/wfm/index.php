@@ -114,7 +114,8 @@ $_vars["templates"]["formEdit"] = "<div class=''>
 
 $_vars["templates"]["pageContent"] = "
 	<div id='block-user' class='panel'>
-{{username}}, {{logoutUrl}}
+<h3>{{username}}</h3>
+<div>{{logoutUrl}}</div>
 	</div>
 	
 	<div class='log-panel panel'>
@@ -250,7 +251,7 @@ function initApp( $vars ){
 	$vars["fsPath"] = $fs_path;
 	$vars["dirPath"] = $dir_path;
 	
-	$_vars["username"] = "User ". $_SESSION['user'];
+	$_vars["username"] = $_SESSION['user'];
 	
 	runAction( $vars );
 }//end initApp
@@ -630,8 +631,8 @@ return '
 		<a href="?init_dir=/">[root]</a>&nbsp;
 		<a href="?dir_path='.$up.'">[up]</a>
 	</div>
-	<div class="row">
-		Index of <b>'.$path_html.'</b>
+	<div class="breadcrumbs">
+		Index of <ul>'.$path_html.'</ul>
 	</div>
 <!--
 	<div class="row file-action">

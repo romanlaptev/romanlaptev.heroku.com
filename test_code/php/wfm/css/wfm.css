@@ -1,8 +1,17 @@
-/*
+body {
+	font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+/*	
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #333;
+	background-color: #fff;
+*/
+}
+
 a:link{
-	font:12px Verdana, Arial;
 	text-decoration: none;
 }
+/*
 a:visited {
 }
 a:hover{
@@ -75,7 +84,7 @@ float:left;
 }
 .panel .filelist {
   height: 80%;
-  overflow: scroll;
+  overflow: auto;
   width: 100%;
 }
 .filelist td {
@@ -83,48 +92,53 @@ float:left;
 }
 
 .row.head-filelist {
-  display: table-row;
+  /*display: table-row;*/
 }
+
 .head-filelist .pull-left {
 background-color: #7ba2d2;
 border-bottom: 10px solid #7ba2d2;
 border-top: 10px solid #7ba2d2;
 color: #ffffff;
+/*
 display: table-cell;
 float: none;
 text-align: center;
+*/
 }
 
 
-.col-file {
-  width: 20%;
-}
 .col-action {
   width: 2%;
+}
+.col-file {
+  width: 30%;
 }
 .col-filesize {
   width: 15%;
 }
 .col-fileperms {
-  width: 12%;
+  width: 10%;
 }
 .col-filegroup {
-  width: 7%;
+  width: 5%;
 }
 .col-fileowner {
-  width: 7%;
+  width: 5%;
 }
 .col-filetime {
-  width: 20%;
+  width: 33%;
 }
 
 .filelist-row {
-display: table-row;
+/*display: table-row;*/
 }
 .filelist .pull-left {
+/*
 border: 1px solid;
 display: table-cell;
 float: none;
+*/
 /*padding: 10px;*/
 }
 
@@ -300,3 +314,17 @@ margin: 0;
 	background-color: #fff;
 	border: 1px solid #ccc;
 }
+
+#block-user {
+	position: absolute;
+	top: 0;
+	right: 0;
+	background-color: #eee;
+	border: 1px solid #000;
+}
+
+#block-user h3{
+margin:0;
+padding:0;
+}
+
