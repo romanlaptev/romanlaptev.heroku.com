@@ -1,4 +1,21 @@
 <?php
+//https://www.php.net/manual/ru/session.security.ini.php
+//https://www.php.net/manual/ru/session.configuration.php
+
+//session.use_strict_mode 	"0"
+//session.use_cookies=On
+//session.use_only_cookies=On 
+//session.cookie_httponly=On 
+//session.cookie_secure=On 
+//session.referer_check=http://example.com/
+//session.cache_limiter=nocache 
+//session.sid_length="48" 
+//session.hash_function="sha256" 
+
+//ini_set('session.gc_maxlifetime', 3600*24*30);
+//ini_set('session.cookie_lifetime', 3600*24*30);
+ini_set("session.cookie_lifetime", 0);
+
 session_start();
 ?>
 <html>
@@ -16,12 +33,14 @@ session_start();
 </head>
 <body>
 <?php
-//echo "<pre>";
+//echo "test:<pre>";
 //print_r($_REQUEST);
 //print_r($_SERVER);
 //print_r($_SESSION);
 //print_r ($_COOKIE);
 //echo "</pre>";
+//echo session_save_path();
+
 
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
@@ -154,11 +173,11 @@ if($_vars["request"]["action"] == "auth"){
 }
 
 if (isset($_GET["is_exit"])) {
-	if ($_GET["is_exit"] == 1) {
-		logout();
-		header("Location:".$_SERVER["SCRIPT_NAME"]);
-	}
+	//$_SESSION = array();//clear session
+	session_destroy();
+	header("Location:".$_SERVER["SCRIPT_NAME"]);
 }
+
 if( !$_SESSION['is_auth'] ){
 	echo showForm();
 } else {
@@ -192,12 +211,6 @@ function verifyUser($username, $pass) {
 		return false;
 	}
 }//end verifyUser()
-
-function logout(){
-	$_SESSION = array();//clear session
-	session_destroy();
-}//end logout()
-
 
 
 
