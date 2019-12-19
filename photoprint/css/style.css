@@ -74,20 +74,19 @@ header, nav, section, article, aside, footer { display: block}
 	/*background-color: #e6e6fa;*/
 }
 
-
+/*
 .header h1 {
 	text-align: left;
-	padding: 10px;
-	/* margin: 0; */
+	padding: 5px 0 5px 10px;	
 	color: #9c9;
-	font-size: 110%;
+	font-size: 135%;
 }
 
 .header h3 {
-	text-align: right;
-	padding: 0;
+	padding: 0 0 0 10px;
 	color: #9c9;
 }
+*/
 
 .main {
 	height: 80%;
@@ -194,7 +193,9 @@ border-radius: 3px;
 	color: #fff;
 }
 
+
 @media all and (max-width:1600px){
+/*	
 	.container {
 		width: 95%;
 	}
@@ -202,6 +203,7 @@ border-radius: 3px;
 		float: none !important;
 		width: 100%  !important;
 	}
+*/	
 }
 
 
@@ -793,14 +795,16 @@ z-index:8011 !important;
 
 #zoom-link {
 	background: url("../images/zoomplus.png") no-repeat scroll 0 0 / 30% auto rgba(0, 0, 0, 0);
-	display: block;
+	/*display: block;*/
 	/* float: right; */
 	height: 128px;
-	left: 0;
+	width: 128px;
+/*	
 	margin-bottom: -128px;
 	position: relative;
 	top: 50px;
-	width: 128px;
+	left: 0;
+*/
 }
 
 
@@ -809,7 +813,7 @@ z-index:8011 !important;
 /*background: url("../images/bg-ui-widget.png") no-repeat scroll 50% 0 rgba(0, 0, 0, 0);*/
 margin: 0 auto;
 padding: 5px 0 15px;
-width: 266px;
+/*width: 266px;*/
 }
 
 #amount, #amount-ui {
