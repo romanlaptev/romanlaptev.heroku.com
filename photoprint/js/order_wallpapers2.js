@@ -11,29 +11,6 @@ var init_roll_width = 90;
 var action = "";
 var rest_left = 0;
 
-_vars = {
-	"init_w" : 300,
-	"init_h"  : 250,
-	
-	"cropUrl" : "php/crop_image/crop_filters.php"//,
-/*
-	"cropUrlTpl" :"crop_filters.php?\
-filename=images/WP-14-1093.jpg&\
-sepia=&\
-desaturate=&\
-transform=&\
-texture=sites/romanlaptev.heroku.com/photoprint/images/t_volokno.png&\
-texture_name=линии&\
-x=0&\
-y=0&\
-w=511.2000000000001&\
-h=426&\
-w_cm=300&\
-h_cm=250"
-*/
-
-}//end _vars object
-console.log(_vars);
 
 $(window).load(
     function() 
@@ -754,6 +731,7 @@ console.log(filename);
 	);
 	
 //----------------------------	Сохранение изображения с наложенными фильтрами/текстурами и параметрами ширины/высоты
+/*
 	$("#btn-save-image").click(function(){
 			save_image_pre();
 			return false;
@@ -763,6 +741,7 @@ console.log(filename);
 			save_image();
 			return false;
 	});
+*/
 	
 	//-----------------------------------	
 	$(".choose-texture").hide();

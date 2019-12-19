@@ -1,16 +1,45 @@
-//var init_w = 300;
-//var init_h = 250;
 //var support = false;
-var logMsg;
 
 //console.log("module sharedFunc:", typeof sharedFunc, sharedFunc);
 var func = sharedFunc();
 //console.log("func:", func);
 
+_vars = {
+	"logMsg": "",
+	
+	"init_w" : 300,
+	"init_h"  : 250,
+	"cropUrl" : "php/crop_image/crop_filters.php",
+/*
+	"cropUrlTpl" :"crop_filters.php?\
+filename=images/WP-14-1093.jpg&\
+sepia=&\
+desaturate=&\
+transform=&\
+texture=sites/romanlaptev.heroku.com/photoprint/images/t_volokno.png&\
+texture_name=линии&\
+x=0&\
+y=0&\
+w=511.2000000000001&\
+h=426&\
+w_cm=300&\
+h_cm=250"
+*/
+	"imageResultFilename" : "test.png"
+}//end _vars object
+console.log(_vars);
+
+
 window.onload = function(){
-	logMsg = navigator.userAgent;
-	func.logAlert( logMsg, "info" );
+	_vars.logMsg = navigator.userAgent;
+	func.logAlert( _vars.logMsg, "info" );
 //----------------------
+	_vars["logPanel"] = func.getById("log");
+	_vars["btnClearLog"] = func.getById("btn-clear-log");
+	_vars["btnSaveImage"] = func.getById("btn-save-image");
+	_vars["copyBlock"] = func.getById("copy-block");
+	_vars["destBlock"] = func.getById("dest");
+
 	defineEvents();
 };//end window.load
 
@@ -107,10 +136,7 @@ function calc_order_price()
 
 
 function defineEvents(){
-
-	var btn_clear_log = func.getById("btn-clear-log");
-	var logPanel = func.getById("log");
-	btn_clear_log.onclick = function( event ){
+	_vars["btnClearLog"].onclick = function( event ){
 //console.log("click...", e);			
 		event = event || window.event;
 		var target = event.target || event.srcElement;
@@ -119,8 +145,32 @@ function defineEvents(){
 		} else {
 			event.returnValue = false;				
 		}
-		logPanel.innerHTML = "";
+		_vars["logPanel"].innerHTML = "";
 	};//end event
 
-}//end defineEvents()
+//===============================
+	func.addEvent( _vars["btnSaveImage"], "click", function(e){
+console.log( e );
+		e.preventDefault();
 
+		html2canvas( 
+			_vars["copyBlock"], {
+				//scale: 2,
+				//backgroundColor: "#ffff00",
+				//imageTimeout: 0
+			}).then( function(canvas) {
+//console.log(canvas);
+			//_vars["destBlock"].appendChild(canvas);
+			canvas.toBlob(function(blob) {
+console.log(blob);
+				saveAs(blob, _vars["imageResultFilename"] );
+			});
+			
+			// var dataURL = canvas.toDataURL();//PNG
+// console.log(dataURL)	;
+			// _vars["btnSaveImage"].href = dataURL;
+		});
+
+	});//end event
+
+}//end defineEvents()

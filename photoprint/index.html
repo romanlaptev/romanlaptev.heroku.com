@@ -19,12 +19,12 @@
 <!--[if lt IE 10]><script type="text/javascript" src="js/pie.js"></script><![endif]-->
 	
 
-    <script src="js/jquery-1.7.1.min.js"></script>
+    <script src="js/lib/jquery-1.7.1.min.js"></script>
 
 	<link rel="stylesheet" href="css/jquery-ui_slider.css" type="text/css">
-	<script src="js/jquery-ui_slider.js"></script>
+	<script src="js/lib/jquery-ui_slider.js"></script>
 
-	<script type="text/javascript" src="js/jquery.simplemodal.js"></script>
+	<script type="text/javascript" src="js/lib/jquery.simplemodal.js"></script>
 
 	<script type="text/javascript" src="js/pixastic/pixastic.core.js"></script>
 	<script type="text/javascript" src="js/pixastic/filters.js"></script>
@@ -32,10 +32,13 @@
 	<script src="js/jquery.selectBox.min.js"></script>
 -->
 	<link rel="stylesheet" href="css/jquery.Jcrop.css" type="text/css">
-	<script src="js/jquery.Jcrop.min.js"></script>
+	<script src="js/lib/jquery.Jcrop.min.js"></script>
 
 	<link rel="stylesheet" href="js/fancybox/jquery.fancybox.css">
 	<script src="js/fancybox/jquery.fancybox.pack.js"></script>
+
+	<script src="js/lib/html2canvas.js" ></script>
+	<script src="js/lib/FileSaver.js" ></script>
 
 	<script src="js/functions.js"></script>
 	<script src="js/main.js"></script>
@@ -75,7 +78,7 @@
 			</div>
 
 			<div class="panel panel-img">
-				<div class="im-product">
+				<div id="copy-block" class="im-product">
 						<a id="large-img" class="fancybox" href="images/WP-14-1093.jpg">
 							<img src="images/WP-14-1093.jpg" id="target" alt="">
 						</a>
@@ -93,7 +96,7 @@
 Ширина целых полос составляет 0,9 / 1 / 1,5 м в зависимости от выбранного материала.
 				</div>
 				<div class="panel row">
-						<div class="show_visual pull-left w50">
+						<div class="pull-left w50">
 <a id="btn-save-image" href="javascript:void(0)" class="save-image-btn btn">Сохранить изображение</a>
 						</div> 
 						<div class="show_visual pull-left w50">
@@ -402,6 +405,8 @@
 	</div>
 -->	
 	<!-- end footer -->
+
+<!-- <div id="dest"></div> -->
 
 </body>
 </html>

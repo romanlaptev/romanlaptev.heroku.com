@@ -1373,6 +1373,3 @@ console.log("$.ajax, Fail...", arguments);
 console.log("textStatus:" + textStatus);
 	});
 }//end runAjaxJQuery();
-
-
-
