@@ -1,6 +1,6 @@
-var init_w = 300;
-var init_h = 250;
-var support = false;
+//var init_w = 300;
+//var init_h = 250;
+//var support = false;
 var logMsg;
 
 //console.log("module sharedFunc:", typeof sharedFunc, sharedFunc);
@@ -25,40 +25,11 @@ console.log("jQuery UI version:" + $.ui.version);
 		});
 	}
 
-
-	//$("#material").selectBox();
-	  $("#material").change(function() {
-		if ($("#flizelin").is(":selected")) {
-		  $(".select_tov").show();
-		} else {
-		  $(".select_tov").hide();
-		}
-	  }).trigger('change');
-
-
-
-//	$("#show-rapport").click(function() {
-		//$(".slidingVisual").slideToggle();
-//	});
-
-
-
-//-------------------------- 
-		$(".select-tov-modal .texture-close-btn").live("click",
-			function()
-			{
-				$(".select-tov-modal").hide();
-			}
-		);
-		
-//-------------------------- 
-		$("#zoom-link").click(
-			function()
-			{
-				$("#large-img").click();
-			}
-		);
-
+//----------------------------------
+	$(".scroll-to").on("click", function(){
+		$('body').scrollTo( $(this).attr("href"), 800, {offset: 0});
+		return false;
+	});
 
 //-------------------------- 
 	$(".fancybox").fancybox({
@@ -67,6 +38,11 @@ console.log("jQuery UI version:" + $.ui.version);
 				locked : false
 			}
 		}
+	});
+
+//-------------------------- 
+	$(".select-tov-modal .texture-close-btn").live("click", function(){ 
+			$(".select-tov-modal").hide(); 
 	});
 
 //-------------------------
@@ -86,8 +62,48 @@ console.log("jQuery UI version:" + $.ui.version);
 	);
 */
 
+	//$("#material").selectBox();
+	  $("#material").change(function() {
+		if ($("#flizelin").is(":selected")) {
+		  $(".select_tov").show();
+		} else {
+		  $(".select_tov").hide();
+		}
+	  }).trigger('change');
+
+		$('#material').change(function(){
+				calc_order_price();
+		});
+		
+		$('#amount, #amount-ui').keyup(function(e)	{
+				calc_order_price();
+		});
 
 });//end ready
+
+
+function calc_order_price()
+{
+	var roll_width = $('#material option:selected').val();
+	switch(roll_width)
+	{
+		case "0.9":// печать на флизелиновых обоях 
+			var print_price = $("input[name=print_price1]").val();
+		break;
+		
+		case "1":// печать на на полиэстере 1м 
+			var print_price = $("input[name=print_price2]").val();
+		break;
+		
+		case "1.5":// печать на на полиэстере 1,5м
+			var print_price = $("input[name=print_price3]").val();
+		break;
+	}
+	var h_cm = parseInt ( $("input[name=h_cm]").val() );
+	var num_roll = $("input[name=num_roll]").val();
+	var product_price = print_price * ( h_cm / 100) * num_roll;
+	$("#pr-price").val( product_price.toFixed(2) );
+}
 
 
 function defineEvents(){
@@ -107,3 +123,4 @@ function defineEvents(){
 	};//end event
 
 }//end defineEvents()
+

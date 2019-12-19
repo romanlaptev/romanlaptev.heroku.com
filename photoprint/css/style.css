@@ -792,21 +792,21 @@ z-index:8011 !important;
 }
 
 
-
+/*
 #zoom-link {
 	background: url("../images/zoomplus.png") no-repeat scroll 0 0 / 30% auto rgba(0, 0, 0, 0);
-	/*display: block;*/
-	/* float: right; */
+	display: block;
+	 float: right; 
 	height: 128px;
 	width: 128px;
-/*	
+
 	margin-bottom: -128px;
 	position: relative;
 	top: 50px;
 	left: 0;
-*/
-}
 
+}
+*/
 
 
 #slider-range, #slider-ui {

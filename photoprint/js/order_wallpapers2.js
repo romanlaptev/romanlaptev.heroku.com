@@ -6,16 +6,15 @@ var max_h = 1500;
 //var max_w = 450;
 //var max_h = 350;
 
-
-//var init_w = 300;
-//var init_h = 250;
-
 var init_roll_width = 90;
 
 var action = "";
 var rest_left = 0;
 
 _vars = {
+	"init_w" : 300,
+	"init_h"  : 250,
+	
 	"cropUrl" : "php/crop_image/crop_filters.php"//,
 /*
 	"cropUrlTpl" :"crop_filters.php?\
@@ -32,6 +31,7 @@ h=426&\
 w_cm=300&\
 h_cm=250"
 */
+
 }//end _vars object
 console.log(_vars);
 
@@ -61,9 +61,9 @@ $(window).load(
 		{
 			set_guides_mod();
 			//-------------- записать длину и ширину в поля для сабмита формы
-			$('input[name=w_cm]').val( init_w );
-			$('input[name=h_cm]').val( init_h );
-			$("#decor_dynamic_size_field").val( init_w + "x" + init_h );
+			$('input[name=w_cm]').val( _vars["init_w"] );
+			$('input[name=h_cm]').val( _vars["init_h"] );
+			$("#decor_dynamic_size_field").val( _vars["init_w"] + "x" + _vars["init_h"] );
 		}
 		
 		if ( flypage == "shopdecor-design" )
@@ -116,12 +116,12 @@ $(function() {
 	}
 	else
 	{
-		$('input[name=w_cm]').val( init_w );
-		$('input[name=h_cm]').val( init_h );
-		$("#decor_dynamic_size_field").val( init_w + "x" + init_h );
+		$('input[name=w_cm]').val( _vars["init_w"] );
+		$('input[name=h_cm]').val( _vars["init_h"] );
+		$("#decor_dynamic_size_field").val( _vars["init_w"] + "x" + _vars["init_h"] );
 	}
 	
-	var num_roll = init_w / init_roll_width; 
+	var num_roll = _vars["init_w"] / init_roll_width; 
 	$("input[name=num_roll]").val( Math.ceil( num_roll) );
 
 	calc_order_price();
@@ -132,7 +132,7 @@ $(function() {
 	  range: "min",
 	  min: min_w,
 	  max: max_w,
-	  value: init_w,
+	  value: _vars["init_w"],
 	  slide: function( event, ui ) {
 	  
 		//prev_w_cm = $( "#amount" ).val();
@@ -173,7 +173,7 @@ $(function() {
 	  range: "min",
 	  min: min_h,
 	  max: max_h,
-	  value: init_h,
+	  value: _vars["init_h"],
 	  slide: function( event, ui ) {
 		$( "#amount-ui" ).val( "" + ui.value );
 //-------------- записать длину и ширину в поля для сабмита формы
@@ -207,9 +207,7 @@ $(function() {
 	$( "#amount-ui" ).val( "" + $( "#slider-ui" ).slider( "value" ));
 });
 
-$(document).ready(
-function()
-{
+$(document).ready(function() {
 //----------------------- http://fancyapps.com/fancybox/#docs
 	$(".fancybox").fancybox({
 //onCancel:	function() {console.log('.fancybox onCancel')}, //Called after user triggers canceling. 
@@ -754,6 +752,7 @@ console.log(filename);
 			return false;
 		}
 	);
+	
 //----------------------------	Сохранение изображения с наложенными фильтрами/текстурами и параметрами ширины/высоты
 	$("#btn-save-image").click(function(){
 			save_image_pre();
