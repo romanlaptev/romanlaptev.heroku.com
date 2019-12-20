@@ -606,7 +606,8 @@ console.log(xhr.upload);
 			}
 			
 			//send query	
-			if( requestMethod !== "POST"){
+			//if( requestMethod !== "POST"){
+			if( requestMethod.toUpperCase() !== "POST" ){
 				try{
 					xhr.send();
 				}catch(e){
@@ -618,11 +619,16 @@ console.log(e);
 					}
 				}
 				
+			} 
+
+//------------------------------------- form POST body
+			//if( requestMethod === "POST"){ //http://learn.javascript.ru/xhr-forms 
+			if( requestMethod.toUpperCase() === "POST" ){
+			
+				if( p["enctype"] === "multipart/form-data"){
+					xhr.send( p["formData"] );
+				}
 				
-			} else {
-				
-				//http://learn.javascript.ru/xhr-forms
-				//form POST body
 				if( p["enctype"] === "application/x-www-form-urlencoded"){
 					
 					var test = "setRequestHeader" in xhr;
@@ -643,9 +649,8 @@ console.log(e);
 					}//next
 		//console.log( body );
 					xhr.send( body );
-				} else {
-					xhr.send( p["formData"] );
-				}
+				} 
+				
 			}
 
 			function _createRequestObject() {

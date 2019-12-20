@@ -16,7 +16,7 @@ var Calc =  Calc || function(){
 var webApp = {
 	
 	"vars" : {
-		"logMsg" : "",
+		//"logMsg" : "",
 		"errorMsg" : {
 			"noTexture" : "Выберите текстуру материала."
 		},
@@ -36,7 +36,7 @@ console.log("init webapp!");
 			
 			"btnSaveImage" : func.getById("btn-save-image"),
 			"copyBlock" : func.getById("copy-block"),
-			//"destBlock" : func.getById("dest"),
+			"destBlock" : func.getById("dest"),
 			"formOrder" : func.getById("order-form"),
 			"materialFlizelin" : func.getById("flizelin")
 		};
@@ -45,8 +45,8 @@ console.log("init webapp!");
 		for( var key in _dom){
 			if( !_dom[key] ){
 //console.log(key, _dom[key] );
-				webApp.vars.logMsg = "warning, undefined DOM element <b>" +key+"</b>  !";
-func.logAlert( webApp.vars.logMsg, "warning" );
+				_vars.logMsg = "warning, undefined DOM element <b>" +key+"</b>  !";
+func.logAlert( _vars.logMsg, "warning" );
 			}
 		}//next
 
@@ -70,10 +70,10 @@ console.log( e );
 				//imageTimeout: 0
 			}).then( function(canvas) {
 //console.log(canvas);
-			//webApp.vars["domObj"]["destBlock"].appendChild(canvas);
-			canvas.toBlob(function(blob) {
-console.log(blob);
-				saveAs(blob, webApp.vars["imageResultFilename"] );
+			webApp.vars["domObj"]["destBlock"].appendChild(canvas);
+			canvas.toBlob(function( blob ) {
+console.log( blob );
+				saveAs( blob, webApp.vars["imageResultFilename"] );
 			});
 			
 			// var dataURL = canvas.toDataURL();//PNG
@@ -240,11 +240,121 @@ func.logAlert( webApp.vars.errorMsg["noTexture"], "error" );
 	var formValues = {
 		"form" : p["form"],
 		//"action" : p["action"],
+		"url" : p["form"].getAttribute("action"),
 		"requestMethod" : p["form"].getAttribute("method"),
 		"enctype" : p["form"].getAttribute("enctype") ? p["form"].getAttribute("enctype") : null
 	};
+	sendFormAjax( formValues );
 	
-	//send form using Ajax request
-	//sendForm( formValues );
-	//return false;
+	return false;
 }//end checkForm()
+
+
+function sendFormAjax( opt ){
+	
+	var p = {//default parameters
+		"form": null,
+		"id": null,
+		"action": "",
+		"url" : _vars["requestUrl"],
+		"requestMethod" : "GET",
+		"enctype" : null,
+		"callback": null
+	};
+		
+	//extend options object
+	for(var key in opt ){
+		p[key] = opt[key];
+	}
+//console.log( p );
+
+	var params = {
+		//"action" : p["action"],
+		//"date" : func.timeStampToDateStr({"format": "yyyy-mm-dd hh:min:sec"})
+	};
+	
+	var form = p["form"];
+//console.log (form.elements);
+
+	//---------------------------------- create Form Data
+	if( !p["enctype"]){
+		_vars.logMsg = "error, undefined form attribute <b>'enctype'</b> ";
+		func.logAlert( _vars.logMsg, "error");
+		return false;
+	}
+
+		
+	if( p["enctype"] === "application/x-www-form-urlencoded"){
+		// var formData = {
+			// "id" : p["id"],
+			// "author_name" : p["authorName"],
+			// "title" : p["title"],
+			// "text_message" : p["textMessage"]
+		// };
+	// //----------------------------------
+		// func.runAjax( {
+			// "requestMethod" : p["requestMethod"],
+			// //"responseType" : "json",
+			// "enctype" : p["enctype"],
+			// "url" : p["url"],
+			// "params" : params,
+			// "formData" : formData,
+			// "callback": function( data, runtime, xhr){
+	// console.log(data);
+				// func.logAlert( data, "info");
+			// }//end callback()
+		// });
+	}
+
+	if( p["enctype"] === "multipart/form-data"){
+		var formData = new FormData( form );
+	//console.log( formData );
+	//for( var key in formData){
+	//console.log(key, formData[key]);
+	//}
+
+	// Display the key/value pairs
+	for (var pair of formData.entries()) {
+		console.log(pair[0]+ ', ' + pair[1]);
+	}
+
+	//Display the keys
+	for (var key of formData.keys()) {
+	console.log(key);
+	}
+		//add new fields (input, file..)
+		formData.append("firstName", "John");
+		
+		_getCanvasImage().then( function( imageBlob ){
+console.log(arguments);
+			formData.append("image", imageBlob, "testImage.png");
+			func.runAjax( {
+				"requestMethod" : p["requestMethod"],
+				//"responseType" : "json",
+				"enctype" : p["enctype"],
+				"url" : p["url"],
+				//"params" : params,
+				"formData" : formData,
+				"callback": function( data, runtime, xhr){
+console.log(data);
+					func.logAlert( data, "info");
+				}//end callback()
+			});
+		});
+		
+	}
+
+}//end sendFormAjax()
+
+function _getCanvasImage(){
+	//return new Promise(resolve => _vars["canvas"].toBlob(resolve, "image/png"));
+//https://developer.mozilla.org/ru/docs/Web/API/HTMLCanvasElement/toBlob
+	return new Promise(function(resolve, reject){
+		var canvas = webApp.vars["domObj"]["destBlock"].childNodes[0];
+		canvas.toBlob( 	function callback( blobObj){
+console.log(arguments);
+			resolve( blobObj );
+		}, "image/png");
+	});
+}//end _getTestImage()
+
