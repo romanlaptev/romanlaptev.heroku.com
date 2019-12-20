@@ -12,9 +12,8 @@ var action = "";
 var rest_left = 0;
 
 
-$(window).load(
-    function() 
-	{
+$(window).load(function(){
+		
 	//----------------------- определить размеры изображения товара
 		img_w = $("#target").width();
 //console.log ("img_w = " + img_w);
@@ -38,9 +37,9 @@ $(window).load(
 		{
 			set_guides_mod();
 			//-------------- записать длину и ширину в поля для сабмита формы
-			$('input[name=w_cm]').val( _vars["init_w"] );
-			$('input[name=h_cm]').val( _vars["init_h"] );
-			$("#decor_dynamic_size_field").val( _vars["init_w"] + "x" + _vars["init_h"] );
+			$('input[name=w_cm]').val( webApp.vars["init_w"] );
+			$('input[name=h_cm]').val( webApp.vars["init_h"] );
+			$("#decor_dynamic_size_field").val( webApp.vars["init_w"] + "x" + webApp.vars["init_h"] );
 		}
 		
 		if ( flypage == "shopdecor-design" )
@@ -66,10 +65,7 @@ $(window).load(
 
 		}
 
-    }
-);// end window.load
-
-$(function() {
+//============================
 	//-----------------------
 		var flypage = $("input[name=flypage]").val();
 		if ( flypage =="shopdecor-wallpapers")
@@ -93,12 +89,12 @@ $(function() {
 	}
 	else
 	{
-		$('input[name=w_cm]').val( _vars["init_w"] );
-		$('input[name=h_cm]').val( _vars["init_h"] );
-		$("#decor_dynamic_size_field").val( _vars["init_w"] + "x" + _vars["init_h"] );
+		$('input[name=w_cm]').val( webApp.vars["init_w"] );
+		$('input[name=h_cm]').val( webApp.vars["init_h"] );
+		$("#decor_dynamic_size_field").val( webApp.vars["init_w"] + "x" + webApp.vars["init_h"] );
 	}
 	
-	var num_roll = _vars["init_w"] / init_roll_width; 
+	var num_roll = webApp.vars["init_w"] / init_roll_width; 
 	$("input[name=num_roll]").val( Math.ceil( num_roll) );
 
 	calc_order_price();
@@ -109,7 +105,7 @@ $(function() {
 	  range: "min",
 	  min: min_w,
 	  max: max_w,
-	  value: _vars["init_w"],
+	  value: webApp.vars["init_w"],
 	  slide: function( event, ui ) {
 	  
 		//prev_w_cm = $( "#amount" ).val();
@@ -150,7 +146,7 @@ $(function() {
 	  range: "min",
 	  min: min_h,
 	  max: max_h,
-	  value: _vars["init_h"],
+	  value: webApp.vars["init_h"],
 	  slide: function( event, ui ) {
 		$( "#amount-ui" ).val( "" + ui.value );
 //-------------- записать длину и ширину в поля для сабмита формы
@@ -182,7 +178,11 @@ $(function() {
 	  }
 	});
 	$( "#amount-ui" ).val( "" + $( "#slider-ui" ).slider( "value" ));
-});
+
+//============================
+
+});// end window.load
+
 
 $(document).ready(function() {
 //----------------------- http://fancyapps.com/fancybox/#docs
@@ -1132,76 +1132,6 @@ console.log(filename);
 	});//end event()
 
 
-	$("#add-to-cart").on("submit", function(e){
-console.log(e);			
-		var error=false;
-			
-//console.log( $("#flizelin").is(":selected") );
-		if ( $("#flizelin").is(":selected") ){
-			if ( $("input[name=texture]").val()=="" ){
-				logMsg = "Выберите текстуру материала.";
-				func.logAlert( logMsg, "error" );
-				error=true;
-			}
-		}
-		
-		if (error){
-			return false;
-		} else {
-
-			//получить ссылку для кадрированого фрагмента изображения
-			//if ( parseInt($('#w').val()) ) {
-				//get_crop_url();
-			//}
-			
-			//------------------------
-			var texture_name = $("input[name=texture]").val();
-			texture_name = texture_name;
-			$("input[name=texture]").val(texture_name);
-//return false;
-		}
-	});//end event()
-
-//=======================================
-
-/*
-    	$("#addtocart-decor-design").on("submit", 
-		function()
-		{
-			var error=false;
-			if ($("#no-material").is(":selected")) 
-			{
-alert( "Пожалуйста, выберите из выпадающего списка материал товара.");	
-				error=true;
-			}
-
-			if ($("#flizelin").is(":selected")) 
-			{
-				if ($("input[name=texture]").val()=="") 
-				{
-alert( "Пожалуйста, выберите текстуру материала.");	
-					error=true;
-				}
-			}
-
-			if (error)
-			{
-				return false;
-			}
-			else
-			{
-//----------------------- сохранить в поля заказа значения ширины и высоты стены
-				w = $("#amount").val();
-				h = $("#amount-ui").val();
-				$('input[name=w_cm]').val( w );
-				$('input[name=h_cm]').val( h );
-				$("#decor_dynamic_size_field").val( w + "x" + h );
-				
-//return false;
-			}
-		}
-	);
-*/
 
 //--------------------------------------
 	$("#rapport").change(
@@ -2098,7 +2028,7 @@ function save_image(){
 			var h_cm = $('input[name=h_cm]').val();
 			
 //-------------------------------------------------
-			var url = _vars["cropUrl"];
+			var url = webApp.vars["cropUrl"];
 			url += '?filename=' + filename_src;
 			url += '&sepia=' + sepia_check;
 			url += '&desaturate=' + desaturate_check;
@@ -2141,7 +2071,7 @@ function save_image_pre(){
 	var w_cm = $('input[name=w_cm]').val();
 	var h_cm = $('input[name=h_cm]').val();
 
-	var url = _vars["cropUrl"];
+	var url = webApp.vars["cropUrl"];
 	url += '?filename=' + filename_src;
 	url += '&sepia=' + sepia_check;
 	url += '&desaturate=' + desaturate_check;

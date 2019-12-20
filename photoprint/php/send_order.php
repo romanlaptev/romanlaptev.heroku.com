@@ -5,61 +5,46 @@
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 
-//echo "<pre>";
+echo "<pre>";
 //print_r ($_SERVER);
-//print_r ($_REQUEST);
-//print_r($_FILES);
-//echo "</pre>";
+print_r ($_REQUEST);
+print_r($_FILES);
+echo "</pre>";
 
 $_vars=array();
-include("auth_postgresql.php");
-
 $_vars["log"] = array();
 
-//========================================= connect to server
-	//check PDO support
-	// if (!defined('PDO::ATTR_DRIVER_NAME')) {
-		// $_vars["useMySQL"] = 1;
-		// $_vars["usePDO"] = 0;
-		// $_vars["link"] = connectDbMySQL();
-	// } else {
-		//$_vars["useMySQL"] = 0;
-		$_vars["usePDO"] = 1;
-		
-		$_vars["link"] = connectDbPDO();
-		
-		$connection = $_vars["link"];
-		
-		$_vars["dbVersion"] = "";
-		$query = "SELECT * FROM PG_SETTINGS WHERE name='server_version';";
-		$result  = $connection->query( $query ) or die( $connection->errorInfo()[2] );
-		$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
-// echo "<pre>";	
-// print_r($rows);
-// echo "</pre>";	
-		$_vars["dbInfo"][]["message"] = "database server version: " . $rows[0]["setting"];
-	//}
+// $action = "";
+// if( !empty($_REQUEST['action']) ){
+	// $action = $_REQUEST['action'];
+// } else {
+	// $_vars["log"][] = "{\"error_code\" : \"noaction\", \"message\" : \"error, undefined var 'action'\"}";
+// }
+
+/*
+switch ($action){
+	case "save_message":
+		//saveNote();
+echo "<pre>";
+print_r ($_REQUEST);
+echo "</pre>";
+	break;
 	
-//--------------------------------------
-
-//--------------------------------------
-
-	// if($_vars["useMySQL"] == 1){
-		// mysql_close ( $_vars["link"] );
-	// }
-	//if($_vars["usePDO"] == 1){
-		unset ($_vars["link"]);
-	//}
+	case "upload":
+		//uploadFile();
+echo "<pre>";
+print_r ($_REQUEST);
+print_r($_FILES);
+echo "</pre>";
+	break;
 	
-	if ( function_exists("json_encode") ){	//PHP 5 >= 5.2.0
-		$json = json_encode($_vars["dbInfo"]);
-		echo $json;
-	} else {
-$msg = "error, not support function json_encode(). incorrect PHP version - ".phpversion().", need PHP >= 5.2.0";
-$_vars["log"][] = "{\"error_code\" : \"notSupportJSON\", \"message\" : \""+$msg+"\"}";
-	}
+	default:
+		$_vars["log"][] = "{\"error_code\" : \"wrong_action\", \"message\" : \"wrong action...\"}";
+	break;
+}//end switch
 
-	viewLog();
+viewLog();
+*/
 //=========================================== end
 
 //output log in JSON format
@@ -80,89 +65,155 @@ function viewLog(){
 		echo $logStr;
 	}
 }//end viewLog
-	
-// function connectDbMySQL(){
-	// global $_vars;
-// // echo "<pre>";
-// // print_r($_vars);
-// // echo "</pre>";
 
-	// $dbHost = $_vars["config"]["dbHost"];
-	// $dbUser = $_vars["config"]["dbUser"];
-	// $dbPassword = $_vars["config"]["dbPassword"];
-	// $dbName = $_vars["config"]["dbName"];
-	
-	// try{
-		// $link = mysql_connect($dbHost, $dbUser, $dbPassword);
-		// if (!$link){
-			// throw new Exception('MySQL Connection Database Error: ' . mysql_error());
-		// } else{
-
-			// if ( function_exists("mysql_set_charset") ){
-				// //function mysql_set_charset() is available since PHP 5.2.3
-				// //MySQL => 5.0.7
-				// mysql_set_charset("utf8", $link);
-			// } else {
-// //mysql_query('SET NAMES utf8');
-// //mysql_query("SET CHARACTER SET utf8 ");
-				// mysql_query ("set character_set_client='utf8'");
-				// mysql_query ("set character_set_results='utf8'");
-				// mysql_query ("set collation_connection='utf8_general_ci'");
-			// }
-			
-// //SHOW VARIABLES LIKE  'char%'
-// //$db_info = "<li>MySQL server info: " . mysql_get_server_info() ."</li>";
-// // $db_info .= "<li>MySQL client info: " . mysql_get_client_info() ."</li>";
-// // $db_info .= "<li>MySQL host info: " . mysql_get_host_info() ."</li>";
-// // $db_info .= "<li>MySQL protocol version: " . mysql_get_proto_info() ."</li>";
-// //$db_info .= "<li>mysql_client_encoding: " . mysql_client_encoding($link) ."</li>";
-// //echo $db_info;
-
-			// return $link;
-		// }
-		
-	// }catch(Exception $e){
-		// //echo "exception: ",  $e->getMessage(), "\n";
-		// $_vars["log"][] = "{\"error_code\" : \"connectDBerror\", \"message\" : \"exception: " . $e->getMessage() . "\"}";
-		// viewLog();
-		// exit();
-	// }
-
-// }//end connectDbMySQL()
-
-function connectDbPDO(){
+/*
+function uploadFile(){
 	global $_vars;
-// echo "<pre>";
-// print_r($_vars);
-// echo "</pre>";
+//echo "<pre>";
+//print_r ($_SERVER);
+//print_r ($_REQUEST);
+//print_r($_FILES);
+//echo "</pre>";
 
-	$dbHost = $_vars["config"]["dbHost"];
-	$dbPort = $_vars["config"]["dbPort"];
-	$dbUser = $_vars["config"]["dbUser"];
-	$dbPassword = $_vars["config"]["dbPassword"];
-	$dbName = $_vars["config"]["dbName"];
+		$upload_max_filesize = ini_get('upload_max_filesize'); 
+//echo "upload_max_filesize = ". $upload_max_filesize;
+//echo "<br>";
+		$msg = "upload_max_filesize = ". $upload_max_filesize;
+		$_vars["log"][] = "{\"message\" : \"$msg\"}";
+
+		$fullPath = initUploadDirectory();
+		if( !$fullPath ){
+//echo "not Ok";
+//echo "<br>";
+exit();
+		}
+			
+//echo "Ok";
+//echo "<br>";
+	$file_arr = $_FILES["upload_file"];
+	$errors ="";
+	switch ($file_arr['error']){
+		case 0:
+			$errors .= "UPLOAD_ERR_OK";
+			if ( is_uploaded_file ($file_arr['tmp_name']) ) {
+				$uploaded_file = $fullPath."/".$_vars["export"]["filename"];
+				if ( move_uploaded_file( $file_arr['tmp_name'], $uploaded_file ) )
+				{
+//echo $file_arr['name'].", size= ".$file_arr['size']." bytes upload successful";
+//echo "<br>";
+//echo "Rename ". $file_arr['name']." to ".$_vars["export"]["filename"];
+//echo "<br>";
+					$msg = $file_arr['name'].", size= ".$file_arr['size']." bytes upload successful";
+					$_vars["log"][] = "{\"message\" : \"$msg\"}";
+					$msg = "Rename ". $file_arr['name']." to ".$_vars["export"]["filename"];
+					$_vars["log"][] = "{\"message\" : \"$msg\"}";
+
+					importTable( $fullPath."/".$_vars["export"]["filename"] );
+				} else {
+//echo $file_arr['name'].", size= ".$file_arr['size']." bytes not upload";
+//echo "<br>";
+					$msg = $file_arr['name'].", size= ".$file_arr['size']." bytes not upload";
+					$_vars["log"][] = "{\"message\" : \"$msg\"}";
+				}
+			}
+		break;
+
+		case 1:
+$errors .= 'UPLOAD_ERR_INI_SIZE, Размер принятого файла превысил максимально допустимый размер, который задан директивой upload_max_filesize конфигурационного файла php.ini.';
+		break;
+
+		case 2:
+$errors .= 'UPLOAD_ERR_FORM_SIZE,  Размер загружаемого файла превысил значение MAX_FILE_SIZE, указанное в HTML-форме.';
+		break;
+
+		case 3:
+$errors .= 'UPLOAD_ERR_PARTIAL, Загружаемый файл был получен только частично.';
+		break;
+
+		case 4:
+$errors .= 'UPLOAD_ERR_NO_FILE';
+		break;
+
+		case 6:
+$errors .= 'UPLOAD_ERR_NO_TMP_DIR';
+		break;
+
+		case 7:
+$errors .= 'UPLOAD_ERR_CANT_WRITE';
+		break;
+
+		case 8:
+$errors .= 'UPLOAD_ERR_EXTENSION, PHP-расширение остановило загрузку файла. PHP не предоставляет способа определить какое расширение остановило загрузку файла; в этом может помочь просмотр списка загруженных расширений из phpinfo(). Добавлено в PHP 5.2.0.';
+		break;
+
+	}//end switch
+$errors .= ' code: ' . $file_arr['error'];
+//echo $errors;
+//echo "<br>";
+	$_vars["log"][] = "{\"message\" : \"$errors\"}";
+
+}// uploadFile()
+*/
+
+/*
+function initUploadDirectory(){
+	global $_vars;
+		chdir("../");
+//echo "getcwd = ".getcwd();
+//echo "__DIR__ = ".__DIR__;
+		$foldername = $_vars["uploadPath"];
+		$fullPath = getcwd() . "/".$foldername;
+		
+		if ( !file_exists( $fullPath )) {
+//echo $fullPath . " not exists";
+//echo "<br>";
 	
-	$dsn = "pgsql:dbname='{$dbName}'; host='{$dbHost}'; port='{$dbPort}'";
-	try{
-		$connection = new PDO( $dsn, $dbUser, $dbPassword );
-//echo "Connect!";		
-		
-		// $query = "set character_set_client='utf8'";
-		// $connection->query( $query ) or die( print_r($connection->errorInfo(), true) );
-		
-		// $query = "set character_set_results='utf8'";
-		// $connection->query( $query ) or die( print_r($connection->errorInfo(), true) );
-		
-		// $query = "set collation_connection='utf8_general_ci'";
-		// $connection->query( $query ) or die( print_r($connection->errorInfo(), true) );
-		//$_vars["log"][] = "{\"message\" : \"connection estableshed\"}";
-		
-		return $connection;
-	} catch( PDOException $exception ) {
-		//echo $exception->getMessage();
-		$_vars["log"][] = "{\"error_code\" : \"connectDBerror\", \"message\" : \"" . $exception->getMessage() . "\"}";
-		viewLog();
-		exit();
-	}
-}//end connectDbPDO()
+			$mode = 0777;
+			$recursive = false;
+			if (mkdir ( $fullPath, $mode, $recursive)) {
+//echo "Mkdir $fullPath successful";
+//echo "<br>";
+				$msg = "Mkdir $fullPath successful";
+				$_vars["log"][] = "{\"message\" : \"$msg\"}";
+			} else {
+//echo "Cannot mkdir $fullPath, ";
+//echo "<br>";
+				$msg = "Cannot mkdir $fullPath, ";
+				$_vars["log"][] = "{\"message\" : \"$msg\"}";
+			}
+			
+			$perms=substr(sprintf('%o', fileperms(  $fullPath )), -4);
+//echo $fullPath . ", rights: $perms";
+//echo "<br>";
+			$msg = $fullPath . ", rights: $perms";
+			$_vars["log"][] = "{\"message\" : \"$msg\"}";
+			if (is_writable( $fullPath )){
+				return $fullPath;
+			} else {
+//echo "Not writable!";
+//echo "<br>";
+				$msg = "Not writable!";
+				$_vars["log"][] = "{\"message\" : \"$msg\"}";
+				return 0;
+			}
+			
+		} else {
+			$perms=substr(sprintf('%o', fileperms(  $fullPath )), -4);
+//echo $fullPath . " exists, rights: $perms";
+//echo "<br>";
+			$msg = $fullPath . " exists, rights: $perms";
+			$_vars["log"][] = "{\"message\" : \"$msg\"}";
+			if (is_writable( $fullPath )){
+				return $fullPath;
+			} else {
+//echo "Not writable!";
+//echo "<br>";
+				$msg = "Not writable!";
+				$_vars["log"][] = "{\"message\" : \"$msg\"}";
+				return 0;
+			}
+
+		}
+}//end initUploadDirectory()		
+*/
 ?>
