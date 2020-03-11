@@ -570,6 +570,11 @@ console.log( webApp.vars["logMsg"] );
 				return value;
 			});
 //console.log( jsonObj );
+				if( jsonObj["eventType"] && jsonObj["eventType"] === "error"){
+webApp.vars["logMsg"] = jsonObj["message"];
+func.logAlert( webApp.vars["logMsg"], "error");
+				}
+
 			return jsonObj["copyright"];
 			
 		} catch(error) {
@@ -837,6 +842,12 @@ console.log( key, tagNode[key] );
 				return value;
 			});
 //console.log( jsonObj );
+
+			if( jsonObj["eventType"] && jsonObj["eventType"] === "error"){
+webApp.vars["logMsg"] = jsonObj["message"];
+func.logAlert( webApp.vars["logMsg"], "error");
+				return;
+			}
 
 			//correct departure, duration, arrival
 			for( var n = 0; n < jsonObj["segments"].length; n++){

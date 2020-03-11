@@ -76,10 +76,12 @@ print_r( curl_version() );
 echo "</pre>";
 	}
 
-} 
-else 
-{
-	echo "error, no CURL support...";
-	echo "<br>";	
+} else {
+	//echo "error, no CURL support...";
+	//echo "<br>";	
+	$logMsg["eventType"] = "error";
+	$logMsg["message"] = "error,  no <b>CURL</b> support... ";
+	$jsonStr = json_encode($logMsg);
+	echo $jsonStr;
 }
 ?>
