@@ -1,6 +1,7 @@
 {
 	"name": "herrera-io/silex-pdo",
 	"require": {
-		"ext-gd": "*"
+		"ext-gd": "*",
+		"ext-sqlite3": "*"
 	}
 }
