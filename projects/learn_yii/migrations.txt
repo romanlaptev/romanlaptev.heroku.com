@@ -1,3 +1,4 @@
+#https://www.yiiframework.com/doc/guide/1.1/ru/database.migration#sec-9
 #
 #Migration
 # create DB learn 
@@ -13,3 +14,4 @@
 cd protected/
 ./yiic migrate
 cd ../
+./yiic migrate create update_demo_data

@@ -51,6 +51,9 @@ class LessonController extends Controller
 	 */
 	public function actionView($id)
 	{
+//echo "public function actionView($id)";
+//echo "<br>";
+
 		$lesson = $this->loadModel($id);
 		$course = Courses::model()->find("course_id = :course_id", array(":course_id" => $lesson->course_id));
 		$this->render('view',array(
@@ -150,6 +153,8 @@ echo "</pre>";
 	 */
 	public function actionIndex()
 	{
+//echo "public function actionIndex()";
+//echo "<br>";
 		$dataProvider=new CActiveDataProvider('Lessons');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
@@ -161,6 +166,8 @@ echo "</pre>";
 	 */
 	public function actionList()
 	{
+echo "public function actionList()";
+echo "<br>";
 		$criteria = new CDbCriteria();
 		$criteria->addInCondition('course_id', array('0') );
 		$dataProvider=new CActiveDataProvider('Lessons', array('criteria' => $criteria) );

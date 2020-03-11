@@ -4,12 +4,13 @@ body
 	padding: 0;
 	color: #555;
 	font: normal 10pt Arial,Helvetica,sans-serif;
-	background: #EFEFEF;
+	background-color: #778899;
+
 }
 
 #page
 {
-	background: white;
+	background: #fff;
 /*
 	margin-top: 5px;
 	margin-bottom: 5px;

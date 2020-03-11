@@ -1,3 +1,11 @@
+https://www.tutorialspoint.com/sqlite/sqlite_truncate_table.htm
+
+Unfortunately, we do not have TRUNCATE TABLE command in SQLite but you can use SQLite DELETE command to delete complete data from an existing table, though it is recommended to use DROP TABLE command to drop the complete table and re-create it once again.
+
+delete from lessons;
+delete from courses;
+
+=========================================
 learn yii
 
 - создать курс
