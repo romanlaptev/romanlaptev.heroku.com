@@ -45,7 +45,7 @@ if ( Yii::app()->controller->id == "course" && Yii::app()->controller->action->i
 			'items'=>array(
 				//array('label'=>'Home', 'url'=>array('/site/index'), 'visible'=>Yii::app()->controller->action->id != 'index' ),
 array(
-	'label'=>'Курсы', 
+	'label'=>'Courses', 
 	'url'=>array('/course/index'), 
 	'visible'=>$visible_course_item,
 /*
@@ -55,19 +55,25 @@ array(
 		)
 */
 ),
-				array( 'label'=>'Уроки', 'url'=>array('/lesson/list'), 'visible'=>Yii::app()->user->isGuest ),
-				array( 'label'=>'Уроки', 'url'=>array('/lesson/admin'), 'visible'=>!Yii::app()->user->isGuest ),
-				array( 'label'=>'Экспорт', 
+				array( 'label'=>'Lessons', 'url'=>array('/lesson/list'), 'visible'=>Yii::app()->user->isGuest ),
+				array( 'label'=>'Lessons', 'url'=>array('/lesson/admin'), 'visible'=>!Yii::app()->user->isGuest ),
+				array( 'label'=>'Export', 
 						'url'=>array('/export/export'),//, 'view'=>'index'), 
 						'visible'=>!Yii::app()->user->isGuest ),
-				array( 'label'=>'Импорт', 
-						'url'=>array('/import/index', 'view'=>'index'),
-						 'visible'=>!Yii::app()->user->isGuest ),
-array('label'=>'Авторизация', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest, 'itemOptions'=>array('class' => 'topmenu-link right') ),
-array('label'=>'Выход ('.Yii::app()->user->name.')', 'url'=>array('/site/logout'), 'visible'=>!Yii::app()->user->isGuest, 'itemOptions'=>array('class' => 'topmenu-link right'))
+
+				array( 'label'=>'Import', 	'url'=>array('/import/index', 'view'=>'index'), 'visible'=>!Yii::app()->user->isGuest ),
+
+array('label'=>'Users', 'url'=>array('/users'), 'visible'=>!Yii::app()->user->isGuest, 'itemOptions'=>array('class' => 'topmenu-link right') ),
+
+array('label'=>'Login', 'url'=>array('/site/login'), 'visible'=>Yii::app()->user->isGuest, 'itemOptions'=>array('class' => 'topmenu-link right') ),
+array('label'=>'Exit ('.Yii::app()->user->name.')', 
+			'url'=>array('/site/logout'), 
+			'visible'=>!Yii::app()->user->isGuest, 
+			'itemOptions'=>array('class' => 'topmenu-link right'))
 			),
 		)); ?>
 	</div><!-- mainmenu -->
+
 	<?php if(isset($this->breadcrumbs)):?>
 		<?php $this->widget('zii.widgets.CBreadcrumbs', array(
 			'links'=>$this->breadcrumbs,

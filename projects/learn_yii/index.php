@@ -57,6 +57,11 @@ function runApp(){
 
 	require_once($yii);
 	Yii::createWebApplication($config)->run();
+
+//echo "Yii::app:<pre>";
+//print_r( Yii::app() );
+//echo "</pre>";
+
 }//end runApp()
 
 

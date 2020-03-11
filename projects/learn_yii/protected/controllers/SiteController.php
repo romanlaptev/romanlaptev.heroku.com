@@ -77,7 +77,14 @@ class SiteController extends Controller
 	 */
 	public function actionLogin()
 	{
+//echo "SiteController.php, actionLogin()";
+//echo "<br>";
+
 		$model=new LoginForm;
+//echo "<pre>";
+//print_r($_REQUEST);
+//print_r($model);
+//echo "</pre>";
 
 		// if it is ajax validation request
 		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
@@ -106,4 +113,13 @@ class SiteController extends Controller
 		Yii::app()->user->logout();
 		$this->redirect(Yii::app()->homeUrl);
 	}
-}
+
+
+	public function actionTest()
+	{
+echo "SiteController.php, actionTest()";
+echo "<br>";
+
+	}
+
+}//end class

@@ -1,6 +1,6 @@
 <?php
 
-class LessonController extends Controller
+class UsersController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -15,7 +15,7 @@ class LessonController extends Controller
 	{
 		return array(
 			'accessControl', // perform access control for CRUD operations
-			//'postOnly + delete', // we only allow deletion via POST request
+			'postOnly + delete', // we only allow deletion via POST request
 		);
 	}
 
@@ -28,7 +28,7 @@ class LessonController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view', 'list'),
+				'actions'=>array('index','view'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
@@ -51,14 +51,8 @@ class LessonController extends Controller
 	 */
 	public function actionView($id)
 	{
-//echo "public function actionView($id)";
-//echo "<br>";
-
-		$lesson = $this->loadModel($id);
-		$course = Courses::model()->find("course_id = :course_id", array(":course_id" => $lesson->course_id));
 		$this->render('view',array(
-			'model'=>$lesson,
-			'course'=>$course,
+			'model'=>$this->loadModel($id),
 		));
 	}
 
@@ -66,35 +60,22 @@ class LessonController extends Controller
 	 * Creates a new model.
 	 * If creation is successful, the browser will be redirected to the 'view' page.
 	 */
-	public function actionCreate(  )
+	public function actionCreate()
 	{
-		if ( !empty($_REQUEST['course_id']) )
-		{
-			$course_id = Yii::app()->request->getParam('course_id');
-		}
-		else
-			$course_id = 0;
-
-		$course = Courses::model()->find("course_id = :course_id", array(":course_id" =>$course_id ));
-		$courses = Courses::model()->findAll();
-		$list = CHtml::listData( $courses, 'course_id', 'title' );
-
-		$model=new Lessons;
+		$model=new Users;
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Lessons']))
+		if(isset($_POST['Users']))
 		{
-			$model->attributes=$_POST['Lessons'];
+			$model->attributes=$_POST['Users'];
 			if($model->save())
-				$this->redirect(array('view','id'=>$model->lesson_id));
+				$this->redirect(array('view','id'=>$model->user_id));
 		}
 
 		$this->render('create',array(
 			'model'=>$model,
-			'course'=>$course,
-			'courses_list'=>$list,
 		));
 	}
 
@@ -105,32 +86,20 @@ class LessonController extends Controller
 	 */
 	public function actionUpdate($id)
 	{
-		$lesson=$this->loadModel($id);
-		$course = Courses::model()->find("course_id = :course_id", array(":course_id" => $lesson->course_id));
-
-		$courses = Courses::model()->findAll();
-		//$list = array_values( CHtml::listData($courses, 'course_id', 'title') );
-		$list = CHtml::listData( $courses, 'course_id', 'title' );
+		$model=$this->loadModel($id);
 
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Lessons']))
+		if(isset($_POST['Users']))
 		{
-/*
-echo "<pre>";
-print_r($_REQUEST);
-echo "</pre>";
-*/
-			$lesson->attributes=$_POST['Lessons'];
-			if($lesson->save())
-				$this->redirect(array('view','id'=>$lesson->lesson_id));
+			$model->attributes=$_POST['Users'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->user_id));
 		}
 
 		$this->render('update',array(
-			'model'=>$lesson,
-			'course'=>$course,
-			'courses_list'=>$list,
+			'model'=>$model,
 		));
 	}
 
@@ -153,24 +122,7 @@ echo "</pre>";
 	 */
 	public function actionIndex()
 	{
-//echo "public function actionIndex()";
-//echo "<br>";
-		$dataProvider=new CActiveDataProvider('Lessons');
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
-	}
-
-	/**
-	 * Список уроков, не входящих в курсы
-	 */
-	public function actionList()
-	{
-//echo "public function actionList()";
-//echo "<br>";
-		$criteria = new CDbCriteria();
-		$criteria->addInCondition('course_id', array('0') );
-		$dataProvider=new CActiveDataProvider('Lessons', array('criteria' => $criteria) );
+		$dataProvider=new CActiveDataProvider('Users');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -181,10 +133,10 @@ echo "</pre>";
 	 */
 	public function actionAdmin()
 	{
-		$model=new Lessons('search');
+		$model=new Users('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Lessons']))
-			$model->attributes=$_GET['Lessons'];
+		if(isset($_GET['Users']))
+			$model->attributes=$_GET['Users'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -195,12 +147,12 @@ echo "</pre>";
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Lessons the loaded model
+	 * @return Users the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Lessons::model()->findByPk($id);
+		$model=Users::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -208,15 +160,14 @@ echo "</pre>";
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Lessons $model the model to be validated
+	 * @param Users $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='lessons-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='users-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();
 		}
 	}
-
-}//end class
+}

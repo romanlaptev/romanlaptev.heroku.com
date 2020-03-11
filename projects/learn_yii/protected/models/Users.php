@@ -51,9 +51,9 @@ class Users extends CActiveRecord
 	public function attributeLabels()
 	{
 		return array(
-			'user_id' => 'User',
+			'user_id' => 'UserName',
 			'login' => 'Login',
-			'pass' => 'Pass',
+			'pass' => 'Password',
 		);
 	}
 
