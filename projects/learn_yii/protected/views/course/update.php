@@ -8,10 +8,10 @@ $this->breadcrumbs=array(
 */
 ?>
 
-<h1>Редактировать курс "<?php echo $model->title; ?>"</h1>
+<h1>Edit course "<?php echo $model->title; ?>"</h1>
 
 <?php 
 	$this->renderPartial('_form', array('model'=>$model)); 
-	echo CHtml::link("Добавить урок", array("lesson/create","course_id"=>$model->course_id) );
+	echo CHtml::link("Add lesson", array("lesson/create","course_id"=>$model->course_id) );
 ?>
 

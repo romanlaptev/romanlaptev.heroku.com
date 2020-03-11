@@ -3,13 +3,13 @@
 	<p><?php echo $course->description; ?></p>
 </div>
 <div class="list-lessons">
-<h3>список уроков</h3>
+<h3>Lesson list</h3>
 	<div class="">
 <p>
 <?php
 if ( !Yii::app()->user->isGuest )
 {
-	echo CHtml::link("Добавить урок", array("lesson/create","course_id"=>$course->course_id) );
+	echo CHtml::link("Add lesson", array("lesson/create","course_id"=>$course->course_id) );
 }
 ?>
 </p>
@@ -39,8 +39,9 @@ if ( !Yii::app()->user->isGuest )
 ?>
 			<div  class="column action right">
 <?php
-	echo CHtml::link( "редактировать", array("lesson/update",'id'=>$lesson->lesson_id), array('target' => '', 'class' => 'action-link') );
-	echo CHtml::link( "удалить урок", array("lesson/delete",'id'=>$lesson->lesson_id), array('id' => 'delete-lesson', 'class' => 'action-link') );
+	echo CHtml::link( "edit", array("lesson/update",'id'=>$lesson->lesson_id), array('target' => '', 'class' => 'action-link') );
+echo " | ";
+	echo CHtml::link( "delete lesson", array("lesson/delete",'id'=>$lesson->lesson_id), array('id' => 'delete-lesson', 'class' => 'action-link') );
 ?>
 
 			</div>

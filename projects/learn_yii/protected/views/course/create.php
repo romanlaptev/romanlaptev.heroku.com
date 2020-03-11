@@ -13,5 +13,5 @@ $this->menu=array(
 */
 ?>
 
-<h1>Новый курс</h1>
+<h1>new course</h1>
 <?php $this->renderPartial('_form', array('model'=>$model)); ?>

@@ -4,14 +4,14 @@
 if ( !empty($course) )
 {
 	$this->breadcrumbs=array(
-		'Курсы'=>array('course/index'),
+		'Courses'=>array('course/index'),
 		$course->title=>array('course/view','id'=>$course->course_id),
 	);
 }
 else
 {
 	$this->breadcrumbs=array(
-		'Курсы'=>array('course/index'),
+		'Courses'=>array('course/index'),
 	);
 }
 
@@ -21,8 +21,8 @@ if ( !Yii::app()->user->isGuest )
 	$this->menu=array(
 		//array('label'=>'List Lessons', 'url'=>array('index')),
 		//array('label'=>'Create Lessons', 'url'=>array('create')),
-		array('label'=>'редактировать', 'url'=>array('update', 'id'=>$model->lesson_id)),
-		array('label'=>'удалить', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->lesson_id),'confirm'=>'Are you sure you want to delete this item?')),
+		array('label'=>'edit', 'url'=>array('update', 'id'=>$model->lesson_id)),
+		array('label'=>'delete', 'url'=>'#', 'linkOptions'=>array('submit'=>array('delete','id'=>$model->lesson_id),'confirm'=>'Are you sure you want to delete this item?')),
 		//array('label'=>'Manage Lessons', 'url'=>array('admin')),
 	);
 }

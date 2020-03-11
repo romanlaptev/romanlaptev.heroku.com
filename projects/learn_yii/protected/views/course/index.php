@@ -12,13 +12,13 @@ font-size: 75%;
 }
 </style>
 <div class="list-courses">
-<h3>список учебных курсов</h3>
+<h3>List of courses</h3>
 	<div>
 <p>
 	<?php
 if ( !Yii::app()->user->isGuest )
 {
-	echo CHtml::link("Добавить курс", array("course/create") );
+	echo CHtml::link("add course", array("course/create") );
 }
 	?>
 </p>
@@ -48,8 +48,9 @@ if ( !Yii::app()->user->isGuest )
 ?>
 			<div  class="column action right">
 <?php
-	echo CHtml::link( "редактировать", array("course/update",'id'=>$course->course_id), array('target' => '', 'class' => 'action-link') );
-	echo CHtml::link( "удалить курс", array("course/delete",'id'=>$course->course_id), array('target' => '', 'class' => 'action-link') );
+	echo CHtml::link( "edit", array("course/update",'id'=>$course->course_id), array('target' => '', 'class' => 'action-link') );
+echo " | ";
+	echo CHtml::link( "delete course", array("course/delete",'id'=>$course->course_id), array('target' => '', 'class' => 'action-link') );
 ?>
 			</div>
 <?php
@@ -63,7 +64,7 @@ if ( !Yii::app()->user->isGuest )
 ?>
 		</div>
 <?php
-	}
+	}//next
 ?>
 	</div>
   

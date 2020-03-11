@@ -16,7 +16,7 @@ $this->menu=array(
 */
 ?>
 
-<h1>Редактировать урок "<?php echo $model->title; ?>"</h1>
+<h1>Edit lesson "<?php echo $model->title; ?>"</h1>
 
 <?php 
 $this->renderPartial('_form', array('model'=>$model, 'course'=>$course, 'courses_list'=>$courses_list) ); 
