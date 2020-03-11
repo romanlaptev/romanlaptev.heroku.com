@@ -4,7 +4,7 @@ ini_set('display_errors', 1);
 
 // change the following paths if necessary
 //$yii=dirname(__FILE__).'/../../var/www/php/yii/framework/yii.php';
-$yii=dirname(__FILE__).'/../../frameworks/yii/framework/yii.php';
+$yii='../../php/frameworks/yii/framework/yii.php';
 
 $config=dirname(__FILE__).'/protected/config/main.php';
 

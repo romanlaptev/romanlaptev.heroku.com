@@ -47,11 +47,12 @@ return array(
 			),
 		),
 		*/
-/*
+
 		'db'=>array(
-			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../data/testdrive.db',
+			'connectionString' => 'sqlite:'.dirname(__FILE__).'/../../data/learn.sqlite',
 		),
-*/
+
+/*
 		// uncomment the following to use a MySQL database
 		'db'=>array(
 			'connectionString' => 'mysql:host=localhost;dbname=learn',
@@ -60,6 +61,8 @@ return array(
 			'password' => 'master',
 			'charset' => 'utf8',
 		),
+*/
+
 /*
 		'db'=>array(
 			'connectionString' => 'mysql:host=sql104.500mb.net;dbname=runet_10193869_learn',
