@@ -1,96 +1,188 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xml_data date-update="17.03.2020, 06:06">
+<xml_data date-update="18.03.2020, 13:48">
 	<courses>
 		<course id="1">
-			<title>Введение в Javascript</title>
-			<description>Hexlet University....</description>
+			<title>Javascript</title>
+			<description><div>Links:
+<ul>
+<li><a href="https://www.youtube.com/user/iliakan/playlists" target="_blank" >JavaScript.ru - YouTube</a></li>
+</ul>
+</div></description>
 		</course>
 		<course id="2">
-			<title>Уроки Bootstrap верстки</title>
-			<description>WebDesign Master</description>
+			<title>CSS</title>
+			<description>
+</description>
 		</course>
 		<course id="6">
 			<title>Node JS</title>
-			<description>server javascript</description>
-		</course>
-		<course id="7">
-			<title>Фреймворк Yii2 с Нуля до Профи. Часть 1</title>
-			<description>Степан Куштуев
-https://www.youtube.com/playlist?list=PL9XdPIVgBVVmYWGF3BFZwHu4Fz9fa6GJd
-</description>
+			<description></description>
 		</course>
 		<course id="8">
 			<title>PHP</title>
 			<description></description>
 		</course>
+		<course id="9">
+			<title>Android</title>
+			<description></description>
+		</course>
+		<course id="10">
+			<title>Blender 3D</title>
+			<description>3D моделирование</description>
+		</course>
+		<course id="11">
+			<title>C#</title>
+			<description></description>
+		</course>
+		<course id="12">
+			<title>JAVA</title>
+			<description><div>Links:
+<ul>
+<li><a href="https://www.youtube.com/playlist?list=PLY4rE9dstrJzKUZHdGgECOjJLaZBcUdCC" target="_blank">Введение в Java</a></li>
+</ul>
+</div></description>
+		</course>
+		<course id="13">
+			<title>C++</title>
+			<description><div>Links:
+<ul>
+<li><a href="https://www.youtube.com/playlist?list=PLY4rE9dstrJzGC_1IlAwuY806WasvTIAJ" target="_blank">Основы C++</a></li>
+</ul>
+</div></description>
+		</course>
 	</courses>
 	<lessons>
-		<lesson id="16" course_id="1">
+		<lesson id="1" course_id="1">
 			<title>JavaScript, лекция 3 Функции. Замыкания</title>
 			<description>Hexlet University</description>
 			<url>https://www.youtube.com/embed/r-W_BUG3EbI</url>
 		</lesson>
-		<lesson id="17" course_id="1">
+		<lesson id="2" course_id="1">
 			<title>JavaScript, лекция 4. Наследование</title>
 			<description>Hexlet University</description>
 			<url>https://www.youtube.com/embed/-wY3IYmQzzc</url>
 		</lesson>
-		<lesson id="18" course_id="1">
+		<lesson id="3" course_id="1">
 			<title>JavaScript, лекция 6 Регулярные выражения</title>
 			<description>Hexlet University</description>
 			<url>https://www.youtube.com/embed/VCgAvj9meHg</url>
 		</lesson>
-		<lesson id="19" course_id="1">
+		<lesson id="4" course_id="1">
 			<title>JavaScript, Сравнения, var, eval и заключение</title>
 			<description>Hexlet University</description>
 			<url>https://www.youtube.com/embed/-jZS8p5_quo</url>
 		</lesson>
-		<lesson id="20" course_id="2">
-			<title>Основы и установка</title>
-			<description>Уроки Bootstrap верстки</description>
+		<lesson id="5" course_id="2">
+			<title>Уроки Bootstrap верстки. Основы и установка</title>
+			<description>WebDesign Master</description>
 			<url>https://www.youtube.com/embed/TZSY6rDUDrE</url>
 		</lesson>
-		<lesson id="21" course_id="0">
+		<lesson id="6" course_id="0">
 			<title>Bootstrap: Как создаются современные адаптивные сайты</title>
 			<description>WebDesign Master</description>
 			<url>https://www.youtube.com/embed/-wcy1Bsq-Ls</url>
 		</lesson>
-		<lesson id="22" course_id="2">
-			<title>Верстка при помощи сеток (Grid-system)</title>
-			<description>Уроки Bootstrap верстки</description>
+		<lesson id="7" course_id="2">
+			<title>Уроки Bootstrap верстки. Верстка при помощи сеток (Grid-system)</title>
+			<description>WebDesign Master</description>
 			<url>https://www.youtube.com/embed/-A5LxeKi3Aw</url>
 		</lesson>
-		<lesson id="23" course_id="2">
-			<title>Система сеток и адаптивное меню</title>
-			<description>Уроки Bootstrap верстки</description>
+		<lesson id="8" course_id="2">
+			<title>Уроки Bootstrap верстки. Система сеток и адаптивное меню</title>
+			<description>WebDesign Master</description>
 			<url>https://www.youtube.com/embed/EgMIr5gc-sI</url>
 		</lesson>
-		<lesson id="24" course_id="6">
+		<lesson id="9" course_id="6">
 			<title>Node JS - Быстрый курс за 1 час</title>
 			<description></description>
 			<url>https://www.youtube.com/embed/3aGSqasVPsI</url>
 		</lesson>
-		<lesson id="25" course_id="7">
-			<title>Урок 2. Установка фреймворка</title>
-			<description></description>
+		<lesson id="10" course_id="8">
+			<title>Фреймворк Yii2 с Нуля до Профи. Часть 1. Урок 2. Установка фреймворка</title>
+			<description>Степан Куштуев <a href="https://www.youtube.com/playlist?list=PL9XdPIVgBVVmYWGF3BFZwHu4Fz9fa6GJd" target="blank"><playlist/a></description>
 			<url>https://www.youtube.com/embed/Tme8P5JbdSw</url>
 		</lesson>
-		<lesson id="26" course_id="8">
+		<lesson id="11" course_id="8">
 			<title>Обзор и установка PHP фреймворка Codeigniter [GeekBrains]</title>
 			<description></description>
 			<url>https://www.youtube.com/embed/Dr5Co1SXScY</url>
 		</lesson>
-		<lesson id="27" course_id="8">
+		<lesson id="12" course_id="8">
 			<title>YII, Урок 21 Авторизация</title>
 			<description>владимир чапурин</description>
 			<url>https://www.youtube.com/embed/-S5x1cw5tcQ</url>
 		</lesson>
-		<lesson id="28" course_id="8">
+		<lesson id="13" course_id="8">
 			<title>Реализация паттернов ООП в PHP</title>
 			<description>Singleton
 Adaper
 ....</description>
 			<url>https://www.youtube.com/embed/vJAt-7VCz80</url>
+		</lesson>
+		<lesson id="14" course_id="8">
+			<title>Пространства имен в PHP</title>
+			<description>WebForMySelf</description>
+			<url>https://www.youtube.com/embed/Ajmn6afKsYM</url>
+		</lesson>
+		<lesson id="15" course_id="1">
+			<title>Web Workers</title>
+			<description>.getInstance
+Web Workers - HTML5 API, позволяющий выполнять JavaScript-код в нескольких потоках.</description>
+			<url>https://www.youtube.com/embed/t_hrcpT6oYQ</url>
+		</lesson>
+		<lesson id="16" course_id="1">
+			<title>Set & WeakSet</title>
+			<description>.getInstance
+Типы коллекций Set и WeakSet представляют собой множество — набор уникальных значений.</description>
+			<url>https://www.youtube.com/embed/aebSmg1DlN0</url>
+		</lesson>
+		<lesson id="17" course_id="9">
+			<title>Разработка на Android. Введение | Технострим</title>
+			<description>Лекция читается в рамках образовательного проекта "Технотрек Mail.ru Group" при МФТИ
+Официальный канал образовательных проектов Mail.Ru Group</description>
+			<url>https://www.youtube.com/embed/pIj-Gp6COEc</url>
+		</lesson>
+		<lesson id="18" course_id="9">
+			<title>Инструменты Android разработчика. Genymotion как альтернатива эмулятору Eclipse</title>
+			<description>Start Android
+</description>
+			<url>https://www.youtube.com/embed/BgAgNBI498Y</url>
+		</lesson>
+		<lesson id="19" course_id="10">
+			<title>Blender 3D моделирование / Урок #4 - Режим редактирования (введение)</title>
+			<description>Гоша Дударь
+</description>
+			<url>https://www.youtube.com/embed/icHLOFjy6Qs</url>
+		</lesson>
+		<lesson id="20" course_id="2">
+			<title>Flexbox - полезные примеры</title>
+			<description>Дмитрий Лаврик
+Сетка на основе флексбоксов - http://smartgrid.dmitrylavrik.ru/</description>
+			<url>https://www.youtube.com/embed/KkH_i4nw_Bs</url>
+		</lesson>
+		<lesson id="21" course_id="9">
+			<title>Разработка на Android. Многопоточность в приложениях | Технострим</title>
+			<description>Официальный канал образовательных проектов Mail.Ru Group</description>
+			<url>https://www.youtube.com/embed/xyf8sK6X_lg</url>
+		</lesson>
+		<lesson id="22" course_id="11">
+			<title>Видео курс C# Базовый. Урок 1. Введение в ООП. Классы и объекты</title>
+			<description>ITVDN
+</description>
+			<url>https://www.youtube.com/embed/x0udrpe_gZE</url>
+		</lesson>
+		<lesson id="23" course_id="6">
+			<title>Grunt - Обзор системы сборки</title>
+			<description>Sorax
+</description>
+			<url>https://www.youtube.com/embed/Cxo1vVI9--E</url>
+		</lesson>
+		<lesson id="24" course_id="12">
+			<title>Как создать web-приложение на Java, часть 1. Basic structure</title>
+			<description>Sigma Software
+Поэтапное создание web-приложения на Spring Framework. Примеры основных приемов для быстрого старта.
+</description>
+			<url>https://www.youtube.com/embed/G0gN18Ws5Rc</url>
 		</lesson>
 	</lessons>
 </xml_data>
