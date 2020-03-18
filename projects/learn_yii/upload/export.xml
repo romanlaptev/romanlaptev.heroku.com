@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xml_data date-update="18.03.2020, 13:48">
+<xml_data date-update="18.03.2020, 13:54">
 	<courses>
 		<course id="1">
 			<title>Javascript</title>
@@ -99,7 +99,7 @@
 		</lesson>
 		<lesson id="10" course_id="8">
 			<title>Фреймворк Yii2 с Нуля до Профи. Часть 1. Урок 2. Установка фреймворка</title>
-			<description>Степан Куштуев <a href="https://www.youtube.com/playlist?list=PL9XdPIVgBVVmYWGF3BFZwHu4Fz9fa6GJd" target="blank"><playlist/a></description>
+			<description>Степан Куштуев <a href="https://www.youtube.com/playlist?list=PL9XdPIVgBVVmYWGF3BFZwHu4Fz9fa6GJd" target="blank">playlist</a></description>
 			<url>https://www.youtube.com/embed/Tme8P5JbdSw</url>
 		</lesson>
 		<lesson id="11" course_id="8">
@@ -131,7 +131,7 @@ Web Workers - HTML5 API, позволяющий выполнять JavaScript-к
 			<url>https://www.youtube.com/embed/t_hrcpT6oYQ</url>
 		</lesson>
 		<lesson id="16" course_id="1">
-			<title>Set & WeakSet</title>
+			<title>Set &amp; WeakSet</title>
 			<description>.getInstance
 Типы коллекций Set и WeakSet представляют собой множество — набор уникальных значений.</description>
 			<url>https://www.youtube.com/embed/aebSmg1DlN0</url>
