@@ -13,7 +13,7 @@ INSERT INTO `courses` (`course_id`, `title`, `description`) VALUES
 CREATE TABLE IF NOT EXISTS `lessons` (
   `lesson_id` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   `course_id` INTEGER(6) DEFAULT NULL,
-  `url` VARCHAR(255) NOT NULL,
+  `url` VARCHAR(255) NOT NULL DEFAULT 'https://www.youtube.com/embed/code_video',
   `title` VARCHAR(255) NOT NULL DEFAULT 'урок',
   `description` text
 );

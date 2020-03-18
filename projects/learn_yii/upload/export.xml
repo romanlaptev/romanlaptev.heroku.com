@@ -1,85 +1,96 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xml_data date-update="14.06.2015, 16:08">
+<xml_data date-update="17.03.2020, 06:06">
 	<courses>
 		<course id="1">
-			<title>Javascript</title>
-			<description>Hexlet University</description>
+			<title>Введение в Javascript</title>
+			<description>Hexlet University....</description>
 		</course>
 		<course id="2">
-			<title>Yii framework</title>
-			<description>Чапурин Вл. Yii framework. Основной курс</description>
+			<title>Уроки Bootstrap верстки</title>
+			<description>WebDesign Master</description>
 		</course>
-		<course id="4">
-			<title>HTML-верстка на Bootstrap</title>
+		<course id="6">
+			<title>Node JS</title>
+			<description>server javascript</description>
+		</course>
+		<course id="7">
+			<title>Фреймворк Yii2 с Нуля до Профи. Часть 1</title>
+			<description>Степан Куштуев
+https://www.youtube.com/playlist?list=PL9XdPIVgBVVmYWGF3BFZwHu4Fz9fa6GJd
+</description>
+		</course>
+		<course id="8">
+			<title>PHP</title>
 			<description></description>
 		</course>
 	</courses>
 	<lessons>
-		<lesson id="1" course_id="1">
-			<title>лекция 3 Функции. Замыкания</title>
+		<lesson id="16" course_id="1">
+			<title>JavaScript, лекция 3 Функции. Замыкания</title>
 			<description>Hexlet University</description>
-			<url>http://mycomp/video/video_lessons/js_HexletUniversity/JavaScript,%20%D0%BB%D0%B5%D0%BA%D1%86%D0%B8%D1%8F%203%20%D0%A4%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8.%20%D0%97%D0%B0%D0%BC%D1%8B%D0%BA%D0%B0%D0%BD%D0%B8%D1%8F.mp4</url>
+			<url>https://www.youtube.com/embed/r-W_BUG3EbI</url>
 		</lesson>
-		<lesson id="2" course_id="1">
-			<title>лекция 4. Наследование</title>
+		<lesson id="17" course_id="1">
+			<title>JavaScript, лекция 4. Наследование</title>
 			<description>Hexlet University</description>
-			<url>http://mycomp/video/video_lessons/js_HexletUniversity/JavaScript, лекция 4 Наследование.mp4</url>
+			<url>https://www.youtube.com/embed/-wY3IYmQzzc</url>
 		</lesson>
-		<lesson id="5" course_id="1">
-			<title>лекция 6 Регулярные выражения</title>
+		<lesson id="18" course_id="1">
+			<title>JavaScript, лекция 6 Регулярные выражения</title>
 			<description>Hexlet University</description>
-			<url>http://mycomp/video/video_lessons/js_HexletUniversity/JavaScript, лекция 6 Регулярные выражения.mp4</url>
+			<url>https://www.youtube.com/embed/VCgAvj9meHg</url>
 		</lesson>
-		<lesson id="6" course_id="1">
-			<title>лекция 7 Сравнения, var, eval и заключение</title>
+		<lesson id="19" course_id="1">
+			<title>JavaScript, Сравнения, var, eval и заключение</title>
 			<description>Hexlet University</description>
-			<url>http://mycomp/video/video_lessons/js_HexletUniversity/JavaScript, лекция 7 Сравнения, var, eval и заключение.mp4</url>
+			<url>https://www.youtube.com/embed/-jZS8p5_quo</url>
 		</lesson>
-		<lesson id="7" course_id="4">
-			<title>Подключение Bootstrap</title>
-			<description></description>
-			<url>http://mycomp/video/video_lessons/HTML-верстка на Bootstrap/1 Подключение Bootstrap.mp4</url>
+		<lesson id="20" course_id="2">
+			<title>Основы и установка</title>
+			<description>Уроки Bootstrap верстки</description>
+			<url>https://www.youtube.com/embed/TZSY6rDUDrE</url>
 		</lesson>
-		<lesson id="8" course_id="0">
+		<lesson id="21" course_id="0">
 			<title>Bootstrap: Как создаются современные адаптивные сайты</title>
-			<description>test2</description>
+			<description>WebDesign Master</description>
 			<url>https://www.youtube.com/embed/-wcy1Bsq-Ls</url>
 		</lesson>
-		<lesson id="9" course_id="4">
-			<title>Container и Row - что это</title>
-			<description></description>
-			<url>http://mycomp/video/video_lessons/HTML-верстка на Bootstrap/2 Container и Row - что это.mp4</url>
+		<lesson id="22" course_id="2">
+			<title>Верстка при помощи сеток (Grid-system)</title>
+			<description>Уроки Bootstrap верстки</description>
+			<url>https://www.youtube.com/embed/-A5LxeKi3Aw</url>
 		</lesson>
-		<lesson id="10" course_id="4">
-			<title>Navbar - разметка навигации для сайта</title>
-			<description></description>
-			<url>http://mycomp/video/video_lessons/HTML-верстка на Bootstrap/3 Navbar - разметка навигации для сайта.mp4</url>
+		<lesson id="23" course_id="2">
+			<title>Система сеток и адаптивное меню</title>
+			<description>Уроки Bootstrap верстки</description>
+			<url>https://www.youtube.com/embed/EgMIr5gc-sI</url>
 		</lesson>
-		<lesson id="11" course_id="2">
-			<title>урок 1</title>
+		<lesson id="24" course_id="6">
+			<title>Node JS - Быстрый курс за 1 час</title>
 			<description></description>
-			<url>http://mycomp/video/video_lessons/Yii framework/01.mp4</url>
+			<url>https://www.youtube.com/embed/3aGSqasVPsI</url>
 		</lesson>
-		<lesson id="12" course_id="2">
-			<title>урок 2</title>
+		<lesson id="25" course_id="7">
+			<title>Урок 2. Установка фреймворка</title>
 			<description></description>
-			<url>http://mycomp/video/video_lessons/Yii framework/02.mp4</url>
+			<url>https://www.youtube.com/embed/Tme8P5JbdSw</url>
 		</lesson>
-		<lesson id="13" course_id="2">
-			<title>урок 3</title>
+		<lesson id="26" course_id="8">
+			<title>Обзор и установка PHP фреймворка Codeigniter [GeekBrains]</title>
 			<description></description>
-			<url>http://mycomp/video/video_lessons/Yii framework/03.mp4</url>
+			<url>https://www.youtube.com/embed/Dr5Co1SXScY</url>
 		</lesson>
-		<lesson id="14" course_id="2">
-			<title>урок 04. Controllers</title>
-			<description></description>
-			<url>http://mycomp/video/video_lessons/Yii framework/04_Controllers.mp4</url>
+		<lesson id="27" course_id="8">
+			<title>YII, Урок 21 Авторизация</title>
+			<description>владимир чапурин</description>
+			<url>https://www.youtube.com/embed/-S5x1cw5tcQ</url>
 		</lesson>
-		<lesson id="15" course_id="2">
-			<title>урок 05. Model</title>
-			<description></description>
-			<url>http://mycomp/video/video_lessons/Yii framework/05_Model.mp4</url>
+		<lesson id="28" course_id="8">
+			<title>Реализация паттернов ООП в PHP</title>
+			<description>Singleton
+Adaper
+....</description>
+			<url>https://www.youtube.com/embed/vJAt-7VCz80</url>
 		</lesson>
-
 	</lessons>
 </xml_data>
