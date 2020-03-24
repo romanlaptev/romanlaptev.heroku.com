@@ -48,7 +48,7 @@ class ThumbnailImage{
 		header("Content-type: $this->mimetype");
 		switch($this->imageproperties[2]){
 			case IMAGETYPE_JPEG:
-				imagejpeg($this->image,"",$this->quality);
+				imagejpeg($this->image, null, $this->quality);
 				break;
 			case IMAGETYPE_GIF:
 				imagegif($this->image);

@@ -1,17 +1,13 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html>
 <head>
-<title>Directory Navigation</title>
-<meta name="description" content="" />
-<meta name="keywords" content="" />
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<meta name="author" content="Peter Lavin" />
-<meta http-equiv="Content-Language" content="EN" />
-<meta name="copyright" content="copyright softcoded.com" />
-<meta name="robots" content="follow, index" />
-<meta name="abstract" content="" />
-<!--local style elements here-->
+<title>Graphics Demo</title>
+	<meta charset="utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">	
+
 <style type="text/css">
 		div.navigator{
 			font-size:smaller;
@@ -45,18 +41,23 @@
 </style>
 </head>
 <body>
+	<div class='container'>
+		<h3>Graphics demo, build thumbnails (use PHP GD)</h3>
 <?php
-/* final code for use with directoritems class after navigator
-is created */
+error_reporting(E_ALL|E_STRICT);
+ini_set('display_errors', 1);
+
 require 'PageNavigator.php';
 require 'DirectoryItems.php';
-//max per page
-define("PERPAGE", 5);
-//name of first parameter in query string
-define("OFFSET", "offset");
+
+
+define("PERPAGE", 5);//max per page
+define("OFFSET", "offset");//name of first parameter in query string
+
 /*get query string - name should be same as first parameter name
 passed to the page navigator class*/
 $offset=@$_GET[OFFSET];
+
 //check variable
 if (!isset($offset)){
 	$totaloffset=0;
@@ -68,28 +69,29 @@ if (!isset($offset)){
 $di =& new DirectoryItems("graphics");
 $di->imagesOnly();
 $di->naturalCaseInsensitiveOrder();
+
 //get portion of array
-$filearray = $di->getFileArraySlice($totaloffset, PERPAGE);
-echo "<div style=\"text-align:center;\">";
-echo "Click the file name to view full-sized version.<br />";
+$filearray = $di->getFileArraySlice( $totaloffset, PERPAGE );
 $path = "";
-//specify size of thumbnail
-$size = 100;	
+$size = 100;	//specify size of thumbnail
+
 //use SEPARATOR
+echo "<div class='row'>";
 foreach ($filearray as $key => $value){
 	$path = "{$di->getDirectoryName()}/$key";	
-	/*errors in getthumb or in class will result in broken links
-	- error will not display*/
-	echo "<img src=\"getthumb.php?path=$path&amp;size=$size\" ".
-	  "style=\"border:1px solid black;margin-top:20px;\" ".
-	  "alt=\"$value\" /><br />\n";
-	echo "<a href=\"$path\" target=\"_blank\" >";
-	echo "Title: $value</a> <br />\n";
-}
-echo "</div><br />";
+	echo "<div class='thumbnail col-xs-2 col-sm-2 col-md-2 col-lg-2'>";
+	echo "<a href='$path' target='_blank'>";
+	echo "<img src='getthumb.php?path=$path&amp;size=$size' alt='$value' /></a>";
+	echo "<div class='img-caption text-center'>Title: $value</div>\n";
+	echo "</div>";
+}//next
+echo "</div>";
+
 $pagename = basename($_SERVER["PHP_SELF"]);
 $totalcount = $di->getCount();
 $numpages = ceil($totalcount/PERPAGE);
+
+echo "<div class='row'>";
 //create if needed
 if($numpages > 1){
   //create navigator
@@ -98,6 +100,8 @@ if($numpages > 1){
 	$nav->setFirstParamName(OFFSET);
   echo $nav->getNavigator();
 }
+echo "</div>";
 ?>
+	</div><!-- end container -->
 </body>
 </html>
