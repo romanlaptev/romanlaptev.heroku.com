@@ -1,0 +1,5 @@
+.kate-swp
+#application.log
+protected/runtime/*
+assets/*
+
