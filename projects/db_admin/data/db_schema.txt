@@ -1,0 +1,385 @@
+- node.type сделать связь с таблицей
+node_type
+	type("note", "book", "video", "music")
+
+INSERT INTO content_type(name) VALUES('page');
+INSERT INTO content_type(name) VALUES('note');
+INSERT INTO content_type(name) VALUES('book');
+INSERT INTO content_type(name) VALUES('video');
+INSERT INTO content_type(name) VALUES('music');
+
+============================================= CATEGORY, BOOk, MENU
+node
+	node.title = "notes"
+	node.nid = 437
+	
+book
+	book.nid = 437
+	book.mlid = 1585
+	book.bid = 437
+	
+menu_links
+	menu_links.mlid = 1585
+	menu_links.plid = 0// no parent
+
+--------------
+node
+	node.title = "linux_faq"
+	node.nid = 739
+
+book
+	book.nid = 739
+	book.mlid = 2413
+	book.bid = 437
+
+menu_links
+	menu_links.mlid = 2413
+	menu_links.plid = 1585//parent - "notes"
+
+------------------ import caterories
+<node title="notes" nid="437" mlid="1585" plid="0" created="10-Mar-2012 13:06:30" changed="14-Dec-2018 21:28:18" weight="0">
+	<node title="linux_faq" nid="739" mlid="2413" plid="1585" created="31-Dec-2012 09:45:37" changed="30-May-2015 01:51:47" weight="-15">
+		<body_value>ttesst2</body_value>
+			<node title="APT, создать локальный репозитарий" nid="803" mlid="2551" plid="2413" created="08-May-2013 12:13:34" changed="01-May-2018 19:33:41" weight="0">
+
+content_categories
+	content_id, ()
+	parent_id, (plid)
+	child_id, (mlid)
+	
+============================================= TAXONOMY, TAGS, TERMINS
+taxonomy_vocabulary
+	vid	= 11
+	name = "notes"
+
+taxonomy_term_data
+	tid = 137
+	vid = 11
+	name = "program"
+	
+	tid = 140
+	vid = 11
+	name = "php"
+	
+taxonomy_term_hierarchy
+	tid = 137
+	parent = 0
+
+	tid = 140
+	parent = 137
+совместить таблицу с taxonomy_term_data!!!!
+
+
+taxonomy_index
+	nid = 729 (node.title = "php")
+	tid = 137
+	
+	nid = 729 (node.title = "php")
+	tid = 140
+отдельная таблица для связи заметок и терминов нужна из-за возможности
+привязки заметки к нескольким терминам
+тип связи ОДИН ко МНОГИМ (или МНОГИЕ ко МНОГИМ ?)
+	
+может ли термин быть связан с несколькими родителями,
+т.е. входить в несклько групп одновременно?
+
+//===========================================
+CREATE TABLE IF NOT EXISTS `notes` (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+`author` varchar(20) NOT NULL,
+`title` varchar(255) default "no title",
+`text_message` text NOT NULL default "",
+`client_date` DATETIME NULL,
+`server_date` DATETIME NULL,
+`ip` varchar( 20 ) default "",
+PRIMARY KEY (`id`)
+) DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+//----------
+CREATE TABLE `categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11),
+  PRIMARY KEY (`id`)
+);
+
+
+======================================== drupal
+term_data
+term_data.tid,
+term_data.name,
+term_data.description,
+term_data.weight,
+
+CREATE TABLE `taxonomy_term_data` (
+  `tid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key: Unique term ID.',
+  `vid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The taxonomy_vocabulary.vid of the vocabulary to which the term is assigned.',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT 'The term name.',
+  `description` longtext COMMENT 'A description of the term.',
+  `format` varchar(255) DEFAULT NULL COMMENT 'The filter_format.format of the description.',
+  `weight` int(11) NOT NULL DEFAULT '0' COMMENT 'The weight of this term in relation to other terms.',
+  PRIMARY KEY (`tid`),
+  KEY `taxonomy_tree` (`vid`,`weight`,`name`),
+  KEY `vid_name` (`vid`,`name`),
+  KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=116 DEFAULT CHARSET=utf8 COMMENT='Stores term information.';
+
+
+CREATE TABLE `taxonomy_term_hierarchy` (
+  `tid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Primary Key: The taxonomy_term_data.tid of the term.',
+  `parent` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Primary Key: The taxonomy_term_data.tid of the termвЂ™s parent. 0 indicates no parent.',
+  PRIMARY KEY (`tid`,`parent`),
+  KEY `parent` (`parent`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores the hierarchical relationship between terms.';
+
+CREATE TABLE `taxonomy_index` (
+  `nid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The node.nid this record tracks.',
+  `tid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The term ID.',
+  `sticky` tinyint(4) DEFAULT '0' COMMENT 'Boolean indicating whether the node is sticky.',
+  `created` int(11) NOT NULL DEFAULT '0' COMMENT 'The Unix timestamp when the node was created.',
+  KEY `term_node` (`tid`,`sticky`,`created`),
+  KEY `nid` (`nid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Maintains denormalized information about node/term...';
+
+
+CREATE TABLE `taxonomy_vocabulary` (
+  `vid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Primary Key: Unique vocabulary ID.',
+  `name` varchar(255) NOT NULL DEFAULT '' COMMENT 'Name of the vocabulary.',
+  `machine_name` varchar(255) NOT NULL DEFAULT '' COMMENT 'The vocabulary machine name.',
+  `description` longtext COMMENT 'Description of the vocabulary.',
+  `hierarchy` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'The type of hierarchy allowed within the vocabulary. (0 = disabled, 1 = single, 2 = multiple)',
+  `module` varchar(255) NOT NULL DEFAULT '' COMMENT 'The module which created the vocabulary.',
+  `weight` int(11) NOT NULL DEFAULT '0' COMMENT 'The weight of this vocabulary in relation to other vocabularies.',
+  PRIMARY KEY (`vid`),
+  UNIQUE KEY `machine_name` (`machine_name`),
+  KEY `list` (`weight`,`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COMMENT='Stores vocabulary information.';
+
+
+
+CREATE TABLE `menu_links` (
+  `menu_name` varchar(32) NOT NULL DEFAULT '' COMMENT 'The menu name. All links with the same menu name (such as вЂ™navigationвЂ™) are part of the same menu.',
+  `mlid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'The menu link ID (mlid) is the integer primary key.',
+  `plid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The parent link ID (plid) is the mlid of the link above in the hierarchy, or zero if the link is at the top level in its menu.',
+  `link_path` varchar(255) NOT NULL DEFAULT '' COMMENT 'The Drupal path or external path this link points to.',
+  `router_path` varchar(255) NOT NULL DEFAULT '' COMMENT 'For links corresponding to a Drupal path (external = 0), this connects the link to a menu_router.path for joins.',
+  `link_title` varchar(255) NOT NULL DEFAULT '' COMMENT 'The text displayed for the link, which may be modified by a title callback stored in menu_router.',
+  `options` blob COMMENT 'A serialized array of options to be passed to the url() or l() function, such as a query string or HTML attributes.',
+  `module` varchar(255) NOT NULL DEFAULT 'system' COMMENT 'The name of the module that generated this link.',
+  `hidden` smallint(6) NOT NULL DEFAULT '0' COMMENT 'A flag for whether the link should be rendered in menus. (1 = a disabled menu item that may be shown on admin screens, -1 = a menu callback, 0 = a normal, visible link)',
+  `external` smallint(6) NOT NULL DEFAULT '0' COMMENT 'A flag to indicate if the link points to a full URL starting with a protocol, like http:// (1 = external, 0 = internal).',
+  `has_children` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Flag indicating whether any links have this link as a parent (1 = children exist, 0 = no children).',
+  `expanded` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Flag for whether this link should be rendered as expanded in menus - expanded links always have their child links displayed, instead of only when the link is in the active trail (1 = expanded, 0 = not expanded)',
+  `weight` int(11) NOT NULL DEFAULT '0' COMMENT 'Link weight among links in the same menu at the same depth.',
+  `depth` smallint(6) NOT NULL DEFAULT '0' COMMENT 'The depth relative to the top level. A link with plid == 0 will have depth == 1.',
+  `customized` smallint(6) NOT NULL DEFAULT '0' COMMENT 'A flag to indicate that the user has manually created or edited the link (1 = customized, 0 = not customized).',
+  `p1` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The first mlid in the materialized path. If N = depth, then pN must equal the mlid. If depth > 1 then p(N-1) must equal the plid. All pX where X > depth must equal zero. The columns p1 .. p9 are also called the parents.',
+  `p2` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The second mlid in the materialized path. See p1.',
+  `p3` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The third mlid in the materialized path. See p1.',
+  `p4` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The fourth mlid in the materialized path. See p1.',
+  `p5` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The fifth mlid in the materialized path. See p1.',
+  `p6` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The sixth mlid in the materialized path. See p1.',
+  `p7` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The seventh mlid in the materialized path. See p1.',
+  `p8` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The eighth mlid in the materialized path. See p1.',
+  `p9` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The ninth mlid in the materialized path. See p1.',
+  `updated` smallint(6) NOT NULL DEFAULT '0' COMMENT 'Flag that indicates that this link was generated during the update from Drupal 5.',
+  PRIMARY KEY (`mlid`),
+  KEY `path_menu` (`link_path`(128),`menu_name`),
+  KEY `menu_plid_expand_child` (`menu_name`,`plid`,`expanded`,`has_children`),
+  KEY `menu_parents` (`menu_name`,`p1`,`p2`,`p3`,`p4`,`p5`,`p6`,`p7`,`p8`,`p9`),
+  KEY `router_path` (`router_path`(128))
+) ENGINE=InnoDB AUTO_INCREMENT=620 DEFAULT CHARSET=utf8 COMMENT='Contains the individual links within a menu.';
+
+
+CREATE TABLE `book` (
+  `mlid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The book pageвЂ™s menu_links.mlid.',
+  `nid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The book pageвЂ™s node.nid.',
+  `bid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The book ID is the book.nid of the top-level page.',
+  PRIMARY KEY (`mlid`),
+  UNIQUE KEY `nid` (`nid`),
+  KEY `bid` (`bid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stores book outline information. Uniquely connects each...';
+
+
+node
+node.nid,
+node.title
+node.type, 
+node.created, 
+node.changed, 
+node.status,
+
+CREATE TABLE `node` (
+  `nid` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'The primary identifier for a node.',
+  `vid` int(10) unsigned DEFAULT NULL COMMENT 'The current node_revision.vid version identifier.',
+  `type` varchar(32) NOT NULL DEFAULT '' COMMENT 'The node_type.type of this node.',
+  `language` varchar(12) NOT NULL DEFAULT '' COMMENT 'The languages.language of this node.',
+  `title` varchar(255) NOT NULL DEFAULT '' COMMENT 'The title of this node, always treated as non-markup plain text.',
+  `uid` int(11) NOT NULL DEFAULT '0' COMMENT 'The users.uid that owns this node; initially, this is the user that created it.',
+  `status` int(11) NOT NULL DEFAULT '1' COMMENT 'Boolean indicating whether the node is published (visible to non-administrators).',
+  `created` int(11) NOT NULL DEFAULT '0' COMMENT 'The Unix timestamp when the node was created.',
+  `changed` int(11) NOT NULL DEFAULT '0' COMMENT 'The Unix timestamp when the node was most recently saved.',
+  `comment` int(11) NOT NULL DEFAULT '0' COMMENT 'Whether comments are allowed on this node: 0 = no, 1 = closed (read only), 2 = open (read/write).',
+  `promote` int(11) NOT NULL DEFAULT '0' COMMENT 'Boolean indicating whether the node should be displayed on the front page.',
+  `sticky` int(11) NOT NULL DEFAULT '0' COMMENT 'Boolean indicating whether the node should be displayed at the top of lists in which it appears.',
+  `tnid` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'The translation set id for this node, which equals the node id of the source post in each set.',
+  `translate` int(11) NOT NULL DEFAULT '0' COMMENT 'A boolean indicating whether this translation page needs to be updated.',
+  PRIMARY KEY (`nid`),
+  UNIQUE KEY `vid` (`vid`),
+  KEY `node_changed` (`changed`),
+  KEY `node_created` (`created`),
+  KEY `node_frontpage` (`promote`,`status`,`sticky`,`created`),
+  KEY `node_status_type` (`status`,`type`,`nid`),
+  KEY `node_title_type` (`title`,`type`(4)),
+  KEY `node_type` (`type`(4)),
+  KEY `uid` (`uid`),
+  KEY `tnid` (`tnid`),
+  KEY `translate` (`translate`)
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8 COMMENT='The base table for nodes.';
+
+CREATE TABLE node_type ( 
+type VARCHAR(32) NOT NULL, 
+name VARCHAR(255) NOT NULL DEFAULT '', 
+base VARCHAR(255) NOT NULL, 
+module VARCHAR(255) NOT NULL, 
+description TEXT NOT NULL, 
+help TEXT NOT NULL, 
+has_title INTEGER NOT NULL CHECK (has_title>= 0), 
+title_label VARCHAR(255) NOT NULL DEFAULT '', 
+custom INTEGER NOT NULL DEFAULT 0, 
+modified INTEGER NOT NULL DEFAULT 0, 
+locked INTEGER NOT NULL DEFAULT 0, 
+disabled INTEGER NOT NULL DEFAULT 0, 
+orig_type VARCHAR(255) NOT NULL DEFAULT '', 
+PRIMARY KEY (type) 
+)
+
+$_vars["sql"]["getBook"] = "
+SELECT menu_links.mlid FROM menu_links WHERE 
+menu_links.menu_name IN 
+(SELECT menu_name FROM menu_links WHERE 
+link_title LIKE '{{exportBookName}}' AND module='book') 
+ORDER BY weight ASC;";
+
+================================================= wordpress
+CREATE TABLE `wp_posts` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `post_author` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `post_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `post_date_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `post_content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_title` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_excerpt` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'publish',
+  `comment_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'open',
+  `ping_status` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'open',
+  `post_password` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `post_name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `to_ping` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pinged` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_modified` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `post_modified_gmt` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `post_content_filtered` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `post_parent` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `guid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `menu_order` int(11) NOT NULL DEFAULT '0',
+  `post_type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'post',
+  `post_mime_type` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `comment_count` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`ID`),
+  KEY `type_status_date` (`post_type`,`post_status`,`post_date`,`ID`),
+  KEY `post_parent` (`post_parent`),
+  KEY `post_author` (`post_author`),
+  KEY `post_name` (`post_name`(191))
+) ENGINE=InnoDB AUTO_INCREMENT=498 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE `wp_term_relationships` (
+  `object_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `term_taxonomy_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `term_order` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`object_id`,`term_taxonomy_id`),
+  KEY `term_taxonomy_id` (`term_taxonomy_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `wp_term_taxonomy` (
+  `term_taxonomy_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `term_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `taxonomy` varchar(32) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `description` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `parent` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `count` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`term_taxonomy_id`),
+  UNIQUE KEY `term_id_taxonomy` (`term_id`,`taxonomy`),
+  KEY `taxonomy` (`taxonomy`)
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `wp_terms` (
+  `term_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `slug` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `term_group` bigint(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`term_id`),
+  KEY `slug` (`slug`(191)),
+  KEY `name` (`name`(191))
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+============================================== modx
+CREATE TABLE `modx_categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `category` varchar(45) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=latin1 COMMENT='Categories to be used snippets,tv,chunks, etc';
+
+CREATE TABLE `modx_document_groups` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `document_group` int(10) NOT NULL DEFAULT '0',
+  `document` int(10) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `document` (`document`),
+  KEY `document_group` (`document_group`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1 COMMENT='Contains data used for access permissions.';
+
+CREATE TABLE `modx_site_content` (
+  `id` int(10) NOT NULL AUTO_INCREMENT,
+  `type` varchar(20) NOT NULL DEFAULT 'document',
+  `contentType` varchar(50) NOT NULL DEFAULT 'text/html',
+  `pagetitle` varchar(255) NOT NULL DEFAULT '',
+  `longtitle` varchar(255) NOT NULL DEFAULT '',
+  `description` varchar(255) NOT NULL DEFAULT '',
+  `alias` varchar(255) DEFAULT '',
+  `link_attributes` varchar(255) NOT NULL DEFAULT '',
+  `published` int(1) NOT NULL DEFAULT '0',
+  `pub_date` int(20) NOT NULL DEFAULT '0',
+  `unpub_date` int(20) NOT NULL DEFAULT '0',
+  `parent` int(10) NOT NULL DEFAULT '0',
+  `isfolder` int(1) NOT NULL DEFAULT '0',
+  `introtext` text COMMENT 'Used to provide quick summary of the document',
+  `content` mediumtext,
+  `richtext` tinyint(1) NOT NULL DEFAULT '1',
+  `template` int(10) NOT NULL DEFAULT '1',
+  `menuindex` int(10) NOT NULL DEFAULT '0',
+  `searchable` int(1) NOT NULL DEFAULT '1',
+  `cacheable` int(1) NOT NULL DEFAULT '1',
+  `createdby` int(10) NOT NULL DEFAULT '0',
+  `createdon` int(20) NOT NULL DEFAULT '0',
+  `editedby` int(10) NOT NULL DEFAULT '0',
+  `editedon` int(20) NOT NULL DEFAULT '0',
+  `deleted` int(1) NOT NULL DEFAULT '0',
+  `deletedon` int(20) NOT NULL DEFAULT '0',
+  `deletedby` int(10) NOT NULL DEFAULT '0',
+  `publishedon` int(20) NOT NULL DEFAULT '0',
+  `publishedby` int(10) NOT NULL DEFAULT '0',
+  `menutitle` varchar(255) NOT NULL DEFAULT '' COMMENT 'Menu title',
+  `donthit` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Disable page hit count',
+  `haskeywords` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'has links to keywords',
+  `hasmetatags` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'has links to meta tags',
+  `privateweb` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Private web document',
+  `privatemgr` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Private manager document',
+  `content_dispo` tinyint(1) NOT NULL DEFAULT '0' COMMENT '0-inline, 1-attachment',
+  `hidemenu` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'Hide document from menu',
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`),
+  KEY `parent` (`parent`),
+  KEY `aliasidx` (`alias`),
+  FULLTEXT KEY `content_ft_idx` (`pagetitle`,`description`,`content`)
+) ENGINE=MyISAM AUTO_INCREMENT=56 DEFAULT CHARSET=latin1 COMMENT='Contains the site document tree.';

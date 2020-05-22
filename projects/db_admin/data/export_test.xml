@@ -1,0 +1,259 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xroot>
+	<schema>
+		<xdata db_name="" db_type="" export_date="" export_time="">
+			<content>
+					<node id="" type="">
+						<title></title>
+						<created></created>
+						<changed></changed>
+						<body_value></body_value>
+					</node>
+			</content>
+
+			<content_links>
+				<item content_id="" parent_id=""></item>
+			</content_links>		
+
+			<tag_groups>
+				<item id="" name=""></item>
+			</tag_groups>		
+
+			<tag_links>
+				<item content_id="" term_id=""></item>
+			</tag_links>		
+
+			<tag_list>
+				<item id="" term_group_id="" parent_id="" name=""></item>
+			</tag_list>		
+
+		</xdata>
+	</schema>
+
+	<xdata db_name="notes.sqlite" db_type="sqlite" export_date="22-May-2020 09:14:19" export_time="1590113659">
+		<tag_groups>
+<item id="2" name="group2"></item>
+<item id="3" name="group2--&apos;-&apos;--"></item>
+		</tag_groups>		
+
+
+		<content_links>
+<item content_id="13" parent_id="0"></item>
+<item content_id="14" parent_id="13"></item>
+<item content_id="15" parent_id="13"></item>
+		</content_links>		
+		<content>
+			
+<!-- <node id="550" noupdate="1"> -->
+<node id="15" type='page'>
+		<title>APACHE, htaccess</title>
+		<created>1367984882</created>
+		<changed>1455432630</changed>
+		<body_value>http://ru.wikibooks.org/wiki/%D0%94%D0%B8%D1%80%D0%B5%D0%BA%D1%82%D0%B8%D0%B2%D1%8B_.htaccess
+Директивы_.htaccess
+
+=================================
+Как сделать 301 редирект
+Файл .htaccess
+301 редирект – корректная переадресация через htaccess и php header
+.htaccess: , вывод ошибок PHP
+
+Redirect /index.php http://example.com/index.php
+Redirect /data http://www.example.com/data 
+=================================
+......
+3.mcedit /etc/httpd/conf/httpd.conf (вкл. возможности работы с .htaccess)
+
+  &lt;Directory /var/www/html/admin&gt;
+  AllowOverride All
+  &lt;/Directory&gt;</body_value>
+	</node>
+<node id="13" type='video'>
+		<title>video1</title>
+		<created>1589594399</created>
+		<changed>1589594399</changed>
+		<body_value>pARENTpARENTpARENT</body_value>
+	</node>
+<node id="14" type='page'>
+		<title>video2</title>
+		<created>1589594399</created>
+		<changed>1589594399</changed>
+		<body_value>ChildChildChild</body_value>
+	</node>
+	
+	
+<node id="200">
+		<title>asp.net, c sharp</title>
+		<created>1397986143</created>
+		<changed>1456114219</changed>
+		<body_value>&lt;h3&gt; ASP.Net  &lt;/h3&gt;
+&lt;pre&gt;
+&lt;![CDATA[
+====================================== sample2.aspx
+&lt;%@ Page Language="C#" %&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;script runat="server"&gt;
+protected void cmdEcho_Click(object Source, EventArgs e)
+{
+	lblGreeting.Text="Hello, " + txtName.Text; 
+}
+&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+
+&lt;form runat="server"&gt;
+Your name:&amp;nbsp;
+	&lt;asp:textbox id=txtName Runat="server"&gt;&lt;/asp:textbox&gt;
+	&lt;asp:button ld=cmdEcho onclick=cmdEcho_Click Text="Echo" runat="server" tooltip="Click to echo your name"&gt;&lt;/asp:button&gt;&lt;br&gt;
+	&lt;asp:label id=lblGreeting runat="server"&gt;&lt;/asp:label&gt; 
+&lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+====================================== test112.aspx
+&lt;script language="vb" runat="server"&gt;
+	Sub Page_Load(sender as Object, e as EventArgs)
+		Response.Write ("Value:" &amp; txtSomething.Text)
+	End Sub
+&lt;/script&gt;
+
+&lt;html&gt;
+&lt;body&gt;
+	&lt;form runat="server"&gt; Enter:
+		&lt;asp:textbox runat="server" id="txtSomething"/&gt;
+		&lt;asp:button runat="server" Text="Submit"/&gt;
+	&lt;/form&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+====================================== sayhello.aspx
+
+&lt;%@ Page Language="C#" %&gt;
+&lt;html&gt;
+&lt;head&gt;
+	&lt;title&gt;My First ASPX Page&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+	&lt;center&gt;
+&lt;%
+int loop;
+String s="";
+for ( loop=1 ; loop&lt;=5 ; loop++)
+{
+	s = s+
+	String.Format ("&lt;font size={0}&gt;Hello ASP.NET World&lt;/font&gt;&lt;br&gt;", loop);
+}
+Message.InnerHtml=s;
+%&gt;
+		&lt;span id="Message" runat=server/&gt;
+	&lt;/center&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+====================================== test_db.aspx (MSSQL)
+&lt;html&gt;
+&lt;title&gt;test db connect&lt;/title&gt;
+&lt;body&gt;
+&lt;%@ Page Debug="true" %&gt;
+&lt;%@ Import Namespace="System.Data" %&gt;
+&lt;%@ Import Namespace="System.Data.SqlClient" %&gt;
+&lt;%
+	Dim myConnection As SqlConnection
+	Dim myCommand As SqlCommand
+	Dim myDataReader As SqlDataReader
+	
+	myConnection = New SqlConnection("server=firstdb1.mssql.somee.com;database=Firstdb1;uid=;pwd=")
+	myConnection.Open()
+	myCommand = New SqlCommand ("SELECT * FROM anketa", myConnection)
+	'myCommand.ExecuteNonQuery()
+
+	myDataReader = myCommand.ExecuteReader()
+	While myDataReader.Read()
+		Response.Write(myDataReader("Created"))
+	End While
+	myDataReader.Close()
+	
+	myConnection.Close()
+%&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+===================================================== test_mdb_conn.aspx (MS Access)
+&lt;html&gt;
+&lt;title&gt;test db connect&lt;/title&gt;
+&lt;body&gt;
+&lt;h2&gt;test db connection&lt;/h2&gt;
+
+&lt;%@ Page Debug="true" %&gt;
+&lt;%@ Import Namespace="System.Data" %&gt;
+&lt;%@ Import Namespace="System.Data.OleDb" %&gt;
+&lt;%
+	Dim myConnection As OleDbConnection
+	Dim myCommand As OleDbCommand
+	Dim myDataReader As OleDbDataReader
+
+	myConnection = New OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=d:\\Documents\\db1.mdb")
+	myConnection.Open()
+	
+	myCommand = New OleDbCommand ("SELECT * FROM table1", myConnection)
+//myCommand.ExecuteNonQuery()
+	myDataReader = myCommand.ExecuteReader()
+	While myDataReader.Read
+		Response.Write(myDataReader("id"))
+	End While
+	myDataReader.Close()
+	myConnection.Close
+%&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+----------------------------------------------------- test_db2.aspx
+&lt;%@ Page Language="C#" %&gt;
+&lt;%@ Import Namespace="System.Data" %&gt;
+&lt;%@ Import Namespace="System.Data.SqlClient" %&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;script runat="server"&gt;
+protected void cmdEcho_Click(object Source, EventArgs e)
+{
+	lblGreeting.Text="Hello, " + txtName.Text; 
+}
+&lt;/script&gt;
+&lt;/head&gt;
+
+&lt;body&gt;
+&lt;%
+//http://msdn.microsoft.com/en-us/library/system.data.sqlclient.sqlconnection.open%28v=vs.71%29.aspx
+	SqlConnection myConnection;
+	SqlCommand myCommand;
+	SqlDataReader myDataReader;
+	
+	myConnection = new SqlConnection("server=firstdb1.mssql.somee.com;database=Firstdb1;uid=*****;pwd=*****");
+	myConnection.Open();
+	myCommand = new SqlCommand ("SELECT * FROM anketa", myConnection);
+	myDataReader = myCommand.ExecuteReader(CommandBehavior.CloseConnection);
+	while (myDataReader.Read())
+	{
+        Response.Write(myDataReader["Created"].ToString());
+	}
+	myDataReader.Close();
+	myConnection.Close();
+%&gt;
+
+&lt;form runat="server"&gt;
+&lt;asp:textbox id=txtName Runat="server"&gt;&lt;/asp:textbox&gt;
+&lt;asp:button ld=cmdEcho onclick=cmdEcho_Click Text="Echo" runat="server" tooltip="Click to echo your name"&gt;&lt;/asp:button&gt;&lt;br&gt;
+&lt;asp:label id=lblGreeting runat="server"&gt;&lt;/asp:label&gt; 
+&lt;/form&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+
+==================================</body_value>
+	</node>
+	
+		</content>		
+	</xdata>
+</xroot>

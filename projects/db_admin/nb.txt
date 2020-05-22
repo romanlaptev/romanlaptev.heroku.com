@@ -1,0 +1,367 @@
+веб-приложение для работы с базой данных 
+notes(MySql)
+notes(PostgreSQL)
+notes.sqlite
+
+- вывод информационных записей, категорий, тегов(терминов) 
+- поиск по записям: с помощью ключевых слов и по тегам
+- добавление, редактирование, удаление новых записей
+- импорт и экспорт записей, категорий, тегов в разные форматы (JSON, XML, CSV)
+
+- необходимо предоставлять API доступа к данным (AJAX или др.)
+для удаленных сайтов, без поддержки PHP
+	получить список категорий (ответ в JSON, XML)
+	получить список тегов
+	плучить список заметок
+	сохранить заметку
+	удалить заметку
+	экспорт
+	импорт?
+возможно ли сжимать ответ?
+
+- нужно добавить авторизацию для 
+операций редактирования,удаления, импорта, экспорта
+
+---------------------- block mainmenu
+admin
+	add new note
+	Export
+	Import
++remove all notes
+	clear table
+all
+	Login/Logout 
+
+
+----------------- block breadcrumb
+строка навигации
+состоит 
+	из названий категорий
+	из страниц
+
++----------------- CATEGORY
+----------------- CONTENT_LINKS
+вывод иерархического списка категорий
+- CRUD операции
++*category/list
++*category/create
++*category/edit
++*category/save
++*category/remove
+
+иерархия по типу МЕНЮ
+каждый элемент иреархии может иметь одного родителя
+
+используется тип связи ОДИН ко ОДНОМУ
++используется тип связи ОДИН ко МНОГИМ
++используется тип связи МНОГИЕ ко МНОГИМ
+
+https://www.drupal.org/ru/docs/user_guide/ru/structure-taxonomy.html
+6.5. Основы: Таксономия
+
+рубрики
+https://wordpress.com/ru/support/posts/categories/
+https://misha.blog/wordpress-codex/categories
+
+-- set 'note 10' as child note of 'notes', no children
+INSERT INTO content_categories(content_id, parent_id) VALUES(37,56);
+
+-- set 'a note' as child note of 'config', no children
+INSERT INTO content_categories(content_id, parent_id) VALUES(13,54);
+
+зачем нужно поле content_categories.child_id?
+этим полем невозможно отобразить наличие нескольких потомков у иерархической группы 'notes'
+*- убрать content_categories.child_id, content_categories.parent_id достаточно
+
+*- сменить название content_categories -> content_links
+ иерархия родитель-потомок
+   
+----------------- TAXONOMY, TAGS, TERMINS, метки
+вывод списка всех тегов, терминов
+- CRUD операции
+termin/list
+termin/create 
+termin/edit
+termin/save
+termin/remove
+
++используется тип связи ОДИН ко МНОГИМ
+каждый элемент иреархии может принадлежать любым элементам
+используется тип связи МНОГИЕ ко МНОГИМ
+
+----------------- block search
+форма поиска с помощью ключевых слов
+
+
+----------------- NOTES
+view-note.tpl.php
+edit new note
+вывод содержимого записи
+вывод связанных тегов
+
+- добавить в формы оставшеся поля таблицы
+- к заметке прикреплять файлы ( хранить в БД или в ФС ?)
+- добавить возможность прикреплять заметку к категории
+- указывать теги заметки
+
+*note/create
+*note/save
+*note/view
+*note/edit
+*note/remove
+
+-- list_notes
+list-notes.tpl.php
+*note/list
+
+вывод списка связанных между собой инфозаписей(content_items)
+иерархический список
+
+- разделение списка на страницы
+- сделать форму групповых операций 
+(удаление, возможно перемещение в др.категорию)
+
+
+====================== export / import
+варианты экспорта и импорта:
+	- notes.sqlite <- / -> XML, JSON, CSV
+	- notes, mySql <- / -> XML, JSON, CSV
+	- notes, msSql <- / -> XML, JSON, CSV
+	- notes, PostgreSql <- / -> XML, JSON, CSV
+	- mydb.sqlite <- / -> XML, JSON, CSV
+	- indexedDB, localStorage, WebSQL <- / -> XML, JSON, CSV
+	- CMS db (Drupal, WP, MODx) <- / -> XML, JSON, CSV
+	
+- экспорт по таблицам (content, content_links, content_type, term_data...)
+или
+- экспорт в промежуточный формат, чем удобнее?
+позволит избежать привязки к ид, сохранив межтабличные связи....
+
+- при получении данных из XML-документа вначале считывать данные о структуре из тега <schema>
+и затем, по данным схемы разбирать содержимое <xdata>
+
+*- предусмотреть возможность консольного импорта
+php api/import.php -source-file=data.xml
+*- сделать импорт для заметок без категорий (notes.xml)
+
+- при импорте тегов (<tag_groups>, tag_list, tag_links) связи 
+группа <-- термин,
+taxonomy_groups.id <-- taxonomy_term_data.term_group_id
+ 
+термин <--> node
+taxonomy_term_data.id <--> taxonomy_index.term_id
+
+должны быть независимы от ID записей в БД
+	- доп. поле codename, alias
+
+- при импорте content_links связи 
+content_node --> parent_node
+должны быть независимы от ID записей в БД
+	- доп. поле codename, alias
+ 
+--------------------------------------------
+ - ИСПРАВИТЬ экспорт нод по типам
+ если выбран экспорт 'Any types', то:
+	или создание отдельных тегов <content type='....'> для каждого типа
+	или добавить атрибут type='....' в тег <node> 
+	(появляется необходимость перебора всех нод при получении данных)
+	
+	*....пока убрать экспорт по типам - экспортируются все ноды в общий <content>
+	для каждой ноды указывается ее тип
+	
+--------------------------------------------
+- ИСПРАВИТЬ формат экспорта из БД Drupal 
+mydb.sqlite
+
+--------------------------------------------
+- КАК указывать дату последнего обновления БД
+*или дата экспорта (может не совпадать с датой последнего обновления)?
+
+--------------------------------------------
+- как сделать вывод итоговой информации экспорта при запуске экспорта из браузера
+
+
+-------------------------------------------- import error!!!!!!!!
+неверно происходит замена старых ID на новые при иморте ссылок content_links
+
+-------------------------------
+
+import error!!!!!!!
+config 	
+
+//WRONG, нет в content_links
+content_id: 125 'config' (old ID: 123)
+parent_id: 
+
+//RIGHT
+content_id: 125 'config' (old ID: 123)
+parent_id: 238 'notes' (old ID: 323)
+
+
+old:<item content_id="123" parent_id="323"></item>
+new: <item content_id="125" parent_id="238"></item>
+
+----
+сформировать таблицу замен
+ключ массива - старый ID
+значение ключа - новый ID
+
+проверить что записывается в content_links
+---
+- попробовать использовать в сравнении поля "created" вместо "title"
+сравнение при определении обновления или вставки ноды
+также сравнение нод из XML и нод из БД для определения старых и новых ID
+
+использовать не "created", а "export_uid", где хранится время создания ноды;
+(тогда нужно дополнительное поле БД)
+никогда не перезаписывается; недоступно для редактирования
+
+
+при наличии нескольких одинаковых заголовков нод из разных уровней иерархии,
+возникает ошибка сравнения заголовков для определения новых IDs нод (нужно для
+переноса иерахии построенной на старых IDs)
+1.сравниваем заголовки xmlNode и dbNode
+2.если совпадение, следующее сравнение значений полей "created"
+3.если истина, записываем ID dbNode в таблицу replacement_table
+4.на основе этой таблицы заменяем старые IDs xml content_links на новые
+5.обновляем данный content_links
+========================================
+
+--------------------------------------------
+- добавить в формы создания / сохранения заметок все поля таблицы content
+
+--------------------------------------------
+- добавить в таблицу content поле body_format для хранения формата отображения текста заметки
+
+--------------------------------------------
+*- сделать виджет построения селективного списка из данных content_type
+- сделать виджет для построения таблицы
+
+--------------------------------------------
+- для возможности прикреплять заметку к категории 
+		*- сделать виджет для построения селективного списка(radio) из данных content_links
+и, или
+		- построение иерархии для всего контента на отдельной странице
+		(указывать положение в иерархии перетаскиванием)
+		
+		
+--------------------------------------------
++- добавить в формы создания / сохранения категорий все поля таблицы category
+
+--------------------------------------------
++- сделать обработку параметра формы [content_type_select] для указания смены типа контента
+- сделать проверку параметров формы создания/редактирования заметки 
+на соотвествие $db->infoSchema["content"]
+
+--------------------------------------------
+- сделать экранирование одиночных кавычек в REQUEST данных, которые попадают в SQL запрос
+аналог mysql_escape_string()
+*INSERT/UPDATE
+
+--------------------------------------------
+*- удаление пробелов из REQUEST данных
+
+--------------------------------------------
++*- при выполнении note/list добавить WHERE type_id=2
+
+--------------------------------------------
++если type_id явл-ся массивом параметров, то выполнять вложенный запрос
+
+--------------------------------------------
++или многотабличный запрос?
+SELECT content.id, content.title, content_type.name FROM content, content_type WHERE content_type.id=content.type_id;
++		$arg = array(
+// SELECT
+			"fields" => array("content.id", "content.title", "content_type.name"),
+// FROM
+			"tableName" => array("content", "content_type"),
+// WHERE
+			"query_condition" => "content_type.id=content.type_id" 
+			) 
+		);
+
++- при удалении группы тегов сделать функцию removeChilrenElements() для удаления всех подчиненных тегов
+
+--------------------------------------------
+*- ИСПРАВИТЬ: при редактировании заметки смена значения в поле parent_id
+должна приводить к формированию запроса UPDATE, не INSERT....
+как узнать о том, что запись о parent_id для редактирумой заметки уже существует...
+- при отправке формы редактирования в скрытом поле отправлять тип запроса
+(не подходит,при импорте нет формы, но также используется $content_categories->save( $arg ))
+
+	- в $content_categories->save( $arg ) делать предварительный запрос к таблице  
+	content_categories (
+	SELECT content_id FROM content_categories
+	SELECT content_id FROM content_categories WHERE content_id=$p["content_id"]
+	)
+	на основе результата запроса делать или UPDATE, или INSERT
+
+	- если INSERT вернул ошибку 
+	error info: 
+	Array
+	(
+		[0] => 23000
+		[1] => 19
+		[2] => PRIMARY KEY must be unique
+	)
+	error, query: INSERT INTO `content_categories` (`content_id`,`parent_id`) VALUES ('37','59'); 
+	делать второй запрос типа update
+
+	*- использование запроса 
+	INSERT OR REPLACE INTO `content_categories` (`content_id`,`parent_id`) VALUES ('37','59'); 
+	https://www.w3resource.com/sqlite/sqlite-insert-into.php
+	http://www.mysql.ru/docs/man/REPLACE.html
+
+	- функция isNewRecord
+	https://www.yiiframework.com/doc/guide/1.1/ru/database.ar
+
+
+--------------------------------------------
+*- ИСПРАВИТЬ: при удалении ноды не удалется информация о связях в таблице content_links
+при удалении content.id=73 (note2) осталась запись content_links.content_id=73
+исправить removeItem( $params )
+	при удалении ноды с дочерними узлами куда перенаправлять ссылки?
+		- выдавать предупреждение и не удалять до устранения дочерних связей
+
+		- перенаправлять ссылки дочерних узлов на вышестоящий элемент
+		(исправление всех parent_id)
+
+		-- change parent_id of child nodes for content item to be deleted
+		UPDATE content_links SET parent_id=(
+			SELECT parent_id FROM content_links WHERE content_id=10
+		) WHERE parent_id=10;
+
+
+--------------------------------------------
+- ИСПРАВИТЬ: при удалении ноды перезаписывается информация о связях в таблице content_links
+и возникает ситуация когда создается циклическая ссылка:
+
+
+title 						content_id 	parent_id 	actions
+APACHE, htaccess 	19 					19 					remove link
+
+перед исправлением связей, проверять .....
+
++"APACHE, htaccess" ссылался на "video2",
++после удаления "video2" в parent_id "APACHE, htaccess" записалось значение
+		$sql_query = "UPDATE content_links SET parent_id=(";
+		$sql_query .= "SELECT parent_id FROM content_links WHERE content_id=".$p["content_id"].") ";
+		$sql_query .= "WHERE parent_id=".$p["content_id"].";";
+
+
+
+--------------------------------------------
+- ИСПРАВИТЬ: при создании ноды не добавляется информация о связях в таблицу content_links
+т.к. не существует content_id для новой ноды и подставляется пустое значение
+
+query2. error, query: REPLACE INTO `content_links` (`content_id`,`parent_id`) VALUES ('','69'); 
+query1. run query: REPLACE INTO `content` (`type_id`,`title`,`body_value`,`created`,`changed`) VALUES ('2','note33','t1','1589342980','1589342980'); 
+
+------------------------
+- СДЕЛАТЬ страницу для вставки записей в content_type
+
+INSERT INTO content_type(name) VALUES('page');
+INSERT INTO content_type(name) VALUES('note');
+INSERT INTO content_type(name) VALUES('book');
+INSERT INTO content_type(name) VALUES('video');
+INSERT INTO content_type(name) VALUES('music');
