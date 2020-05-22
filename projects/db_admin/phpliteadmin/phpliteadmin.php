@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL|E_STRICT);
+ini_set('display_errors', 1);
 //	
 //	Project: phpLiteAdmin (https://www.phpliteadmin.org/)
 //	Version: 1.9.8.2
@@ -2437,6 +2439,7 @@ if(isset($_GET['action']) && !isset($_GET['confirm']))
 		//- Import table (=table_import)
 		case "table_import":
 			if(isset($_POST['import']))
+
 			{
 				echo "<div class='confirm'>";
 				if($importSuccess===true)
@@ -3773,6 +3776,7 @@ if(!$target_table && !isset($_GET['confirm']) && (!isset($_GET['action']) || (is
 			echo $lang['attention'].': '.$lang['database_not_writable'];
 			echo "</div><br/>";
 		}
+
 
 		if ($auth->isPasswordDefault())
 		{
@@ -5648,6 +5652,7 @@ class Database
 			if($fetchResult && $resultset!==false)
 			{
 				$res = $resultset->fetchArray();
+
 				$resultset->finalize();
 				return $res;
 			}
