@@ -242,6 +242,20 @@ class ContentLinks {
 	}//end remove()
 
 
+	public function clear(){
+		$sql_query = "DELETE FROM ".$this->tableName.";";
+//echo _logWrap($sql_query);
+
+		$db = DB::getInstance();
+		$response = $db->runQuery( $db->dbConnection, $sql_query);
+//echo _logWrap( $response );
+		if( $response["status"] ){
+			return true;
+		}
+		return false;
+	}//end clear()
+
+
 	//----------------------- 
 	// change parent_id of child nodes for content item to be deleted
 	//----------------------- 

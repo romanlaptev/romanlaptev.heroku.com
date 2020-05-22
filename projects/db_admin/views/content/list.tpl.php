@@ -49,6 +49,7 @@ $tpl_record = "<tr>
 <h3>num elements: <?php echo $total ?></h3>
 <ul>
 	<li class="inline-list"><a href='?q=content/create'>add new content item</a></li>
+	<li class="inline-list"><a href='?q=content/clear'>clear table content</a></li>
 </ul>
 <form name="form_list_content" action="<?php echo $_SERVER['SCRIPT_NAME'];?>" method='post' class="form-control">
 	<div>

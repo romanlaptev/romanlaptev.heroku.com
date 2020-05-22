@@ -82,6 +82,10 @@ $_vars["log"][] = array("message" => $params["content_links"][0], "type" => "inf
 <?php echo $body_value; ?>	
 
 <h3>num elements: <?php echo $total ?></h3>
+<ul>
+	<li class="inline-list"><a href='?q=content-links/clear'>clear table content_links</a></li>
+</ul>
+
 <form name="form_content_links" action="<?php echo $_SERVER['SCRIPT_NAME'];?>" method='post' class="form-control">
 <?php echo $html_table; ?>	
 </form>

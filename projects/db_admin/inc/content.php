@@ -318,6 +318,20 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 	}//end removeItem()
 
 
+	public function clear(){
+		$sql_query = "DELETE FROM ".$this->tableName.";";
+//echo _logWrap($sql_query);
+
+		$db = DB::getInstance();
+		$response = $db->runQuery( $db->dbConnection, $sql_query);
+//echo _logWrap( $response );
+		if( $response["status"] ){
+			return true;
+		}
+		return false;
+	}//end clear()
+
+
 	public function editItem($params){
 		global $_vars;
 

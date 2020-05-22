@@ -116,9 +116,21 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 				
 			$response = $content->removeItem( $_vars["request"] );
 			if( $response ){
-				$msg =  "ok, content item id: ".$_vars["request"]["id"]." was removed...";
+				$msg =  "content item id: ".$_vars["request"]["id"]." was removed...";
 				$msg_type = "success";
 				//header("Location:".$_SERVER["SCRIPT_NAME"]);
+			}
+			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+		break;
+
+		case "content/clear":
+			$msg =  "error clear content.";
+			$msg_type = "warning";
+				
+			$response = $content->clear();
+			if( $response ){
+				$msg =  "database table content was clear...";
+				$msg_type = "success";
 			}
 			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		break;
@@ -139,6 +151,18 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 				$msg_type = "success";
 				$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 			}
+		break;
+
+		case "content-links/clear":
+			$msg =  "error clear content_links";
+			$msg_type = "warning";
+				
+			$response = $content_links->clear();
+			if( $response ){
+				$msg =  "database table content_links was clear...";
+				$msg_type = "success";
+			}
+			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		break;
 		
 //============================= TAXONOMY
