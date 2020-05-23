@@ -22,18 +22,16 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=10
-FILE_NAME_0=5903;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fnb.txt;0;4
+current_page=0
+FILE_NAME_0=10360;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fnb.txt;0;4
 FILE_NAME_1=5193;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Findex.php;0;4
 FILE_NAME_2=4860;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fdb.php;0;4
-FILE_NAME_3=8667;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fimport.php;0;4
+FILE_NAME_3=8820;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fimport.php;0;4
 FILE_NAME_4=229;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fviews%2Fmain.tpl.php;0;4
 FILE_NAME_5=3988;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fexport.php;0;4
 FILE_NAME_6=3061;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Ffunctions.php;0;4
 FILE_NAME_7=8069;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent.php;0;4
-FILE_NAME_8=6140;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent_links.php;0;4
-FILE_NAME_9=2442;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fviews%2Fcontent_links%2Flist.tpl.php;0;4
-FILE_NAME_10=1467;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fviews%2Fcontent%2Flist.tpl.php;0;4
+FILE_NAME_8=6381;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fapp.php;0;4
 
 [VTE]
 last_dir=/mnt/d2/www
