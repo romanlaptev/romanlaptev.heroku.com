@@ -235,21 +235,44 @@ Array
 		return false;
 	}
 	
+	//-------------------check format 'created'
+//echo _logWrap( $p["xmlNode"]["created"] );
+//echo _logWrap( gettype( $p["xmlNode"]["created"] ) );
+
+	$test = explode("-", $p["xmlNode"]["created"]);
+//echo count( $test );
+//echo "<br>";
+//echo count( $test ) > 1;
+//echo _logWrap( $test );
+	if( count( $test ) > 1 ){
+		$p["xmlNode"]["created"] = strtotime( $p["xmlNode"]["created"] );
+//echo $p["xmlNode"]["created"];
+	}
+	$test = explode("-", $p["xmlNode"]["changed"]);
+	if( count( $test ) > 1 ){
+		$p["xmlNode"]["changed"] = strtotime( $p["xmlNode"]["changed"] );
+	}
+	
 	//------------------ Update exists db node or create new db node
 		$update = 0;
 		if( !empty($p["dbNodes"]) ){
 			for( $n1 = 0; $n1 < count( $p["dbNodes"] ); $n1++){
 				$dbNode = $p["dbNodes"][$n1];
-//echo _logWrap( $dbNode );
-				if( strtoupper( $dbNode["title"] ) ==  strtoupper( $p["xmlNode"]["title"] ) ){
+//echo _logWrap( $dbNode["title"] );
+//echo _logWrap( $p["xmlNode"]["title"] );
+				if( $dbNode["created"]  ==  $p["xmlNode"]["created"] ){
+					//if( strtoupper( $dbNode["title"] ) ==  strtoupper( $p["xmlNode"]["title"] ) ){
 //$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
 //echo _logWrap( $msg );
-					//if( $dbNode["created"]  ==  $p["xmlNode"]["created"] ){
 						$p["xmlNode"]["id"] = $dbNode["id"];
 						$update = 1;
 						break;
 					//}
-				}
+				} //else {
+//$msg = "update warning:". $dbNode["title"] ." != ". $p["xmlNode"]["title"];
+//echo _logWrap( $msg, "error" );
+				//}
+				
 			}//next
 		}
 
