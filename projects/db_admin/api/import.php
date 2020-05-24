@@ -136,10 +136,6 @@ unset($_vars["xml"]);
 	//import content info from XML nodes
 	if( !empty( $_vars["xmlData"]["content"]["children"] ) ){
 		_importContent();
-		$msg = "Import ".$_vars["import"]["total"]." content items";
-		$msg .= ", num created: " .$_vars["import"]["numCreated"];
-		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
-		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
 
 	//import content links info from XML nodes
@@ -242,6 +238,11 @@ function _importContent(){
 			$_vars["log"][] = array("message" => $msg, "type" => "warning");
 		}
 	}//next
+
+	$msg = "Import ".$_vars["import"]["total"]." content items";
+	$msg .= ", num created: " .$_vars["import"]["numCreated"];
+	$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
+	$_vars["log"][] = array("message" => $msg, "type" => "success");
 	
 }//end _importContent()					
 
