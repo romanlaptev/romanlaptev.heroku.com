@@ -89,7 +89,7 @@ Redirect /data http://www.example.com/data
 [/code]</body_value>
 	</node>
 <node id="2460" type='note'>
-		<title>Debian 7, wheezy, list	 repo</title>
+		<title>Debian 7, wheezy, list repo</title>
 		<created>1590213459</created>
 		<changed>1590213459</changed>
 		<body_value>#/etc/apt/sources.list[br]
