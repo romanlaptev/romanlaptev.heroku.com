@@ -46,7 +46,25 @@ content_categories
 	content_id, ()
 	parent_id, (plid)
 	child_id, (mlid)
-	
+
+============================================= DRUPAL export
+node, 
+field_data_body.body_value
+<content>
+
+<tag_groups>
+taxonomy_vocabulary
+
+<tag_links>
+taxonomy_index
+
+<tag_list>
+taxonomy_term_data
+taxonomy_term_hierarchy
+
+<content_links>
+book
+
 ============================================= TAXONOMY, TAGS, TERMINS
 taxonomy_vocabulary
 	vid	= 11
