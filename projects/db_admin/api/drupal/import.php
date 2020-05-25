@@ -236,7 +236,8 @@ function _importContent(){
 */
 	
 //------------------------------- get exists DB nodes
-	$sql_query = "SELECT nid, title, created FROM node;";
+	//$sql_query = "SELECT nid, title, created FROM node GROUP BY created;";
+	$sql_query = "SELECT nid, title, created FROM node ORDER BY created;";
 	$result = db_query($sql_query);
 	$n1=0;
 	foreach ($result as $row) {
@@ -250,7 +251,77 @@ function _importContent(){
 		$msg = "import: warning, db nodes not found.";
 		$_vars["log"][] = array("message" => $msg, "type" => "warning");
 	}
+
+//----------------------- convert DB nodes into format: key => value
+	$dbNodes = array();
+	$key = 0;
+	$old_key = 0;
+	$num_warning = 0;
+	for( $n = 0; $n < count($_vars["dbData"]["content"]); $n++ ){
+		$record = $_vars["dbData"]["content"][$n];
+		if( !empty( $record->created ) ){
+			$key = $record->created;
+			//detect not unique key-field 'created'
+			if( $key == $old_key ){
+//echo _logWrap( $record );
+				$msg = "import:  <b>not unique key-field 'created' detected</b>!!!!";
+				$msg .= " title: ".$record->title.", created: ".$key;
+				$_vars["log"][] = array("message" => $msg, "type" => "warning");
+				$num_warning++;
+				$_vars["dbData"]["content"][$n]["double"] = true;
+			}
+
+			$dbNodes[ $key ] = $record;
+			$old_key = $key;
+		} else {
+			$msg = "import: prepare DB content, <b>key-field 'created' not found or empty</b>.";
+			$_vars["log"][] = array("message" => $msg, "type" => "warning");
+		}
+	}//next
+
+	//if( $num_warning > 0 ){
+		//$msg = "import: prepare content warning, <b>".$num_warning." not unique key-field 'created' detected</b>!!!!";
+		//$_vars["log"][] = array("message" => $msg, "type" => "warning");
+	//}
+
+//echo _logWrap( count( $dbNodes ) );
+//echo _logWrap( $dbNodes );
+
+	if( !empty( $dbNodes) ){
+		$_vars["dbData"]["content"] = $dbNodes;
+	}
+
 //echo _logWrap( $_vars["dbData"] );
+//echo _logWrap( count( $_vars["dbData"]["content"] ) );
+//return false;
+
+//----------------------- check XML nodes
+	//$xmlNodes = array();
+	$key = 0;
+	$old_key = 0;
+	$num_warning = 0;
+	for( $n = 0; $n < count( $_vars["xmlData"]["content"]["children"] ); $n++ ){
+		$record = $_vars["xmlData"]["content"]["children"][$n];
+		if( !empty( $record["created"] ) ){
+			$key = $record["created"];
+			//detect not unique key-field 'created'
+			if( $key == $old_key ){
+//echo _logWrap( $record );
+				$msg = "import:  XML, <b>not unique key-field 'created' detected</b>!!!!";
+				$msg .= " title: ".$record["title"].", created: ".$key;
+				$_vars["log"][] = array("message" => $msg, "type" => "warning");
+				$num_warning++;
+				$_vars["xmlData"]["content"]["children"][$n]["double"] = true;
+			}
+			//$xmlNodes[ $key ] = $record;
+			$old_key = $key;
+		} else {
+			$msg = "import: prepare XML content, <b>key-field 'created' not found or empty</b>.";
+			$_vars["log"][] = array("message" => $msg, "type" => "warning");
+		}
+	}//next
+//echo _logWrap( count( $xmlNodes ) );
+//echo _logWrap( $xmlNodes );
 //return false;
 
 //------------------------------- insert/update database nodes from XML nodes
@@ -260,9 +331,9 @@ function _importContent(){
 	$_vars["import"]["numCreated"] = 0;
 	$_vars["import"]["total"] = 0;
 
-//	for( $n1 = 0; $n1 < count($_vars["xmlData"]["content"]["children"]); $n1++){
-		//$node = $_vars["xmlData"]["content"]["children"][$n1];
-		$node = $_vars["xmlData"]["content"]["children"][0];
+	for( $n1 = 0; $n1 < count($_vars["xmlData"]["content"]["children"]); $n1++){
+	//for( $n1 = 0; $n1 < 2; $n1++){
+		$node = $_vars["xmlData"]["content"]["children"][$n1];
 //echo _logWrap( $node );
 
 //-------------------
@@ -286,7 +357,7 @@ function _importContent(){
 			$_vars["log"][] = array("message" => $msg, "type" => "warning");
 		}
 
-//	}//next
+	}//next
 
 	$msg = "Import ".$_vars["import"]["total"]." content items";
 	$msg .= ", num created: " .$_vars["import"]["numCreated"];
@@ -445,39 +516,32 @@ if( count( $test ) > 1 ){
 
 //------------------ Update exists db node or create new db node
 	$update = 0;
-/*
 	if( !empty($p["dbNodes"]) ){
-		for( $n1 = 0; $n1 < count( $p["dbNodes"] ); $n1++){
-			$dbNode = $p["dbNodes"][$n1];
+			$key = $p["xmlNode"]["created"];
+			$dbNode = $p["dbNodes"][$key];
 //echo _logWrap( $dbNode["title"] );
 //echo _logWrap( $p["xmlNode"]["title"] );
-			if( $dbNode["created"]  ==  $p["xmlNode"]["created"] ){
-				//if( strtoupper( $dbNode["title"] ) ==  strtoupper( $p["xmlNode"]["title"] ) ){
-//$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
-//echo _logWrap( $msg );
-					$p["xmlNode"]["id"] = $dbNode["id"];
+			if( !empty($dbNode) ){
+					$p["xmlNode"]["id"] = $dbNode->nid;
 					$update = 1;
-					break;
-				//}
-			} //else {
-//$msg = "update warning:". $dbNode["title"] ." != ". $p["xmlNode"]["title"];
-//echo _logWrap( $msg, "error" );
-			//}
-			
-		}//next
+			}
 	}
-*/
+
 	if( $update == 1){
 		$_vars["import"]["numUpdated"]++;
 	} else {
 		$_vars["import"]["numCreated"]++;
 	}
 
-
 	$xmlNode = $p["xmlNode"];
 
 	$node = new stdClass();
-	$node->nid = 1249;
+
+	//update if exist xml attribute ID
+	if( !empty($p["xmlNode"]["id"]) ){
+		$node->nid = $p["xmlNode"]["id"];
+	}
+
 	$node->uid = 1; // author id 
 	$node->type = "page";
 	$node->sticky = 0;//?
@@ -485,10 +549,10 @@ if( count( $test ) > 1 ){
 	//$node->language = 'ru';
 	$node->title = $xmlNode["title"];
 
-	$body_text =  "test5 update";
+	$body_text =  $xmlNode["body_value"];
 	$node->body[ $node->language][0]['value'] = $body_text;
-	$node->body[ $node->language][0]['summary'] = text_summary($body_text);
-	$node->body[ $node->language][0]['format'] = 'filtered_html';
+	//$node->body[ $node->language][0]['summary'] = text_summary($body_text);
+	$node->body[ $node->language][0]['format'] = 1;//'filtered_html'
 
 	$node->status = 1;     // public
 	//$node->revision = 1;
@@ -504,8 +568,7 @@ if( count( $test ) > 1 ){
   	// node_save() does not return a value. It instead populates the $node object. Thus to check if the save was successful, we check the nid.
 	node_save($node);
 	if( !empty($node->nid) ){
-		$_vars["import"]["numCreated"]++;
-		$msg =  "create new node, nid: " . $node->nid .", title: ".$node->title;
+		$msg =  "create/update new node, nid: " . $node->nid .", title: ".$node->title;
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 		return true;
 	} else {
@@ -550,9 +613,9 @@ function _logWrap( $msg, $level = "info"){
 			}
 	}
 
-	if( gettype( $msg) !== "string"){
-		return false;
-	}
+	//if( gettype( $msg) !== "string"){
+		//return false;
+	//}
 
 //-------------
 	switch ($level) {
