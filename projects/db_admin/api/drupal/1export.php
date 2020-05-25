@@ -8,99 +8,43 @@ ini_set('display_errors', 1);
 //print_r($_FILES);
 //echo "</pre>";
 
-$_vars=array();
-$_vars["config"] = require_once("config.php");
-require_once "inc/functions.php";
-
-//-------------------------------------------------------------------
-$_vars["runType"] = "";
-$sapi_type = php_sapi_name();
-//if ( $sapi_type == 'apache2handler') {
-	$_vars["runType"] = "web";
-//}
-if ( $sapi_type == "cli" ) { $_vars["runType"] = "console"; }
-if ( $sapi_type == "cgi" ) { $_vars["runType"] = "console"; }
-
-if (!empty($_REQUEST['run_type']) )	{
-	$_vars["runType"] = $_REQUEST['run_type'];
-}
-
-//=================================== WEB run
-if ( $_vars["runType"] == "web") {
-//echo "<pre>";
-//print_r($_SERVER);
-//print_r($_REQUEST);
-//print_r($_FILES);
-//print_r($_vars);
-//echo "</pre>";
-
-//--------------------------------------- load Drupal
-	$drupalConstFile = $_vars["config"]["export"]["drupalConstFile"];
-	if ( !file_exists( $drupalConstFile ) ){
-		$msg = "error, not find Drupal constant file ".$drupalConstFile;
-		echo $msg;
-	}
 /*
-	// Define default settings.
-	chdir ("../");
-	//echo getcwd();
-	//echo "<br>";
-
-	define('DRUPAL_ROOT', getcwd() );
-	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-	//echo _logWrap( DRUPAL_ROOT );
+if (!empty($_REQUEST['fs_path']))
+{
+	$fs_path = $_REQUEST['fs_path'];
+	$url_path = $_REQUEST['url_path'];
+}
+else
+{
+	$fs_path = getcwd();
+}
 */
-	// Bootstrap Drupal.
-	require_once $drupalConstFile;
-	//drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
 
+$dbPath = "sqlite:/home/www/sites/mydb/db/mydb.sqlite";
+$exportFile = "export_mydb_notes.xml";
+$exportBook = "notes";
+$exportVoc = "notes";
 
-	$_vars["form"] = "";
-	if (empty($_REQUEST['action']))	{
-		$_vars["form"] = exportForm();
-	} else {
-		$action = $_REQUEST['action'];
-		switch ($action) {
-			case "export":
-				foreach( $_REQUEST as $param => $value){
-					if( !empty($value) ){
-						$_vars["config"]["export"][$param] = $value;
-					}
-				}//next
-echo _logWrap( $_vars );
-				//_exportProcess();
-			break;
-		}//end switch
-	}//end elseif
-
-	echo PageHead();
-	echo $_vars["form"];
-	echo PageEnd();
+if (empty($_REQUEST['action']))
+{
+	$form = view_form();
+	$message = "<span class='error'>var action is empty...</span>";
+	$message .= "<br>";
 }
-
-
-//==================================== CONSOLE run
-if ( $_vars["runType"] == "console") {
-//print_r($argv);
-//$_SERVER["argv"]
-	//_exportProcess();
-}
-
-
-//====================================== LOG
-if ( !empty( $_vars[ "log" ] ) ) {
-	for( $n = 0; $n < count( $_vars["log"] ); $n++){
-	//for( $n = count( $_vars["log"] ) - 1; $n >= 0; $n--){
-		$record = $_vars["log"][$n];
-		echo _logWrap( $record["message"], $record["type"] );
-	}//next
-}
-
-
-//====================
-function exportProcess(){
-	global $_vars;
-/*
+else
+{
+	$action = $_REQUEST['action'];
+	switch ($action)
+	{
+		case "export":
+			$form = view_form(); // вывод формы
+			if (!empty($_REQUEST['filename']))
+			{
+				$filename = $_REQUEST['filename'];
+				$book_title = $_REQUEST['book_title'];
+				$voc_title = $_REQUEST['voc_title'];
+				$sqlite_path = $_REQUEST['sqlite_path'];
+				$xml_format = $_REQUEST['xml_format'];
 try{
 				$db = new PDO($sqlite_path);
 }catch(Exception $e){
@@ -110,8 +54,81 @@ print_r($e);
 echo "</pre>";
 exit("<p>Error, could not open database!!!!!!!!!</p>");
 }
+
+				$book=array();
+				$book["nodes"] = get_content($book_title);
+
+				$book["taxonomy"] = get_taxonomy( $voc_title );
+				if ( !empty($book) )
+				{
+					switch ($xml_format)
+					{
+						case 'XML':
+							write_xml($book);
+						break;
+						case 'WXR':
+//$book["nodes"] = "";
+							$taxonomy_sort = array();
+							$book["taxonomy"] = sort_termin_hierarchy();
+							//записать в массив корневой термин в иерархии (название словаря)
+							$root_category = new stdClass();
+							$root_category->term_id = 0;
+							$root_category->cat_name = $voc_title;
+							$root_category->category_parent = -1;
+							$book["taxonomy"][] = $root_category;
+							$book["taxonomy_index"] = get_taxonomy_index();
+/*
+echo "<pre>";
+print_r( $book );
+echo "</pre>";
 */
-}//end exportProcess()
+							write_wxr($book);
+						break;
+					}//------------------------------ end switch
+				}
+
+			}
+			else
+			{
+				$message = "<span class='error'>var filename is empty!!!!</span>";
+				$message .= "<br>";
+			}
+		break;
+	}//end switch
+
+}//end elseif action
+
+
+//==================== FUNCTIONS ====================
+function view_form(){
+	//global $fs_path, $url_path;
+	global $dbPath, $exportFile, $exportBook, $exportVoc;
+
+	$out="";
+	$out .= "<form method=post name=form_export action=''>";
+	$out .= "<div class='section'>";
+	$out .= "<b>filename:</b><input type='text' name='filename' class='form-control' value='$exportFile'/>";
+	$out .= "<br>";
+	$out .= "<b>sqlite_path:</b><input type='text' name='sqlite_path' class='form-control' value='$dbPath'/>";
+	$out .= "<p>sqlite:/mnt/d2/temp/mydb.sqlite</p>";
+	$out .= "<br>";
+	$out .= "<b>Drupal book:</b><input type='text' name='book_title' class='form-control' value='$exportBook'/>";
+	$out .= "<br>";
+	$out .= "<b>Drupal vocabulary:</b><input type='text' name='voc_title' class='form-control' value='$exportVoc'/>";
+	$out .= "<br>";
+	$out .= "
+<div class='form-group'>
+	<b>xml-format file export : </b>
+	<label class='radio-inline'><input type='radio' name='xml_format' checked='checked' value='XML'>XML</label>
+	<label class='radio-inline'><input type='radio' name='xml_format' value='WXR'>WXR ( WordPress eXtended Rss export/import )</label>
+</div>";
+	$out .= "</div>";
+	$out .= "<input type='hidden' name='action'  value='export'/>";
+	$out .= "<input type='submit' class='btn btn-lg btn-info' value='export'>";
+	$out .= "</form>";
+
+	return $out;
+}//end view_form()
 
 
 //------------------------- получить все термины таксономии
@@ -482,6 +499,90 @@ xmlns:wp=\"http://wordpress.org/export/1.2/\">\n";
 	}
 	//-----------------------------------
 
-}//end
+}//-------------------------- end func
 
 ?>
+﻿<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>export</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="stylesheet" href="../css/bootstrap336.min.css">
+<style>
+legend
+{
+	color:green;
+	font-size:16px;
+}
+.section
+{
+	/*border:1px solid;*/
+	margin:20px;
+	padding:5px;
+	width:870px;
+}
+.param
+{
+	color:darkblue;
+}
+.error
+{
+	font-weight:bold;
+	color:red;
+}
+.ok
+{
+	color:green;
+}
+.warning
+{
+	color:#ffffff;
+	background:darkred;
+	font-style:italic;
+}
+#message
+{
+}
+#form
+{
+}
+#log
+{
+	border: 1px solid;
+	min-height: 100px;
+	padding:10px;
+}
+</style>
+
+    </head>
+<body>
+<div class="container">
+	<div class="page-header">
+		<h1>Export mydb notes, drupal book --> xml</h1>
+	</div>
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+           	<h3>Параметры экспорта</h3>
+		</div>
+		<div class="panel-body">
+			<div id='form'><?php echo $form; ?></div>
+		</div>
+	</div>
+
+	<div class="panel panel-warning">
+		<div class="panel-heading">
+           	<h3>Log messages</h3>
+		</div>
+		<div class="panel-body">
+			<div id='message'><?php echo $message; ?></div>
+		</div>
+	</div>
+
+</div><!-- end container -->
+</body>
+</html>

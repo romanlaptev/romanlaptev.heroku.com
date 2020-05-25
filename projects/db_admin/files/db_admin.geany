@@ -22,15 +22,15 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=0
+current_page=1
 FILE_NAME_0=11517;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fnb.txt;0;4
-FILE_NAME_1=5193;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Findex.php;0;4
+FILE_NAME_1=422;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Findex.php;0;4
 FILE_NAME_2=4860;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fdb.php;0;4
 FILE_NAME_3=3546;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fimport.php;0;4
 FILE_NAME_4=254;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fimport_notes_mydb.php;0;4
 FILE_NAME_5=229;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fviews%2Fmain.tpl.php;0;4
-FILE_NAME_6=3988;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fexport.php;0;4
-FILE_NAME_7=1263;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Ffunctions.php;0;4
+FILE_NAME_6=261;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fexport.php;0;4
+FILE_NAME_7=0;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Ffunctions.php;0;4
 FILE_NAME_8=8069;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent.php;0;4
 FILE_NAME_9=7615;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fapp.php;0;4
 
