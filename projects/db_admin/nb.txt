@@ -252,6 +252,15 @@ new: <item content_id="125" parent_id="238"></item>
 	.....
 )
 
+-- сгруппировать ноды по времени создания
+SELECT nid, title, created FROM	node GROUP BY created;
+
+-- сгруппировать ноды по времени создания и 
+-- вывести кол-во записей с одинаковым временем создания
+SELECT nid, title, created, COUNT( created ) AS count FROM	node
+GROUP BY created 
+HAVING COUNT( created ) > 1;
+
 ========================================
 
 --------------------------------------------

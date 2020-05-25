@@ -61,9 +61,9 @@ function _logWrap( $msg, $level = "info"){
 			}
 	}
 
-	if( gettype( $msg) !== "string"){
-		return false;
-	}
+	//if( gettype( $msg) !== "string"){
+		//return false;
+	//}
 
 //-------------
 	switch ($level) {
