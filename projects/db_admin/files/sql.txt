@@ -1,0 +1,107 @@
+-- get list children pages for book 'notes'
+SELECT node.nid, node.title FROM node WHERE node.nid IN (
+	SELECT book.nid FROM book WHERE book.mlid IN (
+		SELECT menu_links.mlid FROM menu_links WHERE menu_links.plid=(
+			SELECT book.mlid FROM book WHERE book.nid=(
+				SELECT node.nid FROM node WHERE node.title='notes'
+			)
+		)
+	)
+)
+
+-----------------------------
+SELECT node.nid FROM node WHERE node.title='notes'
+437
+
+SELECT book.mlid FROM book WHERE book.nid=node.nid
+1585
+
+SELECT menu_links.mlid FROM menu_links WHERE menu_links.plid=book.mlid
+3383
+1582
+1588
+1589
+1591
+2300
+2413
+2479
+2565
+3234
+
+SELECT book.nid FROM book WHERE book.mlid IN ( menu_links.mlid )
+669
+673
+674
+676
+722
+739
+750
+817
+1114
+1212
+
+SELECT node.nid, node.title FROM node WHERE node.nid IN (book.nid)
+669	портфолио
+673	program
+674	config
+676	bookmarks
+722	web
+739	linux_faq
+750	mix
+817	windows_faq
+1114	user programs
+1212	android
+
+=====================================
+-- get list mlid for all pages book 'notes'
+SELECT menu_links.mlid FROM menu_links WHERE menu_links.menu_name IN (
+    SELECT menu_name FROM menu_links WHERE link_title LIKE 'notes' AND module='book'
+) ORDER BY weight ASC;
+
+--get list all nodes from book 'notes'
+SELECT 
+book.mlid, 
+book.nid, 
+menu_links.plid, 
+node.nid, 
+node.type, 
+node.status,
+node.created, 
+node.changed, 
+node.title, 
+field_data_body.body_value, 
+field_data_field_subfolder.field_subfolder_value, 
+field_data_field_book_author.field_book_author_value, 
+field_data_field_book_name.field_book_name_value, 
+menu_links.weight 
+-- file_managed.filename
+FROM book 
+LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
+LEFT JOIN node ON node.nid=book.nid
+-- LEFT JOIN file_usage ON file_usage.id=node.nid 
+-- LEFT JOIN file_managed ON file_managed.fid=file_usage.fid
+LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid 
+LEFT JOIN field_data_field_subfolder ON field_data_field_subfolder.entity_id=node.nid 
+LEFT JOIN field_data_field_book_author ON field_data_field_book_author.entity_id=node.nid 
+LEFT JOIN field_data_field_book_name ON field_data_field_book_name.entity_id=node.nid 
+WHERE 
+node.status=1 AND 
+book.mlid in ( {{listNodesMlid}} ) ORDER BY menu_links.weight,title ASC
+
+-------------------
+--get list all nodes from book 'notes'
+SELECT 
+-- book.mlid, book.nid, 
+-- menu_links.plid, 
+node.nid, node.type, node.status, node.created,  node.changed, node.title, 
+field_data_body.body_value
+FROM book 
+LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
+LEFT JOIN node ON node.nid=book.nid
+LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid 
+WHERE node.status=1 AND book.mlid in (
+    SELECT menu_links.mlid FROM menu_links WHERE menu_links.menu_name IN (
+        SELECT menu_name FROM menu_links WHERE link_title LIKE 'notes' AND module='book'
+    ) ORDER BY menu_links.weight ASC
+) ORDER BY menu_links.weight,title ASC
+
