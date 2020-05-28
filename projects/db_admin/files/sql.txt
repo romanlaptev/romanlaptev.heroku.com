@@ -1,3 +1,58 @@
+-- content_id=437 //notes
+-- parent_id=0
+
+-- content_id=739 //linux_faq
+-- parent_id=437 //notes
+
+-- content_id=809 //Mandriva
+-- parent_id=739 //notes
+
+-- get book.mlid (parent_id_link)
+SELECT 
+book.nid, book.mlid,
+menu_links.plid as parent_id_link 
+FROM book, menu_links 
+WHERE menu_links.mlid=book.mlid;
+
+------
+SELECT 
+book.nid as content_id,
+book2.nid as parent_id
+FROM book 
+JOIN book as book2 ON book2.mlid IN (1585, 2413)
+WHERE book.nid IN (739, 809)
+
+/*
+SELECT 
+book.nid as content_id,
+book2.nid as parent_id
+FROM book, book as book2  WHERE book.nid IN (739, 809) AND book2.mlid IN (1585, 2413)
+*/
+
+=============================
+-- get book main link
+SELECT menu_links.mlid FROM menu_links WHERE menu_links.plid=0 AND menu_links.module='book' AND menu_links.link_title='notes';
+1585
+
+-- get book main nid
+SELECT book.nid FROM book WHERE book.mlid=menu_links.mlid
+437
+
+==============================
+
+-- get content_links for book 'notes'
+SELECT 
+book.nid as content_id, 
+menu_links.plid as parent_id 
+FROM book 
+LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
+WHERE book.mlid in (
+    SELECT menu_links.mlid FROM menu_links WHERE menu_links.menu_name IN (
+        SELECT menu_name FROM menu_links WHERE link_title LIKE 'notes' AND module='book'
+    )
+);
+===============================
+
 -- get list children pages for book 'notes'
 SELECT node.nid, node.title FROM node WHERE node.nid IN (
 	SELECT book.nid FROM book WHERE book.mlid IN (
