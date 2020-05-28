@@ -15,6 +15,29 @@ FROM book, menu_links
 WHERE menu_links.mlid=book.mlid;
 
 ------
+/*
+SELECT 
+book.nid, book.mlid,
+menu_links.plid as parent_id_link 
+FROM book, menu_links 
+WHERE menu_links.mlid=book.mlid AND book.mlid=2413;
+*/
+/*
+SELECT book.nid
+FROM book
+WHERE book.mlid=1585;
+*/
+SELECT book.nid
+FROM book
+WHERE book.mlid=(
+    SELECT 
+    menu_links.plid
+    FROM book, menu_links 
+    WHERE menu_links.mlid=book.mlid AND book.mlid=2413
+);
+
+
+------
 SELECT 
 book.nid as content_id,
 book2.nid as parent_id
