@@ -6,28 +6,6 @@ $_vars=array();
 $_vars["config"] = require_once("config.php");
 require_once "inc/functions.php";
 
-//--------------------------------------- load Drupal
-$drupalConstFile = $_vars["config"]["export"]["drupalConstFile"];
-if ( !file_exists( $drupalConstFile ) ){
-	$msg = "error, not find Drupal constant file ".$drupalConstFile;
-	echo $msg;
-	exit();
-}
-
-// Define default settings.
-chdir ("../");
-//echo getcwd();
-//echo "<br>";
-
-define('DRUPAL_ROOT', getcwd() );
-$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
-//echo _logWrap( DRUPAL_ROOT );
-
-// Bootstrap Drupal.
-require_once $drupalConstFile;
-drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
-
-
 //-------------------------------------------------------------------
 $_vars["runType"] = "";
 $sapi_type = php_sapi_name();
@@ -51,6 +29,7 @@ if ( $_vars["runType"] == "web") {
 //echo "</pre>";
 	$_vars["form"] = "";
 	if (empty($_REQUEST['action']))	{
+		loadDrupal();
 		$_vars["form"] = importForm();
 	} else {
 		$action = $_REQUEST['action'];
@@ -59,6 +38,7 @@ if ( $_vars["runType"] == "web") {
 				if( !empty($_REQUEST['file_path']) ){
 					$_vars["config"]["export"]["file_path"] = $_REQUEST['file_path'];
 				}
+				loadDrupal();
 				_importProcess();
 			break;
 		}//end switch
@@ -73,6 +53,7 @@ if ( $_vars["runType"] == "web") {
 if ( $_vars["runType"] == "console") {
 //print_r($argv);
 //$_SERVER["argv"]
+	loadDrupal();
 	_importProcess();
 }
 
@@ -90,7 +71,7 @@ if ( !empty( $_vars[ "log" ] ) ) {
 //====================
 function _importProcess(){
 	global $_vars;
-	
+
 	//--------------------------- check PHP-module SimpleXML
 	$loadedExt = get_loaded_extensions();
 	$module_name = "SimpleXML";

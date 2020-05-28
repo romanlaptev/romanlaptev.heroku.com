@@ -7,18 +7,18 @@ function PageHead(){
 	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge'>
+	<style>.container {width: 80%;margin: auto;background-color: #fff;}</style>
 </head>
 <body>
-<div class='container'>";
+<div class='container'>
+<div>
+	<b>PHP version:</b>".phpversion().", <b>Drupal version:</b>".VERSION."
+</div>
+";
 }//end
 
 function PageEnd(){
-	return "
-<p><b>PHP version:</b>".phpversion()."</p>
-<p><b>Drupal version:</b>".VERSION."</p>	
-</div>
-</body>
-</html>";
+	return "</body></html>";
 }//end
 
 
@@ -27,12 +27,23 @@ function ImportForm(){
 	return "<form method=post name='form_import' action='' class='form'>
 		<fieldset>
 <legend>Import parameters:</legend>
+
 		<div class=class='form-group'>
-<label>filename</label>
+<b>filename</b>
 <input type='text' name='file_path' value='".$_vars["config"]["export"]["file_path"]."' size='60' class='form-control'/>
 		</div>
+
+		<div class=class='form-group'>
+<b>Drupal root (absolute path to CMS)</b>
+<input type='text' name='drupal_root' value='".$_vars["config"]["export"]["drupal_root"]."' size='60' class='form-control'/>
+<pre>
+/home/www/sites/mydb
+/mnt/serv_d1/www/sites/music/cms/music_drupal
+</pre>
+		</div>
+		
 		<input type=hidden name='action' value='import'/>
-		<input type=submit value='Import' class='btn btn-large btn-primary'>
+		<input type=submit value='start import' class='btn btn-large btn-primary'>
 		</fieldset>
 	</form>";
 }//end ImportForm()
@@ -41,41 +52,132 @@ function exportForm(){
 	global $_vars;
 	return "<form method=post name='form_export' action='' class='form'>
 		<fieldset>
-<legend>Export parameters:</legend>
+			<legend>
+				<b>Export parameters</b>
+			</legend>
 
 		<div class=class='form-group'>
-<label>file path</label>
+			<fieldset>
+				<legend>
+					<b>Drupal root (absolute path to CMS)</b>
+				</legend>
+
+<input type='text' name='drupal_root' value='".$_vars["config"]["export"]["drupal_root"]."' size='60' class='form-control'/>
+<pre>
+/home/www/sites/mydb
+/mnt/serv_d1/www/sites/music/cms/music_drupal
+/mnt/serv_d1/www/sites/lib/cms
+</pre>
+			</fieldset>
+		</div>
+
+<br>
+		<div class=class='form-group'>
+			<fieldset>
+				<div>
+<b>Drupal content book</b>
+<input type='text' name='content_book' value='".$_vars["config"]["export"]["content_book"]."' size='60' class='form-control'/>
+<pre>
+notes
+personal_info
+библиотека
+</pre>
+				</div>
+				
+				<div>
+					<fieldset>
+<b>tag_group:</b><input type='text' name='tag_group' value='".$_vars["config"]["export"]["tag_group"]."' class='form-control'/>
+<pre>
+tags, library, alphabetical_voc
+</pre>
+<b>tag_name:</b><input type='text' name='tag_name' value='".$_vars["config"]["export"]["tag_name"]."' class='form-control'/>
+<pre>
+linux, windows, config, network, drupal, convert
+</pre>
+					</fieldset>
+				</div>
+
+				<div>
+<b>Drupal content type</b>
+<input type='text' name='content_type' value='".$_vars["config"]["export"]["content_type"]."' class='form-control'/>
+<pre>
+page
+book
+article
+author
+video
+playlist
+music
+videoclip
+</pre>
+				</div>
+				
+			</fieldset>
+		</div>
+
+		<div class=class='form-group'>
+			<fieldset>
+				<legend>
+					<b>export content items (nodes)</b>
+				</legend>
+<ul>
+	<li><input type='radio' name='type_export_content' checked='checked' value='nodes_all'>all nodes</li>
+	<li><input type='radio' name='type_export_content' value='nodes_book'>nodes of the book</li>
+	<li><input type='radio' name='type_export_content' value='nodes_tag'>nodes by the tag</li>
+	<li><input type='radio' name='type_export_content' value='nodes_type'>nodes by the type</li>
+</ul>
+			</fieldset>
+		</div>
+		
+<br>
+		<div class=class='form-group'>
+<b>file path</b>
 <input type='text' name='file_path' value='".$_vars["config"]["export"]["file_path"]."' size='60' class='form-control'/>
 		</div>
-
+		
+<!--
 		<div class=class='form-group'>
-<label>sqlite path</label>
-<input type='text' name='sqlite_path' value='".$_vars["config"]["db"]["dsn"]."' size='60' class='form-control'/>
+<b>sqlite path</b>
+<input type='text' name='sqlite_path' value='_vars[config][db][dsn]' size='60' class='form-control'/>
 <p>sqlite:/mnt/d2/temp/mydb.sqlite</p>
 		</div>
-
-		<div class=class='form-group'>
-<label>Drupal content book</label>
-<input type='text' name='content_book' value='".$_vars["config"]["export"]["content_book"]."' size='60' class='form-control'/>
-<p>personal_info</p>
-		</div>
-
-		<div class=class='form-group'>
-<label>Drupal tag group</label>
-<input type='text' name='tag_group' value='".$_vars["config"]["export"]["tag_group"]."' size='60' class='form-control'/>
-		</div>
-
+-->
+		
 <div class='form-group'>
 	<b>export format</b>
 	<label class='radio-inline'><input type='radio' name='export_format' checked='checked' value='xml'>XML</label>
 	<label class='radio-inline'><input type='radio' name='export_format' value='wxr'>WXR ( WordPress eXtended Rss export/import )</label>
 </div>
 
+		</fieldset>
 		<input type=hidden name='action' value='export'/>
 		<input type=submit value='start export' class='btn btn-large btn-primary'>
-		</fieldset>
 	</form>";
 }//end exportForm()
+
+
+function loadDrupal(){
+	global $_vars;
+
+	$drupalRoot = $_vars["config"]["export"]["drupal_root"];
+	define('DRUPAL_ROOT', $drupalRoot );
+	$_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+//echo _logWrap( DRUPAL_ROOT );
+
+	chdir ($drupalRoot);
+	//echo getcwd();
+	//echo "<br>";
+
+	// Bootstrap Drupal.
+	$drupalConstFile = $drupalRoot."/includes/bootstrap.inc";
+	if ( !file_exists( $drupalConstFile ) ){
+		$msg = "error, not find Drupal constant file ".$drupalConstFile;
+		echo $msg;
+		return false;
+	}
+	require_once $drupalConstFile;
+	drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+}//end loadDrupal()
 
 
 function _logWrap( $msg, $level = "info"){
