@@ -36,8 +36,8 @@ if ( $_vars["runType"] == "web") {
 	_importProcess();
 	
 	//RUNTIME
-	$runtime_s = round( microtime(true) - $_vars["timer"]["start"], 4);
-	$runtime_m = $runtime_s / 60;
+	$runtime_s = round( microtime(true) - $_vars["timer"]["start"], 2);
+	$runtime_m = round( $runtime_s / 60, 2);
 	$msg = "export runtime, sec: ".$runtime_s.", min: ".$runtime_m;
 	$_vars["log"][] = array("message" => $msg, "type" => "info");
 	

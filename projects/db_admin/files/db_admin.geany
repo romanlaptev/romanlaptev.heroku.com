@@ -22,19 +22,18 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=3
+current_page=7
 FILE_NAME_0=11517;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fnb.txt;0;4
 FILE_NAME_1=422;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Findex.php;0;4
 FILE_NAME_2=1345;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fdb.php;0;4
-FILE_NAME_3=10421;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fimport.php;0;4
+FILE_NAME_3=6903;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fimport.php;0;4
 FILE_NAME_4=229;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fviews%2Fmain.tpl.php;0;4
-FILE_NAME_5=9436;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fexport.php;0;4
+FILE_NAME_5=211;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fapi%2Fexport.php;0;4
 FILE_NAME_6=0;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Ffunctions.php;0;4
-FILE_NAME_7=8295;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent.php;0;4
-FILE_NAME_8=3603;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fapp.php;0;4
-FILE_NAME_9=693;PHP;0;EUTF-8;1;1;0;%2Frun%2Fuser%2F1000%2Fgvfs%2Fsftp%3Ahost%3Dvbox1%2Cuser%3Droot%2Fhome%2Fwww%2Fsites%2Fmydb%2Fdata%2Fimport.php;0;4
-FILE_NAME_10=361;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Ffiles%2Fsql.txt;0;4
-FILE_NAME_11=14;CSS;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fcss%2Fmain.css;0;4
+FILE_NAME_7=4528;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent.php;0;4
+FILE_NAME_8=3388;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fapp.php;0;4
+FILE_NAME_9=550;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fdata%2Fdb_schema.txt;0;4
+FILE_NAME_10=3296;SQL;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fdata%2Fdb_schema_sqlite.sql;0;4
 
 [VTE]
 last_dir=/mnt/d2/www

@@ -173,7 +173,7 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 
 	public function getList( $params=array() ){
 		global $_vars;
-
+/*
 		$p = array(
 			"tableName" => "content, content_type",
 			//"fields" => array_keys( $db->infoSchema["content"] )
@@ -184,6 +184,11 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 				"content_type.name as type"
 			),
 			"query_condition" => "WHERE content.type_id=content_type.id ORDER BY content_type.id"
+		);
+*/
+		$p = array(
+			"tableName" => "content",
+			"fields" => array_keys( $this->infoSchema )
 		);
 		
 		//extend options object $p

@@ -1,3 +1,36 @@
+-- get list IDs of books
+SELECT 
+book.nid, 
+book.mlid,
+book.bid
+FROM book 
+WHERE book.nid=book.bid;
+
+
+-- get ID book 'notes'
+SELECT 
+book.nid, 
+book.mlid,
+book.bid
+FROM book 
+WHERE book.mlid=(
+	SELECT menu_links.mlid FROM menu_links WHERE link_title LIKE 'notes' AND module='book'
+)
+
+-- get all IDs pages of book 'notes'
+SELECT 
+book.nid, 
+book.mlid,
+book.bid
+FROM book 
+WHERE book.bid=(
+    SELECT book.nid FROM book 
+    WHERE book.mlid=(
+        SELECT menu_links.mlid FROM menu_links WHERE link_title LIKE 'notes' AND module='book'
+    )
+);
+
+==================================
 -- content_id=437 //notes
 -- parent_id=0
 

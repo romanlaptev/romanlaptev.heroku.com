@@ -84,7 +84,8 @@ CREATE TABLE IF NOT EXISTS content_links (
 	-- id INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id>= 0), 
 	content_id INTEGER NOT NULL CHECK (content_id>= 0) DEFAULT 0,
 	parent_id INTEGER NOT NULL CHECK (parent_id>= 0) DEFAULT 0, -- (plid)
-	-- child_id INTEGER NOT NULL CHECK (parent_id>= 0) DEFAULT 0 -- (mlid)
+	-- menu_id INTEGER NOT NULL CHECK (parent_id>= 0) DEFAULT 0 -- (mlid)
+	-- book_id INTEGER NOT NULL CHECK (book_id>= 0) DEFAULT 0 -- (bid)
  PRIMARY KEY (content_id)
 );
 
