@@ -8,6 +8,8 @@ ini_set('display_errors', 1);
 //print_r($_FILES);
 //echo "</pre>";
 
+$_vars["timer"]["start"] = microtime(true);
+
 $_vars["runType"] = "";
 $sapi_type = php_sapi_name();
 //if ( $sapi_type == 'apache2handler') {

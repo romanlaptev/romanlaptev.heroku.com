@@ -2,6 +2,8 @@
 error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 
+$_vars["timer"]["start"] = microtime(true);
+
 $_vars["runType"] = "";
 $sapi_type = php_sapi_name();
 //if ( $sapi_type == 'apache2handler') {
@@ -32,6 +34,13 @@ if ( $_vars["runType"] == "web") {
 	$_vars["display_log"] = false;
 	
 	_importProcess();
+	
+	//RUNTIME
+	$runtime_s = round( microtime(true) - $_vars["timer"]["start"], 4);
+	$runtime_m = $runtime_s / 60;
+	$msg = "export runtime, sec: ".$runtime_s.", min: ".$runtime_m;
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
+	
 }
 
 //==================================== CONSOLE run
@@ -56,6 +65,11 @@ if ( $_vars["runType"] == "console") {
 	//$_vars["display_log"] = false;
 	
 	_importProcess();
+	
+	//RUNTIME
+	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
+	$msg = "export runtime, sec: ".$runtime;
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
 
 	//====================================== LOG
 	if ( !empty( $_vars["log"] ) ) {

@@ -1,0 +1,81 @@
+/*================================ GRID */
+.w10{
+	width:10%;
+}
+.w20{
+	width:20%;
+}
+.w25{
+	width:25%;
+}
+.w30{
+	width:30%;
+}
+.w33{
+	width:33%;
+}
+.w50{
+	width:50%;
+}
+.w60{
+	width:60%;
+}
+.w65{
+	width:65%;
+}
+.w70{
+	width:70%;
+}
+.w80{
+	width:80%;
+}
+.w90{
+	width:90%;
+}
+
+.row {
+	/* float: none; */
+	clear: both;
+	overflow: hidden;
+}
+.pull-left {
+	float: left;
+}
+.pull-right {
+	float: right;
+}
+.text-right{
+text-align:right;
+}
+.text-center{
+text-align:center;
+}
+
+.panel {
+	margin: 5px;
+	padding: 5px;
+/*
+  width: 100%;
+  width: 48%;
+float:left;
+*/
+}
+.padding-small{
+padding:5px;
+}
+.margin-small{
+margin:5px;
+}
+
+/*================================*/
+.container {
+	width: 80%;
+	margin: auto;
+	background-color: #fff;
+}
+
+body {
+	background-color: #055c80;	
+margin: 0;
+padding: 15px;
+}

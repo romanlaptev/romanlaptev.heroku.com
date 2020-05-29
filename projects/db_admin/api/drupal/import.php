@@ -3,6 +3,9 @@ error_reporting(E_ALL|E_STRICT);
 ini_set('display_errors', 1);
 
 $_vars=array();
+$_vars["timer"]["start"] = microtime(true);
+
+
 $_vars["config"] = require_once("config.php");
 require_once "inc/functions.php";
 
@@ -44,6 +47,11 @@ if ( $_vars["runType"] == "web") {
 		}//end switch
 	}//end elseif
 
+//====================================== RUNTIME
+	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
+	$msg = "export runtime, sec: ".$runtime;
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
+
 	echo PageHead();
 	echo $_vars["form"];
 	echo PageEnd();
@@ -55,17 +63,22 @@ if ( $_vars["runType"] == "console") {
 //$_SERVER["argv"]
 	loadDrupal();
 	_importProcess();
-}
 
-
+//====================================== RUNTIME
+	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
+	$msg = "export runtime, sec: ".$runtime;
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
+	
 //====================================== LOG
-if ( !empty( $_vars[ "log" ] ) ) {
-	for( $n = 0; $n < count( $_vars["log"] ); $n++){
-	//for( $n = count( $_vars["log"] ) - 1; $n >= 0; $n--){
-		$record = $_vars["log"][$n];
-		echo _logWrap( $record["message"], $record["type"] );
-	}//next
+	if ( !empty( $_vars[ "log" ] ) ) {
+		for( $n = 0; $n < count( $_vars["log"] ); $n++){
+		//for( $n = count( $_vars["log"] ) - 1; $n >= 0; $n--){
+			$record = $_vars["log"][$n];
+			echo _logWrap( $record["message"], $record["type"] );
+		}//next
+	}
 }
+
 
 
 //====================

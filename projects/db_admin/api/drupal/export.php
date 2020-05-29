@@ -8,7 +8,10 @@ ini_set('display_errors', 1);
 //print_r($_FILES);
 //echo "</pre>";
 
+
 $_vars=array();
+$_vars["timer"]["start"] = microtime(true);
+
 $_vars["config"] = require_once("config.php");
 require_once "inc/functions.php";
 
@@ -51,6 +54,7 @@ if ( $_vars["runType"] == "web") {
 					}
 				}//next
 //echo _logWrap( $_vars );
+//echo _logWrap( $_vars["config"]["export"] );
 //echo _logWrap( htmlspecialchars( $_vars["config"]["export"]["xml_template"]) );
 //exit();
 
@@ -112,6 +116,12 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 }
 
 
+//====================================== RUNTIME
+$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
+$msg = "export runtime, sec: ".$runtime;
+$_vars["log"][] = array("message" => $msg, "type" => "info");
+
+
 //====================================== LOG
 if ( !empty( $_vars[ "log" ] ) ) {
 	for( $n = 0; $n < count( $_vars["log"] ); $n++){
@@ -120,7 +130,6 @@ if ( !empty( $_vars[ "log" ] ) ) {
 		echo _logWrap( $record["message"], $record["type"] );
 	}//next
 }
-
 
 //====================
 function exportProcess($params){
@@ -152,14 +161,13 @@ function exportProcess($params){
 		return false;
 	}
 
-//------------------------------- get exists DB nodes
+//------------------------------- get content ( node -> content )
 	$type_export_content = $p["type_export_content"];
 	$sql_query = $_vars["config"]["sql"][$type_export_content];
 	
 	//prepare sql query: replace parameters
 	foreach( $p as $key=>$value ){
 		$sql_query = str_replace("{{".$key."}}", $value, $sql_query);
-		$p[ $key ] = $item;
 	}//next
 //echo _logWrap("SQL:".$sql_query);
 
@@ -176,6 +184,48 @@ function exportProcess($params){
 //echo _logWrap( count( $_vars["dbData"]["content"] ) );
 //echo _logWrap( $_vars["dbData"]["content"][0] );
 //echo _logWrap( $_vars["dbData"]["content"] );
+//return false;
+
+//------------------------------- get content links ( book -> content_links )
+	//if( $type_export_content == "nodes_all"){
+		$sql_query = $_vars["config"]["sql"]["content_links"];
+	//}
+/*	
+	if( $type_export_content == "nodes_book"){
+		$sql_query = $_vars["config"]["sql"]["content_links_book"];
+		//prepare sql query: replace parameters
+		foreach( $p as $key=>$value ){
+			$sql_query = str_replace("{{".$key."}}", $value, $sql_query);
+		}//next
+	}
+*/
+//echo _logWrap("SQL:".$sql_query);
+	
+	//if( $type_export_content == "nodes_tag"){	}
+	//if( $type_export_content == "nodes_type"){	}
+
+	
+	$result = db_query($sql_query);
+	foreach ($result as $row) {
+		$_vars["dbData"]["content_links"][] = $row;
+	}//next
+	
+	// change content links, add parent_id (parent_id_link == mlid )
+	for( $n1 = 0; $n1 < count($_vars["dbData"]["content_links"]); $n1++ ){
+		$mlid = $_vars["dbData"]["content_links"][$n1]->parent_id_link;
+		
+		$parent_id = 0;
+		for( $n2 = 0; $n2 < count($_vars["dbData"]["content_links"]); $n2++ ){
+			$record = $_vars["dbData"]["content_links"][$n2];
+			if( $record->mlid == $mlid ){
+				$parent_id = $record->content_id;
+			}
+		}//next
+		$_vars["dbData"]["content_links"][$n1]->parent_id = $parent_id;
+		
+	}//next
+	
+//echo _logWrap( $_vars["dbData"]["content_links"] );
 //return false;
 
 	$_vars["xml"] = formXML( $_vars["dbData"] );
@@ -200,6 +250,7 @@ function formXML( $xmlData ){
 //return false;
 
 	$xml = $_vars["config"]["export"]["xml_template"];
+
 //------------------ form content node	
 	$xml_content = "";
 	if( !empty( $xmlData["content"] ) ){
@@ -213,9 +264,11 @@ function formXML( $xmlData ){
 			foreach( $record as $field=>$value){
 //----------- filter
 if( $field == "body_value"){
-	$value = str_replace("&", "&amp;", $value);
-	$value = str_replace("<", "&lt;", $value);
-	$value = str_replace(">", "&gt;", $value);
+	if( !empty($value) ){
+		$value = str_replace("&", "&amp;", $value);
+		$value = str_replace("<", "&lt;", $value);
+		$value = str_replace(">", "&gt;", $value);
+	}
 }
 //-----------				
 if( $field == "type"){
@@ -238,6 +291,27 @@ if( $field == "type"){
 	}
 	
 	$xml = str_replace("{{content}}", $xml_content, $xml);
+
+//------------------ form content links	
+	$xml_content = "";
+	if( !empty( $xmlData["content_links"] ) ){
+		$xml_content = $_vars["config"]["export"]["tplContentLinks"];
+		$nodeList = "";
+		for( $n1 = 0; $n1 < count( $xmlData["content_links"] ); $n1++)	{
+			$record = $xmlData["content_links"][$n1];
+			$node = $_vars["config"]["export"]["tplContentLink"];
+			foreach( $record as $field=>$value){
+				$node = str_replace("{{".$field."}}", $value, $node);
+			}//next
+			$nodeList .= "\n".$node;
+		}//next
+
+		$xml_content = str_replace("{{nodelist}}", $nodeList."\n\t\t", $xml_content);
+		$xml_content = "\t\t".$xml_content."\t\t";
+	}
+	$xml = str_replace("{{content_links}}", $xml_content, $xml);
+
+	
 //echo "<pre>";
 //echo htmlspecialchars($xml);
 //echo "</pre>";

@@ -24,7 +24,12 @@ $config = array(
 		"tag_group" => 'tags',//library, alphabetical_voc
 		"tag_name" => 'linux',//windows, config
 		"type_export_content" => "nodes_all",
-		"export_format" => "xml" //json, csv
+		"export_format" => "xml", //json, csv
+		"list_drupal_cms_filepath" => "
+/home/www/sites/mydb
+/mnt/serv_d1/www/sites/music/cms/music_drupal
+/mnt/serv_d1/www/sites/video/cms
+/mnt/serv_d1/www/sites/lib/cms"
 	)
 );
 
@@ -76,6 +81,18 @@ $config["export"]["tplContentNode"] = '<node id="{{id}}" {{type}}>
 	<changed>{{changed}}</changed>
 	<body_value>{{body_value}}</body_value>
 </node>';
+
+$config["export"]["tplContentLinks"] = '<content_links>{{nodelist}}</content_links>';
+$config["export"]["tplContentLink"] = '<item content_id="{{content_id}}" parent_id="{{parent_id}}"></item>';
+
+$config["export"]["tplTagGroups"] = '<tag_groups>{{nodelist}}</tag_groups>';
+$config["export"]["tplTagGroup"] = '<item id="{{id}}" name="{{name}}"></item>';
+
+$config["export"]["tplTagList"] = '<tag_list>{{nodelist}}</tag_list>';
+$config["export"]["tplTag"] = '<item id="{{id}}" term_group_id="{{term_group_id}}" parent_id="{{parent_id}}" name="{{name}}"></item>';
+
+$config["export"]["tplTagLinks"] = '<tag_links>{{nodelist}}</tag_links>';
+$config["export"]["tplTagLink"] = '<item content_id="{{content_id}}" term_id="{{term_id}}"></item>';
 
 /*
 <?xml version="1.0" encoding="UTF-8"?>
@@ -148,9 +165,9 @@ node.type,
 node.created, 
 node.changed,
 field_data_body.body_value 
-FROM node, field_data_body 
-WHERE field_data_body.entity_id=node.nid AND
-node.status=1
+FROM node 
+LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid 
+WHERE node.status=1
 ORDER BY node.created;";
 
 $config["sql"]["nodes_book"] = "SELECT 
@@ -185,10 +202,43 @@ node.type,
 node.created, 
 node.changed,
 field_data_body.body_value 
-FROM node, field_data_body 
-WHERE field_data_body.entity_id=node.nid AND 
-node.status=1 AND 
+FROM node 
+LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid 
+WHERE node.status=1 AND 
 node.type='{{content_type}}' ORDER BY node.created;";
+
+$config["sql"]["content_links"] = "SELECT 
+book.nid as content_id, 
+book.mlid,
+menu_links.plid as parent_id_link 
+FROM book, menu_links 
+WHERE menu_links.mlid=book.mlid;";
+
+/*
+$config["sql"]["content_links_book"] = "SELECT 
+book.nid as content_id, 
+menu_links.plid as parent_id 
+FROM book 
+LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
+WHERE book.mlid in (
+    SELECT menu_links.mlid FROM menu_links WHERE menu_links.menu_name IN (
+        SELECT menu_name FROM menu_links WHERE link_title LIKE '{{content_book}}' AND module='book'
+    )
+);";
+*/
+
+/*
+SELECT 
+book.nid as content_id, 
+menu_links.plid as parent_id 
+FROM book 
+LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
+WHERE book.nid in (
+	SELECT taxonomy_index.nid FROM  taxonomy_index WHERE taxonomy_index.tid IN ( 
+		SELECT  taxonomy_term_data.tid FROM  taxonomy_term_data WHERE taxonomy_term_data.name='drupal'
+	)
+);
+*/
  
 return $config;
 ?>

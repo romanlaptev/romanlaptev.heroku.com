@@ -7,12 +7,14 @@ function PageHead(){
 	<meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'/>
 	<meta http-equiv='X-UA-Compatible' content='IE=Edge'>
-	<style>.container {width: 80%;margin: auto;background-color: #fff;}</style>
+	<link rel='stylesheet' type='text/css' href='inc/style.css'>
 </head>
 <body>
-<div class='container'>
-<div>
-	<b>PHP version:</b>".phpversion().", <b>Drupal version:</b>".VERSION."
+<div class='container padding-small'>
+<div class='row'>
+	<div class='pull-right padding-small'>
+		<b>PHP version:</b>".phpversion().", <b>Drupal version:</b>".VERSION."
+	</div>
 </div>
 ";
 }//end
@@ -36,10 +38,7 @@ function ImportForm(){
 		<div class=class='form-group'>
 <b>Drupal root (absolute path to CMS)</b>
 <input type='text' name='drupal_root' value='".$_vars["config"]["export"]["drupal_root"]."' size='60' class='form-control'/>
-<pre>
-/home/www/sites/mydb
-/mnt/serv_d1/www/sites/music/cms/music_drupal
-</pre>
+<pre>".$_vars["config"]["export"]["list_drupal_cms_filepath"]."</pre>
 		</div>
 		
 		<input type=hidden name='action' value='import'/>
@@ -63,11 +62,7 @@ function exportForm(){
 				</legend>
 
 <input type='text' name='drupal_root' value='".$_vars["config"]["export"]["drupal_root"]."' size='60' class='form-control'/>
-<pre>
-/home/www/sites/mydb
-/mnt/serv_d1/www/sites/music/cms/music_drupal
-/mnt/serv_d1/www/sites/lib/cms
-</pre>
+<pre>".$_vars["config"]["export"]["list_drupal_cms_filepath"]."</pre>
 			</fieldset>
 		</div>
 
@@ -80,6 +75,7 @@ function exportForm(){
 <pre>
 notes
 personal_info
+hosting sites
 библиотека
 </pre>
 				</div>
