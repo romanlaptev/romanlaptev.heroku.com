@@ -1,6 +1,6 @@
 <?php
 //echo _logWrap($params["notes"]);
-//$_vars["log"][] = array("message" => $params["content_list"][0], "type" => "info");
+$_vars["log"][] = array("message" => $params["content_list"][0], "type" => "info");
 
 $total = 0;
 $html_table = "";
@@ -33,6 +33,9 @@ $tpl_record = "<tr>
 //echo _logWrap( $record );
 		$html_record = $tpl_record;
 		foreach( $record as $field=>$value ){
+			if( empty($value) ){
+				$value="NULL";
+			}
 			$html_record = str_replace( "{{".$field."}}", $value,  $html_record);	
 		}//next
 		$html_rows .= $html_record;

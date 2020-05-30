@@ -15,7 +15,7 @@ return array(
 	'export'=>array(
 		'filename' => 'export.xml',
 		'filePath' => dirname(__FILE__)."/data/export_test.xml",
-		'content_type' => ''//note, book, video....
+		//'content_type' => ''//note, book, video....
 	)
 );
 ?>

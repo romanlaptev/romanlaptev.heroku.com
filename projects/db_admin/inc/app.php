@@ -44,7 +44,10 @@ class App {
 		
 //----------------
 		//$p["data"]["content_type"] = $_vars["config"]["export"]["content_type"];
-		$content_type = $_vars["config"]["export"]["content_type"];
+		$content_type = "";//export conyent any types
+		if(!empty($_vars["config"]["export"]["content_type"]) ){
+			$content_type = $_vars["config"]["export"]["content_type"];
+		}
 		$p["data"]["content_type_select"] = widget_content_type($content_type);
 		
 		$p["data"]["type"] = "xml";

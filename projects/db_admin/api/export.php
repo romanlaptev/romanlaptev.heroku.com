@@ -202,7 +202,7 @@ $_vars["config"]["export"]["export_tpl"] = '<?xml version="1.0" encoding="UTF-8"
 	
 //------------------------------- get exists DB nodes
 	$arg = array(
-		"tableName" => "content, content_type",
+		//"tableName" => "content, content_type",
 		"fields" => array(
 			"content.id", 
 			"content.title", 
@@ -213,16 +213,16 @@ $_vars["config"]["export"]["export_tpl"] = '<?xml version="1.0" encoding="UTF-8"
 		)
 	);
 	
-	$content_type = $_vars["config"]["export"]["content_type"];
-	if( !empty($content_type) ){
-		$arg["query_condition"] = "WHERE content_type.name='".$content_type."' AND content.type_id=content_type.id ORDER BY content.title";
-	}
-
-	if( empty($content_type) ){
-		$arg["query_condition"] = "WHERE content.type_id=content_type.id ORDER BY content.title";
+	//$content_type = $_vars["config"]["export"]["content_type"];
+	//if( !empty($content_type) ){
+		//$arg["query_condition"] = "WHERE content_type.name='".$content_type."' AND content.type_id=content_type.id ORDER BY content.title";
+	//}
+	if( !empty( $_vars["config"]["export"]["content_type"] ) ){
+		$content_type = $_vars["config"]["export"]["content_type"];
+		$arg["query_condition"] = "LEFT JOIN content_type ON content_type.name='".$content_type."' AND content.type_id=content_type.id ORDER BY content.title";
 	}
 	
-	$_vars["xmlData"]["content"] = $content->getList($arg);
+	$_vars["xmlData"]["content"] = $content->getListWithType($arg);
 //echo _logWrap( $_vars["config"]["export"]["content_type"] );
 //echo _logWrap( $_vars["xmlData"]["content"] );
 //return false;
@@ -282,6 +282,9 @@ if( $field == "body_value"){
 //-----------				
 if( $field == "type"){
 	$content_type = "type='$value'";
+	if( empty($value) ){
+		$content_type = "";
+	}
 	continue;
 }
 				$node = str_replace("{{".$field."}}", $value, $node);

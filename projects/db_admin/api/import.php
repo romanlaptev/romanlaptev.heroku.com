@@ -83,8 +83,6 @@ if ( $_vars["runType"] == "console") {
 
 
 //====================
-// FUNCTIONS
-//====================
 function _importProcess(){
 	global $_vars;
 	global $content;
@@ -203,7 +201,7 @@ function _importContent(){
 		)
 	);
 	
-	$_vars["dbData"]["content"] = $content->getList($arg);
+	$_vars["dbData"]["content"] = $content->getListWithType($arg);
 //echo _logWrap( $_vars );
 	if( $_vars["dbData"]["content"] ){
 		$msg = "import: found " . count( $_vars["dbData"]["content"] )." db nodes";
@@ -234,7 +232,9 @@ function _importContent(){
 //-------------------
 		if( !empty($node["type"]) ){
 			$key = $node["type"];
-			$node["type_id"] = $_vars["table_content_type"][$key];
+			if( isset($_vars["table_content_type"][$key]) ){
+				$node["type_id"] = $_vars["table_content_type"][$key];
+			}
 		}
 
 //-------------------
@@ -283,7 +283,7 @@ function _importContentLinks(){
 			"content.created" 
 		)
 	);
-	$_vars["dbData"]["content"] = $content->getList($arg);
+	$_vars["dbData"]["content"] = $content->getListWithType($arg);
 	if( empty($_vars["dbData"]["content"]) ){
 		$msg = "import error, database nodes not found";
 		$_vars["log"][] = array("message" => $msg, "type" => "warning");

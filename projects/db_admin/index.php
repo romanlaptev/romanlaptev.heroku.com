@@ -90,7 +90,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 		break;
 		
 		case "content/list":
-			$views_params["content_list"] = $content->getList();
+			$views_params["content_list"] = $content->getListWithType();
 			$views_params["tpl_content_filename"] = "views/content/list.tpl.php";
 		break;
 

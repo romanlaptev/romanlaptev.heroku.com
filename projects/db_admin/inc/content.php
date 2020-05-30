@@ -171,21 +171,30 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 	}//end save()
 
 
-	public function getList( $params=array() ){
-		global $_vars;
-/*
+	public function getListWithType( $params=array() ){
 		$p = array(
-			"tableName" => "content, content_type",
-			//"fields" => array_keys( $db->infoSchema["content"] )
+			"tableName" => "content",
 			"fields" => array(
 				"content.id", 
 				"content.title", 
 				"content.created",
 				"content_type.name as type"
 			),
-			"query_condition" => "WHERE content.type_id=content_type.id ORDER BY content_type.id"
+			"query_condition" => "LEFT JOIN content_type ON content.type_id=content_type.id ORDER BY content_type.id"
 		);
-*/
+		
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+		
+		return $this->getList($p);
+	}//end getListWithType()
+		
+		
+		
+	public function getList( $params=array() ){
+		global $_vars;
 		$p = array(
 			"tableName" => "content",
 			"fields" => array_keys( $this->infoSchema )
