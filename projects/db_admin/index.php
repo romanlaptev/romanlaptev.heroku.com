@@ -167,8 +167,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 		
 //============================= TAXONOMY
 		case "taxonomy/list":
-			$views_params["term_groups"] = $taxonomy->getGroupList();
+			//$views_params["term_groups"] = $taxonomy->getGroupList();
 			//$views_params["term_groups"] = $taxonomy->getTagList();//test
+			$views_params["term_groups"] = $taxonomy->getTermGroup();
 			$views_params["tpl_content_filename"] = "views/taxonomy/list.tpl.php";
 		break;
 		
@@ -182,7 +183,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 $msg = "error,  could not save term group.";
 $_vars["log"][] = array("message" => $msg, "type" => "error");
 			} else {
-$msg = "ok,  save new term group.";
+$msg = "save new term group.";
 $_vars["log"][] = array("message" => $msg, "type" => "success");
 			}
 		break;

@@ -1,8 +1,26 @@
 <?php
 class Taxonomy {
 
-	public function __construct(){}
+	public $infoSchema = array(
+		"taxonomy_groups" => array(
+			"id" => "integer",
+			"name" => "string",
+			"description" => "string"
+		),
+		"taxonomy_index" => array(
+			"content_id" => "integer",
+			"term_id" => "integer"
+		),
+		"taxonomy_term_data" => array(
+			"id" => "integer",
+			"term_group_id" => "integer",
+			"parent_id" => "integer",
+			"name" => "string"
+		)
+	);
 
+	public function __construct(){}
+/*
 	public function getGroupList(){
 		global $_vars;
 		
@@ -26,7 +44,7 @@ class Taxonomy {
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		return false;
 	}//end getGroupList()
-
+*/
 
 	public function getTagList(){
 		global $_vars;
@@ -37,8 +55,7 @@ class Taxonomy {
 		$db = DB::getInstance();
 		$arg = array(
 			"tableName" => "taxonomy_term_data",
-			//"fields" => array_keys( $this->infoSchema["taxonomy_term_data"] )
-			"fields" => array("id", "term_group_id", "name", "parent_id")
+			"fields" => array_keys( $this->infoSchema["taxonomy_term_data"] )
 		);
 		$res = $db->getRecords($arg);
 		
@@ -102,7 +119,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 		}
 		
 //-----------------------------	check form, filter values 
-		$p["name"] = _filterFormValue( $p["name"] );
+		$p["name"] = _filterFormInputValue( $p["name"] );
 //-----------------------
 
 //echo _logWrap($p);
@@ -122,12 +139,15 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 
 
 	
-	public function getTermGroup( $params ){
+	public function getTermGroup( $params=array() ){
 //"tableName" => "taxonomy_groups",
 //"tableName" => "taxonomy_term_data",
 		global $_vars;
 		
 		$p = array(
+			"tableName" => "taxonomy_groups",
+			//"fields" => array("id", "name"),
+			"fields" => array_keys( $this->infoSchema["taxonomy_groups"] ),
 			"id" => false
 		);
 		//extend options object $p
@@ -135,29 +155,20 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 			$p[ $key ] = $item;
 		}//next
 		
-		if( !$p["id"] ){
-			return false;
-		}
-
-		$db = DB::getInstance();
-		$arg = array(
-			"tableName" => "taxonomy_groups",
-			"fields" => array("id", "name"),
-			"query_condition" => "WHERE id=".$p["id"]
-		);
-		
 		$msg = "not found <b>term group </b> by id: ".$p["id"];
 		$msg_type = "warning";
 
-		$res = $db->getRecords($arg);
-		
+		$db = DB::getInstance();
+		$res = $db->getRecords($p);
 		if( !empty($res) ){
 			$msg = "ok, found ".count($res)." records..";
 			$msg_type = "success";
 			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 			
-			if( $params["q"] == "term-group/list"){
-				$res["terms"] = $this->getTermGroupElements( $p["id"] );
+			if( !empty($params["q"]) ){
+				if( $params["q"] == "term-group/list"){
+					$res["terms"] = $this->getTermGroupElements( $p["id"] );
+				}
 			}
 			
 			return $res;
@@ -205,82 +216,40 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 		return $db->removeRecords($arg);
 	}//end removeTermGroup()
 
+
 	public function saveTerm( $params ){
-//"tableName" => "taxonomy_term_data",
-/*		
 		global $_vars;
-
 		$p = array(
-			"id" => null,
-			"category_id" => 0,//default category
-			"type_id" => 2,//default content type "note"
-			"title" => null,
-			"body_value" => null
+			//"tableName" => "taxonomy_term_data",
+			//"id" => false
 		);
-		
-		//check input parameters object (only from array $p[key] )
-		$_search_keys = array();
-		foreach( $p as $key=>$value ){
-			if( !empty($params[ $key ]) ){
-			//if( $params[ $key ] !== false ){
-				$p[ $key ] = $params[ $key ];
-			}
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
 		}//next
-		
-		//remove not requred id (no need, where add note)
-		if( !$p["id"] ){
-			unset( $p["id"] );
-		}
 
-		if( empty($p["title"]) ){
-$msg =  "error, empty requred <b>note title</b>";
+		if( empty($p["name"]) ){
+$msg =  "error, empty requred field: <b>taxonomy_term_data.name</b>";
 $_vars["log"][] = array("message" => $msg, "type" => "error");
 			return false;
 		}
 		
-		if( empty($p["body_value"]) ){
-$msg =  "error, empty requred <b>note text</b>";
-$_vars["log"][] = array("message" => $msg, "type" => "error");
-			return false;
-		}
-
 //-----------------------------	check form, filter values 
-		//checkFormData( $p );
-		$p["title"] = trim( $p["title"] );
-		$p["title"] = htmlspecialchars( $p["title"] );
-		$p["title"] = str_replace("\"", "&quot;", $p["title"]);
-		$p["title"] = str_replace("'", "&apos;", $p["title"]);//replace apostrophe
-		//$logStr = str_replace("`", "&#39", $logStr);//replace apostrophe
-		
-		$p["body_value"] = trim( $p["body_value"] );
-		$p["body_value"] = htmlspecialchars( $p["body_value"] );
-//$textMessage = addslashes( htmlspecialchars($_REQUEST["text_message"]) );
-//$textbox=$vars['textbox']; 
-//	$textbox = stripslashes($textbox);
+		$p["name"] = _filterFormInputValue( $p["name"] );
 //-----------------------
-
-//echo _logWrap($p);
-//return false;
-
-//INSERT INTO content(fields_string) VALUES(values_string);
-//UPDATE content SET field1=value,field2=value WHERE id=request_id;
 		
-		//$db = new DB();
 		$db = DB::getInstance();
 		$arg = array(
-			"tableName" => "content",
+			"tableName" => "taxonomy_term_data",
 			"data" => $p
 		);
-		
 		if( !empty( $p["id"] ) ) {
-			//$arg["search_key"] = array( "name" => "id", "value" => $p["id"] );
 			$arg["query_condition"] = "id=".$p["id"];
 		}
-echo _logWrap($arg);
 		
 		return $db->saveRecord($arg);
-*/
 	}//end saveTerm()
+
 
 	public function getTerm($params){
 //"tableName" => "taxonomy_index",

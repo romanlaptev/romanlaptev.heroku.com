@@ -4,7 +4,7 @@ class DB {
 	private $dbTablesChecked = false;
 	public $dbConnection = null;
 	private	static $instance = null;
-	
+/*	
 	public $infoSchema = array(
 		//"content" => array(
 			//"id" => "integer",
@@ -26,7 +26,7 @@ class DB {
 			"name" => "string"
 		),
 	);
-
+*/
 	private function __construct(){
 		global $_vars;
 		//$this->config = $params;

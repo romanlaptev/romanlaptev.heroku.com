@@ -14,7 +14,8 @@ return array(
 	),
 	'export'=>array(
 		'filename' => 'export.xml',
-		'filePath' => dirname(__FILE__)."/data/export_test.xml",
+		//'filePath' => dirname(__FILE__)."/data/export_test.xml",
+		'filePath' => "/mnt/d2/temp/export.xml",
 		//'content_type' => ''//note, book, video....
 	)
 );

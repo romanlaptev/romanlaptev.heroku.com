@@ -52,13 +52,13 @@ if ( $_vars["runType"] == "console") {
 	require_once "../inc/functions.php";
 	require_once "../inc/db.php";
 	require_once "../inc/content.php";
-	//require_once "../inc/content_links.php";
-	//require_once "../inc/taxonomy.php";
+	require_once "../inc/content_links.php";
+	require_once "../inc/taxonomy.php";
 	require_once "../inc/app.php";
 	
 	$content = new Content();
-	//$content_links = new ContentLinks();
-	//$taxonomy = new Taxonomy();
+	$content_links = new ContentLinks();
+	$taxonomy = new Taxonomy();
 	$app = new App();
 
 	$_vars["db_schema"] = false;//do not check database tables
@@ -147,17 +147,45 @@ unset($_vars["xml"]);
 
 	//import content info from XML nodes
 	if( !empty( $_vars["xmlData"]["content"]["children"] ) ){
-		_importContent();
+		//_importContent();
 	}
 
 	//import content links info from XML nodes
 	if( !empty( $_vars["xmlData"]["content_links"]["children"] ) ){
-		_importContentLinks();
-		$msg = "Import ".$_vars["import"]["total"]." content links";
-		//$msg .= ", created: " .$_vars["import"]["numCreated"];
-		//$msg .= ", updated: " .$_vars["import"]["numUpdated"];
+		//_importContentLinks();
+		//$msg = "Import ".$_vars["import"]["total"]." content links";
+		//$_vars["log"][] = array("message" => $msg, "type" => "success");
+	}
+
+	//import tag_groups info from XML nodes
+	if( !empty( $_vars["xmlData"]["tag_groups"]["children"] ) ){
+		$arg = array(
+			"xmlData" => $_vars["xmlData"]["tag_groups"]["children"],
+			"saveMethod" => "saveTermGroup",
+			"testFieldName" => "name"
+		);
+		//importTaxonomy($arg);
+		importTagGroups($arg);
+		$msg = "Import ".$_vars["import"]["total"]." tag groups";
+		$msg .= ", num created: " .$_vars["import"]["numCreated"];
+		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
+	
+	if( !empty( $_vars["xmlData"]["tag_list"]["children"] ) ){
+		importTagList();
+		//$arg = array(
+			//"xmlData" => $_vars["xmlData"]["tag_list"]["children"],
+			//"saveMethod" => "saveTerm",
+			//"testFieldName" => "name"
+		//);
+		//importTaxonomy($arg);
+		$msg = "Import ".$_vars["import"]["total"]." tags (termins)";
+		$msg .= ", num created: " .$_vars["import"]["numCreated"];
+		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
+		$_vars["log"][] = array("message" => $msg, "type" => "success");
+	}
+    //[tag_links] => Array
 	
 }//end _importProcess()					
 
@@ -210,13 +238,6 @@ function _importContent(){
 		$msg = "import: warning, db nodes not found.";
 		$_vars["log"][] = array("message" => $msg, "type" => "warning");
 	}
-
-//--------------------------
-	//$_vars["xmlData"]["tag_groups"] = $taxonomy->getGroupList();
-	//$_vars["xmlData"]["tag_list"] = $taxonomy->getTagList();
-	//$_vars["xmlData"]["tag_links"] = $taxonomy->getTagLinks();
-
-	//$_vars["xml"] = formXML( $_vars["xmlData"] );
 	
 //------------------------------- insert/update database nodes from XML nodes
 //echo count($_vars["xmlData"]["content"]["children"]);
@@ -387,4 +408,160 @@ function _importContentLinks(){
 	}//next
 	
 }//end _importContentLinks()
+
+
+//-------------------------------
+// import tag taxonomy info from XML nodes
+//-------------------------------
+function importTagGroups($params){
+//function importTaxonomy( $params ){
+	global $_vars;
+	global $taxonomy;
+	global $app;
+	
+	$p = array(
+		"xmlData" => null,
+		"saveMethod" => null,
+		"testFieldName" => null
+	);
+	//extend options object $p
+	foreach( $params as $key=>$item ){
+		$p[ $key ] = $item;
+	}//next
+	
+	//$dataItemName = "tag_groups";
+	//$xmlData = $_vars["xmlData"][$dataItemName]["children"];
+	//$saveMethod = "saveTermGroup";
+	//$testFieldName = "name";
+	
+	if( empty($p["xmlData"]) ){
+		return false;
+	}
+	if( empty($p["saveMethod"]) ){
+		return false;
+	}
+	
+	$xmlData = $p["xmlData"];
+	$saveMethod = $p["saveMethod"];
+	$testFieldName = $p["testFieldName"];
+	
+	$_vars["import"]["numUpdated"] = 0;
+	$_vars["import"]["numCreated"] = 0;
+	$_vars["import"]["total"] = 0;
+	
+//------------------------------- get exists DB nodes
+	$dbData = $taxonomy->getTermGroup();
+//echo _logWrap( count($dbData) );
+//echo _logWrap( !empty($dbData) );
+//echo _logWrap( $dbData );
+//return false;
+
+//------------------------------- insert/update 
+	$_vars["import"]["total"] = 0;
+	for( $n1 = 0; $n1 < count($xmlData); $n1++){
+		$node = $xmlData[$n1];
+//echo _logWrap( $node["name"] );
+
+		unset( $node["id"] );//do not save node old ID
+		
+		//------------- add new ID, if node exists in database (for update query)
+		if( !empty($dbData) ){
+			$update = 0;
+			for( $n2 = 0; $n2 < count($dbData); $n2++){
+				$dbNode = $dbData[$n2];
+				if( strtoupper( $dbNode[$testFieldName] ) ==  strtoupper( $node[$testFieldName] ) ){
+//$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
+//echo _logWrap( $msg );
+					$node["id"] = $dbNode["id"];
+					$update = 1;
+					break;
+				}
+			}//next
+			
+			if( $update == 1){
+				$_vars["import"]["numUpdated"]++;
+			} else {
+				$_vars["import"]["numCreated"]++;
+			}
+		}
+		
+		$response = $taxonomy->$saveMethod( $node );
+		if( $response ){
+			$_vars["import"]["total"]++;
+//$msg = "save new term group.";
+//$_vars["log"][] = array("message" => $msg, "type" => "success");
+		} else {
+$msg = "import error: could not save node...";
+$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+	}//next
+	
+}//end importTagGroups()
+//}//end importTaxonomy()
+
+
+function importTagList(){
+	global $_vars;
+	global $taxonomy;
+	global $app;
+	
+	$_vars["import"]["numUpdated"] = 0;
+	$_vars["import"]["numCreated"] = 0;
+	$_vars["import"]["total"] = 0;
+	
+	$dataItemName = "tag_list";
+	$xmlData = $_vars["xmlData"][$dataItemName]["children"];
+	$saveMethod = "saveTerm";
+	$testFieldName = "name";
+	
+//------------------------------- get exists DB nodes
+	$dbData = $taxonomy->getTagList();
+//echo _logWrap( count($dbData) );
+//echo _logWrap( !empty($dbData) );
+//echo _logWrap( $dbData );
+//return false;
+
+
+//------------------------------- insert/update 
+	$_vars["import"]["total"] = 0;
+	for( $n1 = 0; $n1 < count($xmlData); $n1++){
+		$node = $xmlData[$n1];
+//echo _logWrap( $node["name"] );
+
+		unset( $node["id"] );//do not save node old ID
+
+		//------------- add new ID, if node exists in database (for update query)
+		if( !empty($dbData) ){
+			$update = 0;
+			for( $n2 = 0; $n2 < count($dbData); $n2++){
+				$dbNode = $dbData[$n2];
+				if( strtoupper( $dbNode[$testFieldName] ) ==  strtoupper( $node[$testFieldName] ) ){
+//$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
+//echo _logWrap( $msg );
+					$node["id"] = $dbNode["id"];
+					$update = 1;
+					break;
+				}
+			}//next
+			
+			if( $update == 1){
+				$_vars["import"]["numUpdated"]++;
+			} else {
+				$_vars["import"]["numCreated"]++;
+			}
+		}
+
+		$response = $taxonomy->$saveMethod( $node );
+		if( $response ){
+			$_vars["import"]["total"]++;
+//$msg = "save new term group.";
+//$_vars["log"][] = array("message" => $msg, "type" => "success");
+		} else {
+$msg = "import error: could not save node...";
+$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+	}//next
+	
+}//end importTagList()
+
 ?>
