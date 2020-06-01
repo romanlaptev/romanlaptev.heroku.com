@@ -50,7 +50,8 @@ class DB {
 			return false;
 		}	
 	}//end dbConnect()
-	
+
+
 	private function db_connect( $dsn ){
 		global $_vars;
 		try {
@@ -80,7 +81,7 @@ class DB {
 		try{
 			$result  = $connection->query( $sql_query );
 		} catch(Exception $e) {
-//echo "Exception:". _logWrap($e);
+echo "Exception:". _logWrap($e);
 		}
 		
 		if( !$result ){
@@ -208,7 +209,7 @@ if( $this->dbTablesChecked ){
 		
 		$p = array(
 			"tableName" => false,
-			"data" => array(),//array of field => value
+			"data" => array(),//field1 => value, field2 => value, 
 			"query_condition" => false// "id=value", "title=value"...
 		);
 
@@ -301,7 +302,102 @@ $sql_query = "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$valu
 		
 	}//end saveRecord()
 
+/*
+	public function saveRecords($params){
+		global $_vars;
 
+//Array
+//(
+    //[tableName] => taxonomy_index
+    //[data] => Array
+        //(
+            //[0] => Array (
+                    //[content_id] => 724
+                    //[term_id] => 137
+                //)
+
+            //[1] => Array (
+                    //[content_id] => 726
+                    //[term_id] => 137
+                //)
+        //)
+//)
+
+		$p = array(
+			"tableName" => false,
+			"data" => array(),
+		);
+
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+//echo _logWrap( gettype($p["data"]) );
+//echo _logWrap( is_array($p["data"]) );
+//echo _logWrap($p);
+//return false;
+	
+		if( !$p["tableName"] ){
+			$msg =  "error, wrong 'tableName'...";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+			return false;
+		}
+		$tableName = $p["tableName"];
+		
+		if( empty( $p["data"]) ){
+			$msg =  "error, empty data...";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+			return false;
+		}
+
+		$response = $this->initDb();
+		if( !$response ){
+			return false;
+		}
+		
+		$sql_query = "";
+		for( $n = 0; $n < count($p["data"]); $n++ ){
+			$record = $p["data"][$n];
+			
+//-----------------------------	escape quotes
+//https://www.php.net/manual/ru/pdo.quote.php
+			foreach( $record as $field=>$value){
+				$record[$field] = $this->dbConnection->quote($value);
+			}//next
+			
+//-----------------------------	form query for record
+			//INSERT
+			$fields_string = "";
+			$values_string = "";
+			$num = 0;
+			foreach( $record as $field=>$value){
+				if( $num === 0 ){
+					$fields_string .= "`".$field."`";
+					$values_string .= $value;
+				} else {
+					$fields_string .= ",`".$field."`";
+					$values_string .= ",".$value;
+				}
+				$num++;
+			}//next
+
+//$sql_query = "INSERT OR REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$values_string."); ";
+$sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$values_string."); ";
+		}//next
+		
+//echo _logWrap( $sql_query );
+//return false;
+		
+		$response = $this->runQuery( $this->dbConnection, $sql_query);
+		if( $response["status"] ){
+			return true;
+		}
+		return false;
+		
+	}//end saveRecords()
+*/
+
+	
 	public function getRecords($params){
 //echo _logWrap($params);
 		global $_vars;
@@ -400,6 +496,62 @@ $sql_query = "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$valu
 		return false;
 
 	}//end removeRecords()
+
+
+//http://phpfaq.ru/pdo#multi
+//https://www.php.net/manual/ru/pdo.prepared-statements.php
+	public function testPdo($params){
+		global $_vars;
+		$p = array(
+			"tableName" => false,
+			"data" => array(),
+		);
+
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+//echo _logWrap( gettype($p["data"]) );
+//echo _logWrap( is_array($p["data"]) );
+//echo _logWrap($p);
+//return false;
+
+		$dsn = $_vars["config"]["db"]["dsn"];
+		$connection = $this->db_connect( $dsn );
+//echo _logWrap($connection);
+//return false;
+
+/*
+		$sql = "REPLACE INTO `taxonomy_index` (`content_id`,`term_id`) VALUES (?,?)";
+		try {
+			$_statement = $connection->prepare( $sql );
+			$_statement->execute();
+		}
+		catch(PDOException $e){
+			echo $e->getMessage();
+			die();
+		}
+*/
+		//$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, 0);
+		
+		$sql_query = "REPLACE INTO `taxonomy_index` (`content_id`,`term_id`) VALUES ('724','137');";
+		$sql_query .= "REPLACE INTO `taxonomy_index` (`content_id`,`term_id`) VALUES ('726','137');";
+		$sql_query .= "REPLACE INTO `taxonomy_index` (`content_id`,`term_id`) VALUES ('727','137');";
+		try {
+			//$_statement = $connection->prepare( $sql_query );
+			//$_statement->execute();
+			
+			$connection->exec($sql_query);
+			//$result  = $connection->query( $sql_query );
+		}
+		catch(PDOException $e){
+			//echo $e->getMessage();
+			//die();
+			$msg .=  "error info: ". $e->getMessage();
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+		
+	}//end
 		
 }//end class
 ?>

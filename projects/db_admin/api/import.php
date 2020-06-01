@@ -31,7 +31,7 @@ if ( $_vars["runType"] == "web") {
 	//if(!empty($_REQUEST['import_format'])){
 	//}
 	//$_vars["db_schema"] = false;//do not check database tables
-	$_vars["display_log"] = false;
+	//$_vars["display_log"] = false;
 	
 	_importProcess();
 	
@@ -144,15 +144,15 @@ unset($_vars["xml"]);
 //echo count($_vars["xmlData"]["content"]["children"]);
 //echo _logWrap( $_vars["xmlData"] );
 //return false;
-
+/*
 	//import content info from XML nodes
 	if( !empty( $_vars["xmlData"]["content"]["children"] ) ){
-		//_importContent();
+		importContent();
 	}
 
 	//import content links info from XML nodes
 	if( !empty( $_vars["xmlData"]["content_links"]["children"] ) ){
-		//_importContentLinks();
+		importContentLinks();
 		//$msg = "Import ".$_vars["import"]["total"]." content links";
 		//$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
@@ -185,7 +185,10 @@ unset($_vars["xml"]);
 		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
-    //[tag_links] => Array
+*/	
+	if( !empty( $_vars["xmlData"]["tag_links"]["children"] ) ){
+		importTagLinks();
+	}
 	
 }//end _importProcess()					
 
@@ -193,7 +196,7 @@ unset($_vars["xml"]);
 //-------------------------------
 // import content info from XML nodes
 //-------------------------------
-function _importContent(){
+function importContent(){
 	global $_vars;
 	global $content;
 	//global $content_links;
@@ -279,13 +282,13 @@ function _importContent(){
 	$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 	$_vars["log"][] = array("message" => $msg, "type" => "success");
 	
-}//end _importContent()					
+}//end importContent()					
 
 
 //-------------------------------
 // import content links info from XML nodes
 //-------------------------------
-function _importContentLinks(){
+function importContentLinks(){
 	global $_vars;
 	global $content;
 	//global $content_links;
@@ -407,7 +410,7 @@ function _importContentLinks(){
 		}
 	}//next
 	
-}//end _importContentLinks()
+}//end importContentLinks()
 
 
 //-------------------------------
@@ -417,7 +420,7 @@ function importTagGroups($params){
 //function importTaxonomy( $params ){
 	global $_vars;
 	global $taxonomy;
-	global $app;
+	//global $app;
 	
 	$p = array(
 		"xmlData" => null,
@@ -503,7 +506,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 function importTagList(){
 	global $_vars;
 	global $taxonomy;
-	global $app;
+	//global $app;
 	
 	$_vars["import"]["numUpdated"] = 0;
 	$_vars["import"]["numCreated"] = 0;
@@ -563,5 +566,43 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 	}//next
 	
 }//end importTagList()
+
+function importTagLinks(){
+	global $_vars;
+	//global $taxonomy;
+	//global $app;
+	
+	//$_vars["import"]["numUpdated"] = 0;
+	//$_vars["import"]["numCreated"] = 0;
+	$_vars["import"]["total"] = 0;
+	
+	$xmlData = $_vars["xmlData"]["tag_links"]["children"];
+
+//------------------------------- insert/update database tag links
+	$_vars["import"]["total"] = 0;
+	//for( $n1 = 0; $n1 < count($xmlData); $n1++){
+	//for( $n1 = 0; $n1 < 2; $n1++){
+		//$node = $xmlData[$n1];
+//echo _logWrap( $node );
+
+		$arg = array(
+			"tableName" => "taxonomy_index",
+			"data" => $xmlData
+		);
+		
+		$db = DB::getInstance();
+/*		
+		$response = $db->saveRecords($arg);
+		if( $response){
+			$_vars["import"]["total"] = count($xmlData);
+		} else {
+			$msg = "import error: XML node tag_links not saved...";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+*/ 
+		$db->testPdo($arg);
+	//}//next
+ 
+}//end importTagLinks()
 
 ?>
