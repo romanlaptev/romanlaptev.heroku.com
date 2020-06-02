@@ -65,24 +65,66 @@ class DB {
 	}//end db_connect()
 
 
-	public function runQuery( $connection, $sql_query ){
+	public function runQuery( $params=array() ){
 		global $_vars;
 
+		$p = array(
+			"connection" => false,
+			"sql_query" => "",
+			"query_type" => "query" //"exec"
+		);
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+//echo _logWrap($p);
+
+		$connection = $p["connection"];
 		if( !$connection ){
 //echo _logWrap("wrong db connection");			
+//echo _logWrap("try connect to ".$_vars["config"]["db"]["dsn"] );
 			//$dbType = $_vars["config"]["db"]["dbType"];
 			$dsn = $_vars["config"]["db"]["dsn"];
 			$connection = $this->db_connect( $dsn );
+			if( !$connection){
+				$msg = "error: not connected to ".$_vars["config"]["db"]["dsn"];
+				$_vars["log"][] = array("message" => $msg, "type" => "error");
+				//exit();
+				return false;
+			}
 		}
 //echo _logWrap($connection);
 //return false;
+
+		$sql_query = $p["sql_query"];
+		if( empty( $p["sql_query"] ) ){
+			echo _logWrap("wrong sql query");
+			return false;
+		}
 		
 		$result=false;
-		try{
-			$result  = $connection->query( $sql_query );
-		} catch(Exception $e) {
-echo "Exception:". _logWrap($e);
-		}
+		switch ( $p["query_type"] ) {
+			case "query":
+				try{
+					$result  = $connection->query( $sql_query );
+				} catch( PDOException $e ) {
+					//echo "Exception:". _logWrap($e);
+					$msg =  "error info: ". $e->getMessage();
+					$_vars["log"][] = array("message" => $msg, "type" => "error");
+				}
+			break;
+
+			case "exec":
+				try{
+					$result  = $connection->exec( $sql_query );
+				} catch( PDOException $e ) {
+					//echo "Exception:". _logWrap($e);
+					$msg =  "error info: ". $e->getMessage();
+					$_vars["log"][] = array("message" => $msg, "type" => "error");
+				}
+			break;
+			
+		}//end switch
 		
 		if( !$result ){
 			$msg =  "error, query: ".$sql_query;
@@ -113,11 +155,13 @@ echo "Exception:". _logWrap($e);
 			"type" => "success",
 		);
 		
-		//$rows  = $result->fetchAll( PDO::FETCH_NUM );
-		$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
-		//echo count( $rows );
-		if( count( $rows ) > 0 ){
-			$response["data"] = $rows;
+		if( $p["query_type"] == "query" ){
+			//$rows  = $result->fetchAll( PDO::FETCH_NUM );
+			$rows  = $result->fetchAll( PDO::FETCH_ASSOC );
+	//echo count( $rows );
+			if( count( $rows ) > 0 ){
+				$response["data"] = $rows;
+			}
 		}
 
 		return $response;
@@ -294,7 +338,12 @@ $sql_query = "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$valu
 //echo _logWrap( $sql_query );
 //return false;
 		
-		$response = $this->runQuery( $this->dbConnection, $sql_query);
+		
+		//$response = $this->runQuery( $this->dbConnection, $sql_query);
+		$arg = array(
+			"sql_query" => $sql_query
+		);
+		$response = $this->runQuery( $arg );
 		if( $response["status"] ){
 			return true;
 		}
@@ -302,10 +351,9 @@ $sql_query = "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$valu
 		
 	}//end saveRecord()
 
-/*
+
 	public function saveRecords($params){
 		global $_vars;
-
 //Array
 //(
     //[tableName] => taxonomy_index
@@ -388,14 +436,18 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 //echo _logWrap( $sql_query );
 //return false;
 		
-		$response = $this->runQuery( $this->dbConnection, $sql_query);
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $this->runQuery( $arg );
 		if( $response["status"] ){
 			return true;
 		}
-		return false;
 		
+		return false;
 	}//end saveRecords()
-*/
+
 
 	
 	public function getRecords($params){
@@ -442,7 +494,11 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 			return false;
 		}
 		
-		$response = $this->runQuery( $this->dbConnection, $sql_query);
+		//$response = $this->runQuery( $this->dbConnection, $sql_query);
+		$arg = array(
+			"sql_query" => $sql_query
+		);
+		$response = $this->runQuery( $arg );
 //echo _logWrap( $response );
 		//if( $response["status"] && count() ){
 		if( !empty($response["data"]) ){
@@ -488,7 +544,11 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 			return false;
 		}
 		
-		$response = $this->runQuery( $this->dbConnection, $sql_query);
+		//$response = $this->runQuery( $this->dbConnection, $sql_query);
+		$arg = array(
+			"sql_query" => $sql_query
+		);
+		$response = $this->runQuery( $arg );
 //echo _logWrap( $response );
 		if( $response["status"] ){
 			return true;
@@ -547,7 +607,7 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 		catch(PDOException $e){
 			//echo $e->getMessage();
 			//die();
-			$msg .=  "error info: ". $e->getMessage();
+			$msg =  "error info: ". $e->getMessage();
 			$_vars["log"][] = array("message" => $msg, "type" => "error");
 		}
 		

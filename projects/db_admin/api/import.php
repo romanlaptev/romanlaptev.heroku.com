@@ -591,7 +591,6 @@ function importTagLinks(){
 		);
 		
 		$db = DB::getInstance();
-/*		
 		$response = $db->saveRecords($arg);
 		if( $response){
 			$_vars["import"]["total"] = count($xmlData);
@@ -599,8 +598,7 @@ function importTagLinks(){
 			$msg = "import error: XML node tag_links not saved...";
 			$_vars["log"][] = array("message" => $msg, "type" => "error");
 		}
-*/ 
-		$db->testPdo($arg);
+		//$db->testPdo($arg);
 	//}//next
  
 }//end importTagLinks()
