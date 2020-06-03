@@ -1,43 +1,43 @@
-<h1>Taxonomy: list term(tag) groups</h1>
+<h1>Taxonomy</h1>
 <ul>
-	<li class=""><a href='?q=term-group/create'>add new term group</a></li>
+	<li class=""><a href='?q=tag-group/create'>add new tag group</a></li>
 </ul>
 <?php
-$_vars["log"][] = array("message" => "term_groups: ", "type" => "info");
-$_vars["log"][] = array("message" => $params["term_groups"], "type" => "info");
+//$_vars["log"][] = array("message" => "tag_groups: ", "type" => "info");
+//$_vars["log"][] = array("message" => $params["tag_groups"], "type" => "info");
 
-if ( !empty( $params["term_groups"] ) ) {
-	
-//widget table	
-	$html = "<table border=1 cellspacing=3>{{rows}}</table>";
-$tpl_head = "<tr class='text-center'>
+//$_vars["log"][] = array("message" => "tag_list: ", "type" => "info");
+//$_vars["log"][] = array("message" => $params["tag_list"], "type" => "info");
+
+if ( !empty( $params["tag_groups"] ) ) {
+	$arg = array(
+		"data" => $params["tag_groups"]
+	);
+	echo widget_table($arg);
+}
+
+if ( !empty( $params["tag_list"] ) ) {
+	$arg = array(
+		"data" => $params["tag_list"],
+		"templates" => array(
+			"table" => "<h3>list tag(termins) list</h3><table border=1 cellspacing=3>{{rows}}</table>",
+			"tpl_head" => "<tr class='text-center'>
 	<td><b>id</b></td> 
 	<td><b>name</b></td>
-	<td><b>actions</b></td>
-</tr>";
-$tpl_record = "<tr>
+	<td><b>term_group_id</b></td> 
+	<td><b>parent_id</b></td> 
+</tr>",
+			"tpl_record" => "<tr>
 	<td>{{id}}</td> 
 	<td>{{name}}</td> 
-	<td>
-<a href='?q=term-group/list&id={{id}}'>[list]</a>
-<a href='?q=term-group/edit&id={{id}}'>[edit]</a>
-<a href='?q=term-group/remove&id={{id}}'>[remove]</a>
-	</td>
-</tr>";
-	
-	$html_rows = $tpl_head;
-	for( $n = 0; $n < count( $params["term_groups"] ); $n++){
-		$record = $params["term_groups"][$n];
-//echo _logWrap( $record );
-		$html_record = $tpl_record;
-		foreach( $record as $field=>$value ){
-			$html_record = str_replace( "{{".$field."}}", $value,  $html_record);	
-		}//next
-		$html_rows .= $html_record;
-	}//next
-	$html = str_replace( "{{rows}}", $html_rows,  $html);	
-	echo $html;
+	<td>{{term_group_id}}</td> 
+	<td>{{parent_id}}</td> 
+</tr>"
+		) 
+	);
+	echo widget_table($arg);
 }
+
 ?>
 <!--
 <form name="form_term_groups" action="<?php echo $_SERVER['SCRIPT_NAME'];?>" method='post' class="form-control">

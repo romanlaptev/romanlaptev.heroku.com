@@ -33,7 +33,7 @@ if ( $_vars["runType"] == "web") {
 	//$_vars["db_schema"] = false;//do not check database tables
 	//$_vars["display_log"] = false;
 	
-	_importProcess();
+	importProcess();
 	
 	//RUNTIME
 	$runtime_s = round( microtime(true) - $_vars["timer"]["start"], 2);
@@ -64,7 +64,7 @@ if ( $_vars["runType"] == "console") {
 	$_vars["db_schema"] = false;//do not check database tables
 	//$_vars["display_log"] = false;
 	
-	_importProcess();
+	importProcess();
 	
 	//RUNTIME
 	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
@@ -83,7 +83,7 @@ if ( $_vars["runType"] == "console") {
 
 
 //====================
-function _importProcess(){
+function importProcess(){
 	global $_vars;
 	global $content;
 	//global $content_links;
@@ -171,26 +171,20 @@ unset($_vars["xml"]);
 		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
-	
+*/	
 	if( !empty( $_vars["xmlData"]["tag_list"]["children"] ) ){
 		importTagList();
-		//$arg = array(
-			//"xmlData" => $_vars["xmlData"]["tag_list"]["children"],
-			//"saveMethod" => "saveTerm",
-			//"testFieldName" => "name"
-		//);
-		//importTaxonomy($arg);
 		$msg = "Import ".$_vars["import"]["total"]." tags (termins)";
 		$msg .= ", num created: " .$_vars["import"]["numCreated"];
 		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
-*/	
+	
 	if( !empty( $_vars["xmlData"]["tag_links"]["children"] ) ){
-		importTagLinks();
+		//importTagLinks();
 	}
 	
-}//end _importProcess()					
+}//end importProcess()					
 
 
 //-------------------------------
@@ -373,19 +367,20 @@ function importContentLinks(){
 			}
 		}//next
 */	
-		//replace IDs
 		$old_id = $xmlLink["content_id"];
-		$new_id = $replacement_table[$old_id];
-		$xmlLink["content_id"] = $new_id;
-			
-		$old_parent_id = $xmlLink["parent_id"];
-		if( $old_parent_id > 0){
-			$new_parent_id = $replacement_table[$old_parent_id];
-			$xmlLink["parent_id"] = $new_parent_id;
-		}
+		if( isset($replacement_table[$old_id]) ){//replace IDs
+			$new_id = $replacement_table[$old_id];
+			$xmlLink["content_id"] = $new_id;
+				
+			$old_parent_id = $xmlLink["parent_id"];
+			if( $old_parent_id > 0){
+				$new_parent_id = $replacement_table[$old_parent_id];
+				$xmlLink["parent_id"] = $new_parent_id;
+			}
 
-		//update
-		$_vars["xmlData"]["content_links"]["children"][$n1] = $xmlLink;
+			//update
+			$_vars["xmlData"]["content_links"]["children"][$n1] = $xmlLink;
+		}
 	}//next
 	
 //echo _logWrap( $_vars["xmlData"]["content_links"]["children"] );
@@ -453,7 +448,7 @@ function importTagGroups($params){
 	$_vars["import"]["total"] = 0;
 	
 //------------------------------- get exists DB nodes
-	$dbData = $taxonomy->getTermGroup();
+	$dbData = $taxonomy->getTagGroup();
 //echo _logWrap( count($dbData) );
 //echo _logWrap( !empty($dbData) );
 //echo _logWrap( $dbData );
@@ -514,31 +509,32 @@ function importTagList(){
 	
 	$dataItemName = "tag_list";
 	$xmlData = $_vars["xmlData"][$dataItemName]["children"];
-	$saveMethod = "saveTerm";
-	$testFieldName = "name";
-	
+	$_vars["import"]["total"] = 0;
+
+
 //------------------------------- get exists DB nodes
-	$dbData = $taxonomy->getTagList();
+	//$dbData = $taxonomy->getTagList();
 //echo _logWrap( count($dbData) );
 //echo _logWrap( !empty($dbData) );
 //echo _logWrap( $dbData );
 //return false;
 
-
+	
+		$replacement_table = array();
 //------------------------------- insert/update 
-	$_vars["import"]["total"] = 0;
 	for( $n1 = 0; $n1 < count($xmlData); $n1++){
 		$node = $xmlData[$n1];
 //echo _logWrap( $node["name"] );
 
 		unset( $node["id"] );//do not save node old ID
-
+		
 		//------------- add new ID, if node exists in database (for update query)
+/*		
 		if( !empty($dbData) ){
 			$update = 0;
 			for( $n2 = 0; $n2 < count($dbData); $n2++){
 				$dbNode = $dbData[$n2];
-				if( strtoupper( $dbNode[$testFieldName] ) ==  strtoupper( $node[$testFieldName] ) ){
+				if( strtoupper( $dbNode["name"] ) ==  strtoupper( $node["name"] ) ){
 //$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
 //echo _logWrap( $msg );
 					$node["id"] = $dbNode["id"];
@@ -553,9 +549,16 @@ function importTagList(){
 				$_vars["import"]["numCreated"]++;
 			}
 		}
-
-		$response = $taxonomy->$saveMethod( $node );
-		if( $response ){
+*/
+		$response = $taxonomy->saveTerm( $node );
+//echo _logWrap($response);
+		if( $response["status"] ){
+			
+			//----- build replacement table
+			$key = $xmlData[$n1]["id"];
+			$replacement_table[ $key ] = $response["last_insert_id"];
+			$xmlData[$n1]["new_id"] = $response["last_insert_id"];
+			
 			$_vars["import"]["total"]++;
 //$msg = "save new term group.";
 //$_vars["log"][] = array("message" => $msg, "type" => "success");
@@ -565,7 +568,28 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 		}
 	}//next
 	
+//echo _logWrap( $xmlData );
+echo _logWrap( $replacement_table );
+//REPLACE INTO `taxonomy_term_data` (`id`,`term_group_id`,`parent_id`,`name`) VALUES ('73','11','83','ASPLinux'); 
+
+/*
+	$arg = array(
+		"tableName" => "taxonomy_term_data",
+		"data" => $xmlData
+	);
+	
+	$db = DB::getInstance();
+	$response = $db->saveRecords($arg);
+	if( $response){
+		$_vars["import"]["total"] = count($xmlData);
+	} else {
+		$msg = "import error: XML node tag_list not saved...";
+		$_vars["log"][] = array("message" => $msg, "type" => "error");
+	}
+*/
+	
 }//end importTagList()
+
 
 function importTagLinks(){
 	global $_vars;
@@ -587,12 +611,13 @@ function importTagLinks(){
 
 		$arg = array(
 			"tableName" => "taxonomy_index",
-			"data" => $xmlData
+			//"data" => $xmlData
+			"data" => array( $xmlData[0], $xmlData[1], $xmlData[2])
 		);
 		
 		$db = DB::getInstance();
 		$response = $db->saveRecords($arg);
-		if( $response){
+		if( $response["status"] ){
 			$_vars["import"]["total"] = count($xmlData);
 		} else {
 			$msg = "import error: XML node tag_links not saved...";

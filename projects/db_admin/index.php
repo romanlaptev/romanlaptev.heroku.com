@@ -167,17 +167,16 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 		
 //============================= TAXONOMY
 		case "taxonomy/list":
-			//$views_params["term_groups"] = $taxonomy->getGroupList();
-			//$views_params["term_groups"] = $taxonomy->getTagList();//test
-			$views_params["term_groups"] = $taxonomy->getTermGroup();
+			$views_params["tag_groups"] = $taxonomy->getTagGroup();
+			$views_params["tag_list"] = $taxonomy->getTagList();
 			$views_params["tpl_content_filename"] = "views/taxonomy/list.tpl.php";
 		break;
 		
-		case "term-group/create":
+		case "tag-group/create":
 			$views_params["tpl_content_filename"] = "views/taxonomy/term_group_create.tpl.php";
 		break;
 		
-		case "term-group/save":
+		case "tag-group/save":
 			$response = $taxonomy->saveTermGroup( $_vars["request"] );
 			if( !$response ){
 $msg = "error,  could not save term group.";
@@ -188,17 +187,17 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 			}
 		break;
 
-		case "term-group/list":
-			$views_params["term_group"] = $taxonomy->getTermGroup( $_vars["request"] );
+		case "tag-group/list":
+			$views_params["term_group"] = $taxonomy->getTagGroup( $_vars["request"] );
 			$views_params["tpl_content_filename"] = "views/taxonomy/term_group_list.tpl.php";
 		break;
 
-		case "term-group/edit":
-			$views_params["term_group"] = $taxonomy->getTermGroup( $_vars["request"] );
+		case "tag-group/edit":
+			$views_params["term_group"] = $taxonomy->getTagGroup( $_vars["request"] );
 			$views_params["tpl_content_filename"] = "views/taxonomy/term_group_edit.tpl.php";
 		break;
 		
-		case "term-group/remove":
+		case "tag-group/remove":
 			$msg =  "error removing term group, id: ".$_vars["request"]["id"];
 			$msg_type = "warning";
 				

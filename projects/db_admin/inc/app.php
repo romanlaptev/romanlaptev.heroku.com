@@ -286,7 +286,7 @@ Array
 		}
 		
 		$response = $content->save( $p["xmlNode"] );
-		if( !$response ){
+		if( !$response["status"] ){
 			$msg = "import: error, could not save content item ".$p["xmlNode"]["title"];
 			$_vars["log"][] = array("message" => $msg, "type" => "error");
 			return false;		
@@ -326,7 +326,7 @@ Array
 	
 	//------------------ Update exists db node or create new db node
 		$response = $content_links->save( $p["xmlNode"] );
-		if( !$response ){
+		if( !$response["status"] ){
 			$msg = "import: error, could not save content_link item ".$p["xmlNode"]["content_id"];
 			$_vars["log"][] = array("message" => $msg, "type" => "error");
 			return false;		

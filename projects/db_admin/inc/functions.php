@@ -316,4 +316,61 @@ function get_children_items( $contentID, $level, $item_parent_id ){
 }//end get_children_items()
 
 
+function widget_table( $params=array() ){
+	//global $_vars;
+
+	$p = array(
+		"data" => array(),
+		"templates" => array(
+			"table" => "<table border=1 cellspacing=3>{{rows}}</table>",
+			
+			"tpl_head" => "<tr class='text-center'>
+	<td><b>id</b></td> 
+	<td><b>name</b></td>
+	<td><b>actions</b></td>
+</tr>",//add {{field_names}}!!!!	
+
+			"tpl_record" => "<tr>
+	<td>{{id}}</td> 
+	<td>{{name}}</td> 
+	<td>
+<a href='?q=tag-group/list&id={{id}}'>[list]</a>
+<a href='?q=tag-group/edit&id={{id}}'>[edit]</a>
+<a href='?q=tag-group/remove&id={{id}}'>[remove]</a>
+	</td>
+</tr>"//add {{fiels}}!!!!	
+
+		) 
+	);
+	
+	//extend options object $p
+	foreach( $params as $key=>$item ){
+		$p[ $key ] = $item;
+	}//next
+//echo _logWrap($p);
+	
+	if( count( $p["data"] ) == 0 ){
+		return false;
+	}
+	
+	$html = $p["templates"]["table"];
+	$html_rows = $p["templates"]["tpl_head"];//add form {{field_names}}!!!!	
+	$records = $p["data"];
+	for( $n = 0; $n < count( $records ); $n++){
+		$record = $records[$n];
+//echo _logWrap( $record );
+		$html_record = $p["templates"]["tpl_record"];
+		
+		//add form {{fields}}!!!!	
+		foreach( $record as $field=>$value ){
+			$html_record = str_replace( "{{".$field."}}", $value,  $html_record);	
+		}//next
+		
+		$html_rows .= $html_record;
+	}//next
+	$html = str_replace( "{{rows}}", $html_rows,  $html);	
+//echo _logWrap( htmlspecialchars($html));
+	return $html;
+}//end widget_table()
+
 ?>

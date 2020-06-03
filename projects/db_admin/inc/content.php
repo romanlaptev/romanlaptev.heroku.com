@@ -112,7 +112,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 		//$db = new DB();
 		$db = DB::getInstance();
 		$res = $db->saveRecord($arg);
-		if( $res ){
+		if( $res["status"] ){
 			//$msg = "save record";
 			//$msg_type = "success";
 			//$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
@@ -133,7 +133,7 @@ $msg2_type = "error";
 	}
 //---------------------					
 					$save_res = $content_links->save( $arg );
-					if( $save_res ){
+					if( $save_res["status"] ){
 $msg2 = "save content links info.";
 $msg2_type = "success";
 $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);

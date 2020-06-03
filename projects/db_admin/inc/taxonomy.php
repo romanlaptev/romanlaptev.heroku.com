@@ -139,7 +139,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 
 
 	
-	public function getTermGroup( $params=array() ){
+	public function getTagGroup( $params=array() ){
 //"tableName" => "taxonomy_groups",
 //"tableName" => "taxonomy_term_data",
 		global $_vars;
@@ -167,7 +167,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 			
 			if( !empty($params["q"]) ){
 				if( $params["q"] == "term-group/list"){
-					$res["terms"] = $this->getTermGroupElements( $p["id"] );
+					$res["terms"] = $this->getTagGroupElements( $p["id"] );
 				}
 			}
 			
@@ -176,17 +176,17 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		return false;
 
-	}//end getTermGroup()
+	}//end getTagGroup()
 
 
-	public function getTermGroupElements( $id ){
+	public function getTagGroupElements( $id ){
 		
 		if( !$id ){
 			return false;
 		}
 		
 		return false;
-	}//end getTermGroupElements()
+	}//end getTagGroupElements()
 
 	
 	

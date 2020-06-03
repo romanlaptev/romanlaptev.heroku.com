@@ -103,6 +103,8 @@ class DB {
 		}
 		
 		$result=false;
+		$lastInsertID=false;
+		
 		switch ( $p["query_type"] ) {
 			case "query":
 				try{
@@ -117,6 +119,10 @@ class DB {
 			case "exec":
 				try{
 					$result  = $connection->exec( $sql_query );
+					
+//https://www.php.net/manual/ru/pdo.lastinsertid.php					
+					$lastInsertID = $connection->lastInsertId();					
+
 				} catch( PDOException $e ) {
 					//echo "Exception:". _logWrap($e);
 					$msg =  "error info: ". $e->getMessage();
@@ -147,6 +153,7 @@ class DB {
 		}			
 		if( $_vars["display_log"] == true ) {
 			$msg =  "run query: <b>".$sql_query."</b>";
+$msg .=  "lastInsertID: <b>".$lastInsertID."</b>";
 			$_vars["log"][] = array("message" => $msg, "type" => "success");
 		}			
 
@@ -163,7 +170,11 @@ class DB {
 				$response["data"] = $rows;
 			}
 		}
-
+		
+		if( $lastInsertID ){
+			$response["last_insert_id"] = $lastInsertID;
+		}
+		
 		return $response;
 	}//end runQuery()
 
@@ -341,35 +352,39 @@ $sql_query = "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$valu
 		
 		//$response = $this->runQuery( $this->dbConnection, $sql_query);
 		$arg = array(
-			"sql_query" => $sql_query
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
 		);
-		$response = $this->runQuery( $arg );
-		if( $response["status"] ){
-			return true;
-		}
-		return false;
+		//$response = $this->runQuery( $arg );
+		//if( $response["status"] ){
+			//return true;
+		//}
+		//return false;
+		return $this->runQuery( $arg );
 		
 	}//end saveRecord()
 
 
 	public function saveRecords($params){
 		global $_vars;
-//Array
-//(
-    //[tableName] => taxonomy_index
-    //[data] => Array
-        //(
-            //[0] => Array (
-                    //[content_id] => 724
-                    //[term_id] => 137
-                //)
+/*		
+Array
+(
+    [tableName] => taxonomy_index
+    [data] => Array
+        (
+            [0] => Array (
+                    [content_id] => 724
+                    [term_id] => 137
+                )
 
-            //[1] => Array (
-                    //[content_id] => 726
-                    //[term_id] => 137
-                //)
-        //)
-//)
+            [1] => Array (
+                    [content_id] => 726
+                    [term_id] => 137
+                )
+        )
+)
+*/
 
 		$p = array(
 			"tableName" => false,
@@ -429,7 +444,7 @@ $sql_query = "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$valu
 				$num++;
 			}//next
 
-//$sql_query = "INSERT OR REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$values_string."); ";
+//$sql_query .= "INSERT INTO `".$tableName."` (".$fields_string.") VALUES (".$values_string."); ";
 $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$values_string."); ";
 		}//next
 		
@@ -440,12 +455,13 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 			"sql_query" => $sql_query,
 			"query_type" => "exec"
 		);
-		$response = $this->runQuery( $arg );
-		if( $response["status"] ){
-			return true;
-		}
+		//$response = $this->runQuery( $arg );
+		//if( $response["status"] ){
+			//return true;
+		//}
+		//return false;
 		
-		return false;
+		return $this->runQuery( $arg );
 	}//end saveRecords()
 
 
@@ -581,18 +597,6 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 //echo _logWrap($connection);
 //return false;
 
-/*
-		$sql = "REPLACE INTO `taxonomy_index` (`content_id`,`term_id`) VALUES (?,?)";
-		try {
-			$_statement = $connection->prepare( $sql );
-			$_statement->execute();
-		}
-		catch(PDOException $e){
-			echo $e->getMessage();
-			die();
-		}
-*/
-		//$connection->setAttribute(PDO::ATTR_EMULATE_PREPARES, 0);
 		
 		$sql_query = "REPLACE INTO `taxonomy_index` (`content_id`,`term_id`) VALUES ('724','137');";
 		$sql_query .= "REPLACE INTO `taxonomy_index` (`content_id`,`term_id`) VALUES ('726','137');";
