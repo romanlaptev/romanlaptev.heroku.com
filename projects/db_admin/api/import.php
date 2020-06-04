@@ -144,6 +144,8 @@ unset($_vars["xml"]);
 //echo count($_vars["xmlData"]["content"]["children"]);
 //echo _logWrap( $_vars["xmlData"] );
 //return false;
+
+	$_vars["import"]["replacement_table"] = array();
 /*
 	//import content info from XML nodes
 	if( !empty( $_vars["xmlData"]["content"]["children"] ) ){
@@ -156,22 +158,16 @@ unset($_vars["xml"]);
 		//$msg = "Import ".$_vars["import"]["total"]." content links";
 		//$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
+*/	
 
 	//import tag_groups info from XML nodes
 	if( !empty( $_vars["xmlData"]["tag_groups"]["children"] ) ){
-		$arg = array(
-			"xmlData" => $_vars["xmlData"]["tag_groups"]["children"],
-			"saveMethod" => "saveTermGroup",
-			"testFieldName" => "name"
-		);
-		//importTaxonomy($arg);
-		importTagGroups($arg);
+		importTagGroups();
 		$msg = "Import ".$_vars["import"]["total"]." tag groups";
 		$msg .= ", num created: " .$_vars["import"]["numCreated"];
 		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
-*/	
 	if( !empty( $_vars["xmlData"]["tag_list"]["children"] ) ){
 		importTagList();
 		$msg = "Import ".$_vars["import"]["total"]." tags (termins)";
@@ -179,10 +175,10 @@ unset($_vars["xml"]);
 		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
-	
 	if( !empty( $_vars["xmlData"]["tag_links"]["children"] ) ){
 		//importTagLinks();
 	}
+echo _logWrap( $_vars["import"]["replacement_table"] );
 	
 }//end importProcess()					
 
@@ -324,7 +320,7 @@ function importContentLinks(){
 				if( $dbNode["created"]  ==  $xmlNode["created"] ){
 					$xmlNode["new_id"] = $dbNode["id"];
 
-					//----- build replacement table
+					//----- build replacement table IDs
 					$key = $xmlNode["id"];
 					$value = $dbNode["id"];
 					$replacement_table[ $key ] = $value;
@@ -411,41 +407,23 @@ function importContentLinks(){
 //-------------------------------
 // import tag taxonomy info from XML nodes
 //-------------------------------
-function importTagGroups($params){
-//function importTaxonomy( $params ){
+function importTagGroups(){
 	global $_vars;
 	global $taxonomy;
 	//global $app;
 	
-	$p = array(
-		"xmlData" => null,
-		"saveMethod" => null,
-		"testFieldName" => null
-	);
-	//extend options object $p
-	foreach( $params as $key=>$item ){
-		$p[ $key ] = $item;
-	}//next
 	
-	//$dataItemName = "tag_groups";
-	//$xmlData = $_vars["xmlData"][$dataItemName]["children"];
-	//$saveMethod = "saveTermGroup";
-	//$testFieldName = "name";
-	
-	if( empty($p["xmlData"]) ){
+	$dataItemName = "tag_groups";
+	$xmlData = $_vars["xmlData"][$dataItemName]["children"];
+	if( empty($xmlData) ){
 		return false;
 	}
-	if( empty($p["saveMethod"]) ){
-		return false;
-	}
-	
-	$xmlData = $p["xmlData"];
-	$saveMethod = $p["saveMethod"];
-	$testFieldName = $p["testFieldName"];
 	
 	$_vars["import"]["numUpdated"] = 0;
 	$_vars["import"]["numCreated"] = 0;
 	$_vars["import"]["total"] = 0;
+	
+	$replacement_table = &$_vars["import"]["replacement_table"];
 	
 //------------------------------- get exists DB nodes
 	$dbData = $taxonomy->getTagGroup();
@@ -461,13 +439,14 @@ function importTagGroups($params){
 //echo _logWrap( $node["name"] );
 
 		unset( $node["id"] );//do not save node old ID
-		
+
 		//------------- add new ID, if node exists in database (for update query)
+		$update = 0;
+		
 		if( !empty($dbData) ){
-			$update = 0;
 			for( $n2 = 0; $n2 < count($dbData); $n2++){
 				$dbNode = $dbData[$n2];
-				if( strtoupper( $dbNode[$testFieldName] ) ==  strtoupper( $node[$testFieldName] ) ){
+				if( strtoupper( $dbNode["name"] ) ==  strtoupper( $node["name"] ) ){
 //$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
 //echo _logWrap( $msg );
 					$node["id"] = $dbNode["id"];
@@ -476,15 +455,26 @@ function importTagGroups($params){
 				}
 			}//next
 			
-			if( $update == 1){
-				$_vars["import"]["numUpdated"]++;
-			} else {
-				$_vars["import"]["numCreated"]++;
-			}
 		}
 		
-		$response = $taxonomy->$saveMethod( $node );
-		if( $response ){
+		if( $update == 1){
+			$_vars["import"]["numUpdated"]++;
+		} else {
+			$_vars["import"]["numCreated"]++;
+		}
+
+		$response = $taxonomy->saveTermGroup( $node );
+		if( $response["status"] ){
+			
+			//----- build replacement table IDs
+			if( !empty($response["last_insert_id"]) ){
+				$key = $xmlData[$n1]["id"];
+				$replacement_table["taxonomy_groups"][ $key ] = $response["last_insert_id"];
+			} else {
+				$key = $xmlData[$n1]["id"];
+				$replacement_table["taxonomy_groups"][ $key ] = $node["id"];
+			}
+			
 			$_vars["import"]["total"]++;
 //$msg = "save new term group.";
 //$_vars["log"][] = array("message" => $msg, "type" => "success");
@@ -495,7 +485,6 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 	}//next
 	
 }//end importTagGroups()
-//}//end importTaxonomy()
 
 
 function importTagList(){
@@ -513,29 +502,30 @@ function importTagList(){
 
 
 //------------------------------- get exists DB nodes
-	//$dbData = $taxonomy->getTagList();
+	$dbData = $taxonomy->getTagList();
 //echo _logWrap( count($dbData) );
 //echo _logWrap( !empty($dbData) );
 //echo _logWrap( $dbData );
 //return false;
-
 	
-		$replacement_table = array();
+	$replacement_table = &$_vars["import"]["replacement_table"];
+		
 //------------------------------- insert/update 
 	for( $n1 = 0; $n1 < count($xmlData); $n1++){
+	//for( $n1 = 0; $n1 < 2; $n1++){
 		$node = $xmlData[$n1];
 //echo _logWrap( $node["name"] );
 
 		unset( $node["id"] );//do not save node old ID
 		
 		//------------- add new ID, if node exists in database (for update query)
-/*		
+		$update = 0;
+		
 		if( !empty($dbData) ){
-			$update = 0;
 			for( $n2 = 0; $n2 < count($dbData); $n2++){
 				$dbNode = $dbData[$n2];
 				if( strtoupper( $dbNode["name"] ) ==  strtoupper( $node["name"] ) ){
-//$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
+//$msg = "update record: ". $dbNode["name"] ." = ". $node["name"];
 //echo _logWrap( $msg );
 					$node["id"] = $dbNode["id"];
 					$update = 1;
@@ -543,21 +533,33 @@ function importTagList(){
 				}
 			}//next
 			
-			if( $update == 1){
-				$_vars["import"]["numUpdated"]++;
-			} else {
-				$_vars["import"]["numCreated"]++;
-			}
 		}
-*/
+		
+		if( $update == 1){
+			$_vars["import"]["numUpdated"]++;
+		} else {
+			$_vars["import"]["numCreated"]++;
+		}
+
+		//update term_group_id
+		$term_group_id_old = $xmlData[$n1]["term_group_id"];
+		$term_group_id_new = $replacement_table["taxonomy_groups"][$term_group_id_old];
+		$node["term_group_id"] = $term_group_id_new;
+		
 		$response = $taxonomy->saveTerm( $node );
 //echo _logWrap($response);
 		if( $response["status"] ){
 			
-			//----- build replacement table
-			$key = $xmlData[$n1]["id"];
-			$replacement_table[ $key ] = $response["last_insert_id"];
-			$xmlData[$n1]["new_id"] = $response["last_insert_id"];
+			//----- build replacement table IDs
+			if( !empty($response["last_insert_id"]) ){
+				$key = $xmlData[$n1]["id"];
+				$replacement_table["taxonomy_term_data"][ $key ] = $response["last_insert_id"];
+				$xmlData[$n1]["new_id"] = $response["last_insert_id"];
+			} else {
+				$key = $xmlData[$n1]["id"];
+				$replacement_table["taxonomy_term_data"][ $key ] = $node["id"];
+				$xmlData[$n1]["new_id"] = $node["id"];
+			}
 			
 			$_vars["import"]["total"]++;
 //$msg = "save new term group.";
@@ -569,24 +571,26 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 	}//next
 	
 //echo _logWrap( $xmlData );
-echo _logWrap( $replacement_table );
-//REPLACE INTO `taxonomy_term_data` (`id`,`term_group_id`,`parent_id`,`name`) VALUES ('73','11','83','ASPLinux'); 
 
-/*
-	$arg = array(
-		"tableName" => "taxonomy_term_data",
-		"data" => $xmlData
-	);
-	
-	$db = DB::getInstance();
-	$response = $db->saveRecords($arg);
-	if( $response){
-		$_vars["import"]["total"] = count($xmlData);
-	} else {
-		$msg = "import error: XML node tag_list not saved...";
-		$_vars["log"][] = array("message" => $msg, "type" => "error");
-	}
-*/
+//------------------------------- update parent_id
+//echo _logWrap( $replacement_table );
+	for( $n1 = 0; $n1 < count($xmlData); $n1++){
+		$parent_id_old = $xmlData[$n1]["parent_id"];
+		if( $parent_id_old == 0 ){
+			continue;
+		}
+		$parent_id_new = $replacement_table["taxonomy_term_data"][$parent_id_old];
+		
+		$node = array(
+			"id" => $xmlData[$n1]["new_id"],
+			"parent_id" => $parent_id_new
+		);
+		$response = $taxonomy->saveTerm( $node );
+		if( !$response["status"] ){
+$msg = "import error: update taxonomy_term_data IDs";
+$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+	}//next
 	
 }//end importTagList()
 
