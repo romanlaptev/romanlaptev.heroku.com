@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<xml_data date-update="18.03.2020, 13:54">
+<xml_data date-update="05.06.2020, 11:12">
 	<courses>
 		<course id="1">
 			<title>Javascript</title>
@@ -49,6 +49,10 @@
 <li><a href="https://www.youtube.com/playlist?list=PLY4rE9dstrJzGC_1IlAwuY806WasvTIAJ" target="_blank">Основы C++</a></li>
 </ul>
 </div></description>
+		</course>
+		<course id="14">
+			<title>Bitrix</title>
+			<description></description>
 		</course>
 	</courses>
 	<lessons>
@@ -109,7 +113,7 @@
 		</lesson>
 		<lesson id="12" course_id="8">
 			<title>YII, Урок 21 Авторизация</title>
-			<description>владимир чапурин</description>
+			<description>владимир чапурин <a href="https://www.youtube.com/playlist?list=PLzYpjch86rTeN4GFpnd22zIUgIAQSllQY" target="blank">playlist</a></description>
 			<url>https://www.youtube.com/embed/-S5x1cw5tcQ</url>
 		</lesson>
 		<lesson id="13" course_id="8">
@@ -131,7 +135,7 @@ Web Workers - HTML5 API, позволяющий выполнять JavaScript-к
 			<url>https://www.youtube.com/embed/t_hrcpT6oYQ</url>
 		</lesson>
 		<lesson id="16" course_id="1">
-			<title>Set &amp; WeakSet</title>
+			<title>Set & WeakSet</title>
 			<description>.getInstance
 Типы коллекций Set и WeakSet представляют собой множество — набор уникальных значений.</description>
 			<url>https://www.youtube.com/embed/aebSmg1DlN0</url>
@@ -183,6 +187,43 @@ Web Workers - HTML5 API, позволяющий выполнять JavaScript-к
 Поэтапное создание web-приложения на Spring Framework. Примеры основных приемов для быстрого старта.
 </description>
 			<url>https://www.youtube.com/embed/G0gN18Ws5Rc</url>
+		</lesson>
+		<lesson id="25" course_id="8">
+			<title>Yii Framework 2. Базовый и расширенный шаблоны приложения</title>
+			<description>loftblog <a href="https://www.youtube.com/playlist?list=PLY4rE9dstrJyV_BIRP7bAwbocR_j3C90A" target="blank">playlist</a></description>
+			<url>https://www.youtube.com/embed/HGCRc0aJN9E</url>
+		</lesson>
+		<lesson id="26" course_id="8">
+			<title>Анонимные функции в PHP</title>
+			<description>htmllab
+Анонимные функции позволяют создавать функции, не имеющие определенных имен.
+</description>
+			<url>https://www.youtube.com/embed/IhPkWLRCjvQ</url>
+		</lesson>
+		<lesson id="27" course_id="14">
+			<title>Урок 1. CMS 1C-Битрикс: управление сайтом. Установка Битрикс</title>
+			<description>Битрикс уроки с нуля.WebForMySelf.Сергей Бондин</description>
+			<url>https://www.youtube.com/embed/LmgxfPgmcCg</url>
+		</lesson>
+		<lesson id="28" course_id="14">
+			<title>Урок 2. CMS 1C-Битрикс: управление сайтом. Структура сайта. Исправление ошибок</title>
+			<description>Битрикс уроки с нуля.WebForMySelf.Сергей Бондин</description>
+			<url>https://www.youtube.com/embed/L1cuC3dQFlM</url>
+		</lesson>
+		<lesson id="29" course_id="14">
+			<title>Урок 3. CMS 1C-Битрикс: управление сайтом. Создание шаблона</title>
+			<description>Битрикс уроки с нуля.WebForMySelf.Сергей Бондин</description>
+			<url>https://www.youtube.com/embed/1VfbMhZQCcE</url>
+		</lesson>
+		<lesson id="30" course_id="14">
+			<title>Урок 4. CMS 1C-Битрикс: управление сайтом. Перенос верстки в шаблон</title>
+			<description>Битрикс уроки с нуля.WebForMySelf.Сергей Бондин</description>
+			<url>https://www.youtube.com/embed/icR-DcqlRTY</url>
+		</lesson>
+		<lesson id="31" course_id="14">
+			<title>Урок 5. CMS 1C-Битрикс: управление сайтом. Компонент меню</title>
+			<description>Битрикс уроки с нуля.WebForMySelf.Сергей Бондин</description>
+			<url>https://www.youtube.com/embed/mY2gR8Uvdrk</url>
 		</lesson>
 	</lessons>
 </xml_data>

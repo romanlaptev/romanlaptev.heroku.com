@@ -1,5 +1,5 @@
 <?php
-return array(
+$config = array(
 	//'basePath'=>dirname(__FILE__).DIRECTORY_SEPARATOR,
 	'db'=>array(
 		'dbType' => 'sqlite',
@@ -14,9 +14,20 @@ return array(
 	),
 	'export'=>array(
 		'filename' => 'export.xml',
-		//'filePath' => dirname(__FILE__)."/data/export_test.xml",
-		'filePath' => "/mnt/d2/temp/export.xml",
+		'filePath' => dirname(__FILE__)."/data/export_test.xml",
+		//'filePath' => "/mnt/d2/temp/export.xml",
 		//'content_type' => ''//note, book, video....
 	)
 );
+
+$config["content_types"] = array(
+'page',
+'article',
+'note',
+'book',
+'video',
+'music'
+);		
+
+return $config;
 ?>

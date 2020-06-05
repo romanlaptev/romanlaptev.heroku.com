@@ -20,7 +20,7 @@ class Taxonomy {
 	);
 
 	public function __construct(){}
-/*
+
 	public function getGroupList(){
 		global $_vars;
 		
@@ -44,7 +44,7 @@ class Taxonomy {
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		return false;
 	}//end getGroupList()
-*/
+
 
 	public function getTagList(){
 		global $_vars;

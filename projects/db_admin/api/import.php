@@ -31,7 +31,7 @@ if ( $_vars["runType"] == "web") {
 	//if(!empty($_REQUEST['import_format'])){
 	//}
 	//$_vars["db_schema"] = false;//do not check database tables
-	//$_vars["display_log"] = false;
+	$_vars["display_log"] = false;
 	
 	importProcess();
 	
@@ -62,7 +62,7 @@ if ( $_vars["runType"] == "console") {
 	$app = new App();
 
 	$_vars["db_schema"] = false;//do not check database tables
-	//$_vars["display_log"] = false;
+	$_vars["display_log"] = false;
 	
 	importProcess();
 	
@@ -85,7 +85,7 @@ if ( $_vars["runType"] == "console") {
 //====================
 function importProcess(){
 	global $_vars;
-	global $content;
+	//global $content;
 	//global $content_links;
 	//global $taxonomy;
 	global $app;
@@ -142,11 +142,11 @@ function importProcess(){
 //echo _logWrap( $_vars["xml"]->schema );
 unset($_vars["xml"]);
 //echo count($_vars["xmlData"]["content"]["children"]);
-//echo _logWrap( $_vars["xmlData"] );
+//echo _logWrap( $_vars["xmlData"]["content"] );
 //return false;
 
 	$_vars["import"]["replacement_table"] = array();
-/*
+
 	//import content info from XML nodes
 	if( !empty( $_vars["xmlData"]["content"]["children"] ) ){
 		importContent();
@@ -154,22 +154,22 @@ unset($_vars["xml"]);
 
 	//import content links info from XML nodes
 	if( !empty( $_vars["xmlData"]["content_links"]["children"] ) ){
-		importContentLinks();
+		//importContentLinks();
 		//$msg = "Import ".$_vars["import"]["total"]." content links";
 		//$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
-*/	
 
+/*
 	//import tag_groups info from XML nodes
 	if( !empty( $_vars["xmlData"]["tag_groups"]["children"] ) ){
-		importTagGroups();
+		//importTagGroups();
 		$msg = "Import ".$_vars["import"]["total"]." tag groups";
 		$msg .= ", num created: " .$_vars["import"]["numCreated"];
 		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
 	if( !empty( $_vars["xmlData"]["tag_list"]["children"] ) ){
-		importTagList();
+		//importTagList();
 		$msg = "Import ".$_vars["import"]["total"]." tags (termins)";
 		$msg .= ", num created: " .$_vars["import"]["numCreated"];
 		$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
@@ -178,7 +178,8 @@ unset($_vars["xml"]);
 	if( !empty( $_vars["xmlData"]["tag_links"]["children"] ) ){
 		//importTagLinks();
 	}
-echo _logWrap( $_vars["import"]["replacement_table"] );
+//echo _logWrap( $_vars["import"]["replacement_table"] );
+*/
 	
 }//end importProcess()					
 
@@ -211,7 +212,7 @@ function importContent(){
 //echo _logWrap( $_vars["table_content_type"] );
 //return false;
 	
-//------------------------------- get exists DB nodes
+//------------------- get exists DB nodes for update if exists importing node
 	$arg = array(
 		"fields" => array(
 			"content.id", 
@@ -223,14 +224,15 @@ function importContent(){
 	);
 	
 	$_vars["dbData"]["content"] = $content->getListWithType($arg);
-//echo _logWrap( $_vars );
+//echo _logWrap( $_vars["dbData"] );
+//return false;
 	if( $_vars["dbData"]["content"] ){
 		$msg = "import: found " . count( $_vars["dbData"]["content"] )." db nodes";
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
-	} else {
-		$msg = "import: warning, db nodes not found.";
-		$_vars["log"][] = array("message" => $msg, "type" => "warning");
-	}
+	} //else {
+		//$msg = "import: warning, db nodes not found.";
+		//$_vars["log"][] = array("message" => $msg, "type" => "warning");
+	//}
 	
 //------------------------------- insert/update database nodes from XML nodes
 //echo count($_vars["xmlData"]["content"]["children"]);

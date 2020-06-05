@@ -243,16 +243,27 @@ class ContentLinks {
 
 
 	public function clear(){
+		global $_vars;
+
 		$sql_query = "DELETE FROM ".$this->tableName.";";
-//echo _logWrap($sql_query);
+		
+		$msg =  "error: database table <b>".$this->tableName."</b> was not cleaned";
+		$msg_type = "warning";
 
 		$db = DB::getInstance();
-		$response = $db->runQuery( $db->dbConnection, $sql_query);
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $db->runQuery($arg);
 //echo _logWrap( $response );
+				
 		if( $response["status"] ){
-			return true;
+			$msg =  "database table <b>". $this->tableName."</b> was cleared...";
+			$msg_type = "success";
 		}
-		return false;
+		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+		
 	}//end clear()
 
 

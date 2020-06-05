@@ -7,7 +7,7 @@
 						<title></title>
 						<created></created>
 						<changed></changed>
-						<body_value></body_value>
+						<body_value body_filter_format=""></body_value>
 					</node>
 			</content>
 
@@ -31,9 +31,6 @@
 	</schema>
 
 	<xdata db_name="notes.sqlite" db_type="sqlite" export_date="23-May-2020 13:30:33" export_time="1590215433">
-
-
-
 		<content_links>
 <item content_id="2459" parent_id="2487"></item>
 <item content_id="2460" parent_id="2478"></item>
@@ -72,6 +69,30 @@
 <item content_id="2493" parent_id="2484"></item>
 		</content_links>		
 		<content>
+			
+<node id="1" type='video'>
+	<title>JavaScript, лекция 3 Функции. Замыкания</title>
+	<created>1590013479</created>
+	<changed>1590013479</changed>
+	<body_value body_filter_format="2">
+
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/r-W_BUG3EbI" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+<!--
+<div style="width:640px;height:480px">
+	 <iframe src="https://www.youtube.com/embed/r-W_BUG3EbI" width="100%" height="100%"></iframe>
+</div>
+-->
+
+<!--
+<video src="https://www.youtube.com/embed/r-W_BUG3EbI" controls width="100%"></video>
+-->
+Hexlet University
+	</body_value>
+</node>
+			
 <node id="2459" type='note'>
 		<title>301 редирект, .htaccess</title>
 		<created>1590213479</created>
@@ -958,5 +979,34 @@ https://stackoverflow.com/questions/8191459/how-do-i-update-node-js
 [/code]</body_value>
 	</node>
 		</content>		
+
+		<tag_groups>
+<item id="11" name="notes"></item>
+<item id="12" name="tags"></item>
+		</tag_groups>		
+		
+		<tag_list>
+<item id="225" term_group_id="11" parent_id="146" name="ASPLinux"></item>
+<item id="227" term_group_id="11" parent_id="146" name="Debian"></item>
+<item id="224" term_group_id="11" parent_id="146" name="Fedora"></item>
+<item id="273" term_group_id="11" parent_id="137" name="GIT"></item>
+<item id="147" term_group_id="11" parent_id="146" name="Mandriva"></item>
+<item id="223" term_group_id="11" parent_id="146" name="Runtu"></item>
+<item id="228" term_group_id="11" parent_id="146" name="Suse"></item>
+<item id="222" term_group_id="11" parent_id="146" name="Ubuntu"></item>
+<item id="229" term_group_id="11" parent_id="146" name="X"></item>
+<item id="233" term_group_id="11" parent_id="232" name="ajax"></item>
+<item id="146" term_group_id="11" parent_id="165" name="linux"></item>
+<item id="137" term_group_id="11" parent_id="0" name="program"></item>
+<item id="165" term_group_id="11" parent_id="0" name="system"></item>
+<item id="232" term_group_id="11" parent_id="0" name="tags"></item>
+		</tag_list>		
+		
+		<tag_links>
+<item content_id="724" term_id="137"></item>
+<item content_id="726" term_id="137"></item>
+<item content_id="727" term_id="137"></item>
+		</tag_links>		
+	
 	</xdata>
 </xroot>

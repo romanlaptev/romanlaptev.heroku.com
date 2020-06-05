@@ -193,6 +193,8 @@ echo _logWrap( $p );
 	//get children nodes
 	private function getXMLchildren($node){
 		$data = array();
+		
+		
 		foreach( $node as $item => $value){
 //$msg = $item. ": ".$value;
 //echo _logWrap( $msg );
@@ -200,6 +202,16 @@ echo _logWrap( $p );
 //$msg = $item. ": ".strlen($ch_hode_value);
 //echo _logWrap( $msg );
 			$data[$item] = $ch_node_value;
+
+			$attr = $this->getXMLattributes($value);
+//echo _logWrap( "attr: " );
+//echo _logWrap( $attr );
+			if( !empty($attr) ){
+				foreach( $attr as $key=>$value){
+					$data[$key] = $value;
+				}//next
+			}
+			
 		}//next
 		return $data;
 	}//end

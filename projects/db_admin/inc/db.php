@@ -148,15 +148,6 @@ class DB {
 			);
 		}
 
-		if( !isset( $_vars["display_log"] ) ) {
-			$_vars["display_log"] = true;
-		}			
-		if( $_vars["display_log"] == true ) {
-			$msg =  "run query: <b>".$sql_query."</b>";
-$msg .=  "lastInsertID: <b>".$lastInsertID."</b>";
-			$_vars["log"][] = array("message" => $msg, "type" => "success");
-		}			
-
 		$response = array(
 			"status" => true,
 			"type" => "success",
@@ -174,6 +165,19 @@ $msg .=  "lastInsertID: <b>".$lastInsertID."</b>";
 		if( $lastInsertID ){
 			$response["last_insert_id"] = $lastInsertID;
 		}
+
+//LOG 
+		if( !isset( $_vars["display_log"] ) ) {
+			$_vars["display_log"] = true;
+		}		
+			
+		if( $_vars["display_log"] ) {
+			$msg =  "run query: <b>".$sql_query."</b>";
+			if($lastInsertID){
+				$msg .=  "lastInsertID: <b>".$lastInsertID."</b>";
+			}
+			$_vars["log"][] = array("message" => $msg, "type" => "success");
+		}			
 		
 		return $response;
 	}//end runQuery()

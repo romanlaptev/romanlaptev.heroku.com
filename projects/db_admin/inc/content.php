@@ -29,7 +29,8 @@ class Content {
 			"body_value" => null,
       "created" => time(),
       "changed" => time(),
-			"parent_id" => null//no content link by default
+			"parent_id" => null,//no content link by default
+			"body_filter_format" => 1 //default filter type "plain text"
 		);
 		
 		//extend options object $p
@@ -72,8 +73,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 		$p["title"] = _filterFormInputValue( $p["title"] );
 		
 		if( !empty($p["body_value"]) ){
-			$p["body_value"] = trim( $p["body_value"] );
-			$p["body_value"] = htmlspecialchars( $p["body_value"] );
+			$format = $p["body_filter_format"];
+			$p["body_value"] = $this->filterBody( $p["body_value"], $format );
 		}
 //-----------------------
 
@@ -169,6 +170,23 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		
 	}//end save()
+
+
+	private function filterBody( $body, $format){
+		$body = trim( $body );
+		
+		if( $format == 2){//full HTML
+			//$body = str_replace("&quot;", "\"", $body);
+			//$body = str_replace("&amp;", "&", $body);
+			//$body = str_replace("&lt;", "<", $body);
+			//$body = str_replace("&gt;", ">", $body);
+			return $body;
+		}
+		
+		//plain text
+		$body = htmlspecialchars( $body );
+		return  $body;
+	}//end
 
 
 	public function getListWithType( $params=array() ){
@@ -333,17 +351,66 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 
 
 	public function clear(){
+		global $_vars;
+
 		$sql_query = "DELETE FROM ".$this->tableName.";";
-//echo _logWrap($sql_query);
+		
+		$msg =  "error: database table <b>".$this->tableName."</b> was not cleaned";
+		$msg_type = "warning";
 
 		$db = DB::getInstance();
-		$response = $db->runQuery( $db->dbConnection, $sql_query);
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $db->runQuery($arg);
 //echo _logWrap( $response );
+				
 		if( $response["status"] ){
-			return true;
+			$msg =  "database table <b>". $this->tableName."</b> was cleared...";
+			$msg_type = "success";
 		}
-		return false;
+		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+		
 	}//end clear()
+
+
+	public function addContentTypes(){
+		global $_vars;
+		
+		$tableName = "content_type";
+		$types = $_vars["config"]["content_types"];
+		
+		$sql_query_tpl = "INSERT INTO {{tableName}}(name) VALUES('{{type}}'); ";
+		$sql_query = "";
+		for( $n=0; $n<count($types); $n++){
+			
+			$query = $sql_query_tpl;
+			$query = str_replace( "{{tableName}}", $tableName, $query);
+			$query = str_replace( "{{type}}", $types[$n], $query );
+			
+			$sql_query .= $query;
+		}//next
+//echo _logWrap( $sql_query );
+//return false;
+		
+		$db = DB::getInstance();
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $db->runQuery($arg);
+//echo _logWrap( $response );
+
+		if( $response["status"] ){
+			$msg = "content_type values added...";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+		} else {
+			$msg = "error: not add content_type values";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+		
+	}//end addContentTypes()
 
 
 	public function editItem($params){

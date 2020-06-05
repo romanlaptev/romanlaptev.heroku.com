@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS content_type (
 -- filtered_html Filtered HTML
 -- full_html Full HTML 
 -- plain_text Plain text
+-- php_code PHP code
 CREATE TABLE IF NOT EXISTS filter_format ( 
 	id INTEGER PRIMARY KEY AUTOINCREMENT CHECK (id>= 0), 
 	format VARCHAR(255) NOT NULL DEFAULT '', 

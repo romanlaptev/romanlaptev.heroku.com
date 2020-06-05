@@ -124,15 +124,11 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 		break;
 
 		case "content/clear":
-			$msg =  "error clear content.";
-			$msg_type = "warning";
-				
-			$response = $content->clear();
-			if( $response ){
-				$msg =  "database table content was clear...";
-				$msg_type = "success";
-			}
-			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+			$content->clear();
+		break;
+
+		case "content/add_types":
+			$content->addContentTypes();
 		break;
 		
 //============================= CONTENT LINKS
@@ -154,15 +150,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 		break;
 
 		case "content-links/clear":
-			$msg =  "error clear content_links";
-			$msg_type = "warning";
-				
-			$response = $content_links->clear();
-			if( $response ){
-				$msg =  "database table content_links was clear...";
-				$msg_type = "success";
-			}
-			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+			$content_links->clear();
 		break;
 		
 //============================= TAXONOMY
