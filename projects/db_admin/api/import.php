@@ -211,6 +211,24 @@ function importContent(){
 	}
 //echo _logWrap( $_vars["table_content_type"] );
 //return false;
+
+//------------------------------- get filter_format (for import 'body_format')
+	$db = DB::getInstance();
+	$arg = array(
+		"tableName" => "filter_format",
+		"fields" => array("id","format")
+	);
+	$res = $db->getRecords($arg);
+	if( !empty($res) ){
+		for( $n=0; $n < count($res); $n++){//convert numeric array
+			$record = $res[$n];
+			$key = $record["format"];
+			$value = $record["id"];
+			$_vars["table_filter_format"][$key] = $value;
+		}//next
+	}
+//echo _logWrap( $_vars["table_filter_format"] );
+//return false;
 	
 //------------------- get exists DB nodes for update if exists importing node
 	$arg = array(
@@ -252,7 +270,13 @@ function importContent(){
 				$node["type_id"] = $_vars["table_content_type"][$key];
 			}
 		}
-
+//-------------------
+		if( !empty($node["body_format"]) ){
+			$key = $node["body_format"];
+			if( isset($_vars["table_filter_format"][$key]) ){
+				$node["body_format"] = $_vars["table_filter_format"][$key];
+			}
+		}
 //-------------------
 		unset( $node["id"] );//do not save node old ID
 		$arg = array(
