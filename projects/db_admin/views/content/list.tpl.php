@@ -5,8 +5,30 @@ $_vars["log"][] = array("message" => $params["content_list"][0], "type" => "info
 $total = 0;
 $html_table = "";
 if ( !empty( $params["content_list"] ) ) {
-	//Make widget!!!!!
+	$arg = array(
+		"data" => $params["content_list"],
+		"templates" => array(
+			"tpl_head" => "<tr class='text-center'>
+<td></td> 
+{{field_names}}
+<td><b>actions</b></td>
+</tr>",
+			"tpl_record" => "<tr>
+<td>
+<input type='checkbox' id='edit-nodes-{{id}}' name='nodes[]' value='id-{{id}}' class='form-checkbox'>
+</td>
+{{field_columns}}	
+	<td>
+<a href='?q=content/view&id={{id}}'>[view]</a>
+<a href='?q=content/edit&id={{id}}'>[edit]</a>
+<a href='?q=content/remove&id={{id}}'>[remove]</a>
+	</td>
+</tr>"
+		) 
+	);
 	
+	echo widget_table($arg);
+/*	
 	$html = "<table border=1 cellspacing=3>{{rows}}</table>";
 $tpl_head = "<tr class='text-center'>
 	<td></td> 
@@ -44,6 +66,7 @@ $tpl_record = "<tr>
 	//echo $html;
 	
 	$html_table = $html;
+*/	
 	$total = count($params["content_list"]);
 }
 
@@ -51,10 +74,12 @@ $tpl_record = "<tr>
 <h1>List content</h1>
 <h3>num elements: <?php echo $total ?></h3>
 <ul>
-	<li class="inline-list"><a href='?q=content/create'>add new content item</a></li>
-	<li class="inline-list"><a href='?q=content/clear'>clear table content</a></li>
-	<li class="inline-list"><a href='?q=content/add_types'>add content types</a></li>
+	<li><a href='?q=content/create'>add new content item</a></li>
+	<li><a href='?q=content/clear'>clear table content</a></li>
+	<li><a href='?q=content/set_values'>set init values (content types, filter formats...)</a></li>
+<!-- class="inline-list" -->	
 </ul>
+
 <form name="form_list_content" action="<?php echo $_SERVER['SCRIPT_NAME'];?>" method='post' class="form-control">
 	<div>
 <!--		

@@ -353,19 +353,11 @@ $sql_query = "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$valu
 //echo _logWrap( $sql_query );
 //return false;
 		
-		
-		//$response = $this->runQuery( $this->dbConnection, $sql_query);
 		$arg = array(
 			"sql_query" => $sql_query,
 			"query_type" => "exec"
 		);
-		//$response = $this->runQuery( $arg );
-		//if( $response["status"] ){
-			//return true;
-		//}
-		//return false;
 		return $this->runQuery( $arg );
-		
 	}//end saveRecord()
 
 

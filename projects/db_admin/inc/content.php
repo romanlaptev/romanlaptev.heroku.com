@@ -27,10 +27,11 @@ class Content {
 			"type_id" => 1,//default content type "page"
 			"title" => null,
 			"body_value" => null,
-      "created" => time(),
-      "changed" => time(),
-			"parent_id" => null,//no content link by default
-			"body_filter_format" => 1 //default filter type "plain text"
+			"body_format" => 1, //default filter type "plain text"
+			"status" => 1, //default status "publish"
+			"created" => time(),
+			"changed" => time(),
+			"parent_id" => null//no content link by default
 		);
 		
 		//extend options object $p
@@ -42,7 +43,6 @@ class Content {
 		//if( !$p["id"] ){
 			//unset( $p["id"] );
 		//}
-
 
 //echo "title: ". gettype($p["title"]);
 		//if( gettype($p["title"]) !== "string" ){
@@ -58,7 +58,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 		}
 		
 		if( empty($p["body_value"]) ){
-$msg =  "warning, empty <b>body</b>";
+$msg =  "warning, empty field: <b>body</b>";
 $_vars["log"][] = array("message" => $msg, "type" => "warning");
 			//return false;
 		}
@@ -73,12 +73,12 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 		$p["title"] = _filterFormInputValue( $p["title"] );
 		
 		if( !empty($p["body_value"]) ){
-			$format = $p["body_filter_format"];
+			$format = $p["body_format"];
 			$p["body_value"] = $this->filterBody( $p["body_value"], $format );
 		}
 //-----------------------
-
 //echo _logWrap($p);
+//return false;
 
 //INSERT INTO content(fields_string) VALUES(values_string);
 //UPDATE content SET field1=value,field2=value WHERE id=request_id;
@@ -100,7 +100,6 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 			"tableName" => $this->tableName,
 			"data" => $data
 		);
-		
 		if( !empty( $p["id"] ) ) {
 			$arg["query_condition"] = "id=".$p["id"];
 		}
@@ -120,8 +119,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 			
 //------------------------------ set content link, parent
 			if( !empty($p["parent_id"]) ){
-$msg2 = "error, not save content links info.";
-$msg2_type = "error";
+				$msg2 = "error, not save content links info.";
+				$msg2_type = "error";
 				$content_links = new ContentLinks();
 				if( $content_links ){
 					$arg = array(
@@ -135,9 +134,9 @@ $msg2_type = "error";
 //---------------------					
 					$save_res = $content_links->save( $arg );
 					if( $save_res["status"] ){
-$msg2 = "save content links info.";
-$msg2_type = "success";
-$_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
+						$msg2 = "save content links info.";
+						$msg2_type = "success";
+						$_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 					}
 				}
 			} 
@@ -150,7 +149,8 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 			}
 			
 			if( isset($p["parent_id"]) &&
-						empty($p["parent_id"]) ){
+				empty($p["parent_id"]) )
+			{
 				$content_links = new ContentLinks();
 				if( $content_links ){
 					$arg = array(
@@ -164,7 +164,6 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 					}
 				}
 			}
-			
 			return $res;
 		}
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
@@ -175,7 +174,7 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 	private function filterBody( $body, $format){
 		$body = trim( $body );
 		
-		if( $format == 2){//full HTML
+		if( $format == 3){//full HTML
 			//$body = str_replace("&quot;", "\"", $body);
 			//$body = str_replace("&amp;", "&", $body);
 			//$body = str_replace("&lt;", "<", $body);
@@ -375,7 +374,7 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 	}//end clear()
 
 
-	public function addContentTypes(){
+	public function setContentTypes(){
 		global $_vars;
 		
 		$tableName = "content_type";
@@ -404,13 +403,51 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 
 		if( $response["status"] ){
 			$msg = "content_type values added...";
-			$_vars["log"][] = array("message" => $msg, "type" => "error");
+			$_vars["log"][] = array("message" => $msg, "type" => "success");
 		} else {
 			$msg = "error: not add content_type values";
 			$_vars["log"][] = array("message" => $msg, "type" => "error");
 		}
 		
-	}//end addContentTypes()
+	}//end setContentTypes()
+
+	public function setFilterFormats(){
+		global $_vars;
+		
+		$tableName = "filter_format";
+		$formats = $_vars["config"]["filter_formats"];
+		
+		$sql_query_tpl = "INSERT INTO {{tableName}}(format, name) VALUES('{{format}}', '{{name}}'); ";
+		$sql_query = "";
+		for( $n=0; $n<count( $formats ); $n++){
+			
+			$query = $sql_query_tpl;
+			$query = str_replace( "{{tableName}}", $tableName, $query);
+			$query = str_replace( "{{format}}", $formats[$n]["format"], $query );
+			$query = str_replace( "{{name}}", $formats[$n]["name"], $query );
+			
+			$sql_query .= $query;
+		}//next
+//echo _logWrap( $sql_query );
+//return false;
+		
+		$db = DB::getInstance();
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $db->runQuery($arg);
+//echo _logWrap( $response );
+
+		if( $response["status"] ){
+			$msg = "filter_format values added...";
+			$_vars["log"][] = array("message" => $msg, "type" => "success");
+		} else {
+			$msg = "error: not add filter_format values";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+		
+	}//end setFilterFormats()
 
 
 	public function editItem($params){
@@ -474,7 +511,7 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 	}//end editItem()
 
 
-	public function addItem($params){
+	public function addItem( $params=array() ){
 		global $_vars;
 
 		$p = array(
@@ -510,9 +547,8 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 		//$p["data"]["html_type_options"] = "";
 		//$p["data"]["html_type_options"] = widget_content_type();
 		$p["data"]["content_type_select"] = widget_type_id();
-
-//----------------
 		$p["data"]["content_links"] = widget_content_links();
+		$p["data"]["body_format_select"] = widget_body_format();
 
 //----------------
 //$_vars["log"][] = array("message" => $p["data"], "type" => "info");

@@ -1,3 +1,10 @@
+filter_format
+INSERT INTO filter_format(format, name) VALUES('plain_text', 'Plain text');
+INSERT INTO filter_format(format, name) VALUES('filtered_html', 'Filtered HTML');
+INSERT INTO filter_format(format, name) VALUES('full_html', 'Full HTML');
+INSERT INTO filter_format(format, name) VALUES('php_code', 'PHP code');
+
+-----------------------------------
 - node.type сделать связь с таблицей
 node_type
 	type("note", "book", "video", "music")

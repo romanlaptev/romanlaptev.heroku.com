@@ -43,7 +43,7 @@ $tpl_record = "<li><a href='?q=content-links/list&content_id={{content_id}}'>{{t
 if ( isset($params["content_links"]) ) {
 	if ( !empty($params["content_links"]) ) {
 $_vars["log"][] = array("message" => $params["content_links"][0], "type" => "info");
-
+/*
 		$html = "<table border=1 cellspacing=3>{{rows}}</table>";
 	$tpl_head = "<tr class='text-center'>
 		<td><b>title</b></td> 
@@ -73,6 +73,23 @@ $_vars["log"][] = array("message" => $params["content_links"][0], "type" => "inf
 		$html = str_replace( "{{rows}}", $html_rows,  $html);	
 		//echo $html;
 		$html_table = $html;
+*/
+		$arg = array(
+			"data" => $params["content_links"],
+			"templates" => array(
+				"tpl_head" => "<tr class='text-center'>
+	{{field_names}}
+	<td><b>actions</b></td>
+	</tr>",
+				"tpl_record" => "<tr>
+	{{field_columns}}	
+		<td>
+<a href='?q=content-links/remove&content_id={{content_id}}'>remove link</a>
+		</td>
+	</tr>"
+			) 
+		);
+		echo widget_table($arg);
 		
 		$total = count($params["content_links"]);
 	}

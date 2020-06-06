@@ -29,5 +29,24 @@ $config["content_types"] = array(
 'music'
 );		
 
+$config["filter_formats"] = array(
+	array(
+		"format" => "plain_text",
+		"name" => "Plain text",
+	),
+	array(
+		"format" => "filtered_html",
+		"name" => "Filtered HTML",
+	),
+	array(
+		"format" => "full_html",
+		"name" => "Full HTML",
+	),
+	array(
+		"format" => "php_code",
+		"name" => "PHP code",
+	)
+);
+
 return $config;
 ?>

@@ -7,7 +7,7 @@
 						<title></title>
 						<created></created>
 						<changed></changed>
-						<body_value body_filter_format=""></body_value>
+						<body_value body_format=""></body_value>
 					</node>
 			</content>
 
@@ -74,7 +74,7 @@
 	<title>JavaScript, лекция 3 Функции. Замыкания</title>
 	<created>1590013479</created>
 	<changed>1590013479</changed>
-	<body_value body_filter_format="2">
+	<body_value body_format="full_html">
 
 &lt;div style="width:640px;height:480px"&gt;
 &lt;iframe src="https://www.youtube.com/embed/r-W_BUG3EbI" width="100%" height="100%"&gt;&lt;/iframe&gt;

@@ -72,8 +72,9 @@ if( !empty( $_vars["request"]["q"] ) ){
 //============================= CONTENT
 		case "content/create":
 			//$views_params["tpl_content_filename"] = "views/content/add.tpl.php";
-			$arg = array();
-			$arg["tpl_content_path"] = "views/content/add.tpl.php";
+			$arg = array(
+				"tpl_content_path" => "views/content/add.tpl.php"
+			);
 			$views_params["content"] = $content->addItem($arg);
 		break;
 		
@@ -127,8 +128,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 			$content->clear();
 		break;
 
-		case "content/add_types":
-			$content->addContentTypes();
+		case "content/set_values":
+			//$content->setContentTypes();
+			$content->setFilterFormats();
 		break;
 		
 //============================= CONTENT LINKS

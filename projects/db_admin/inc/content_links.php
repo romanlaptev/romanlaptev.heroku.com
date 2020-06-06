@@ -27,9 +27,9 @@ class ContentLinks {
 			"tableName" => "content_links, content",
 			//"fields" => array_keys( $this->infoSchema ),
 			"fields" => array(
+				"content.title",
 				"content_id", 
-				"parent_id", 
-				"content.title"
+				"parent_id" 
 			),
 			"query_condition" => "WHERE content.id=content_links.content_id ORDER BY content_links.parent_id"
 		);

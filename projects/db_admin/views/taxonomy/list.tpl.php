@@ -11,7 +11,21 @@
 
 if ( !empty( $params["tag_groups"] ) ) {
 	$arg = array(
-		"data" => $params["tag_groups"]
+		"data" => $params["tag_groups"],
+		"templates" => array(
+			"tpl_head" => "<tr class='text-center'>
+{{field_names}}
+<td><b>actions</b></td>
+</tr>",
+			"tpl_record" => "<tr>
+{{field_columns}}	
+	<td>
+<a href='?q=tag-group/list&id={{id}}'>[list]</a>
+<a href='?q=tag-group/edit&id={{id}}'>[edit]</a>
+<a href='?q=tag-group/remove&id={{id}}'>[remove]</a>
+	</td>
+</tr>"
+		) 
 	);
 	echo widget_table($arg);
 }

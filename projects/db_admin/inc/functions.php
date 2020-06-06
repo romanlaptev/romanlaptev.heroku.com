@@ -211,6 +211,38 @@ function widget_content_type( $content_type="" ){
 }//end widget_content_type()
 
 
+function widget_body_format( $format_id=1 ){
+	$tpl_select ='<select name="body_format" class="form-select">
+{{options}}
+</select>';
+	$tpl_option = "<option value='{{id}}'>{{name}}</option>";
+	$tpl_option_selected = "<option value='{{id}}' selected='selected'>{{name}}</option>";
+	$html_options = "";
+	
+	$db = DB::getInstance();
+	$arg = array(
+		"tableName" => "filter_format",
+		"fields" => array("id", "format", "name")
+	);
+	$options = $db->getRecords($arg);
+//echo _logWrap($options);
+
+	if( !empty($options) ){
+		for( $n=0; $n < count($options); $n++ ){
+			$html_option = $tpl_option;
+			if( $options[$n]["id"] == $format_id ){
+				$html_option = $tpl_option_selected;
+			}
+			$html_option = str_replace("{{id}}", $options[$n]["id"], $html_option );
+			$html_option = str_replace("{{name}}", $options[$n]["name"], $html_option );
+			$html_options .= $html_option;
+		}//next
+	}
+	$html = str_replace("{{options}}", $html_options, $tpl_select );
+	return $html;
+}//end widget_body_format()
+
+
 function widget_content_links( $params=null ){
 	global $_vars;
 	global $content_links;
@@ -315,8 +347,8 @@ function get_children_items( $contentID, $level, $item_parent_id ){
 	return $html;
 }//end get_children_items()
 
-
-function widget_table( $params=array() ){
+/*
+function widget_table_( $params=array() ){
 	//global $_vars;
 
 	$p = array(
@@ -371,6 +403,116 @@ function widget_table( $params=array() ){
 	$html = str_replace( "{{rows}}", $html_rows,  $html);	
 //echo _logWrap( htmlspecialchars($html));
 	return $html;
+}//end widget_table_()
+*/
+
+function widget_table( $params=array() ){
+
+	$default_tpl = array(
+		"table" => "<table border=1 cellspacing=3>{{head}}{{rows}}</table>",
+		"tpl_head" => "<tr class='text-center'>{{field_names}}</tr>",
+		"tpl_fieldNames" => "<td><b>{{fieldName}}</b></td>",
+		"tpl_record" => "<tr>{{field_columns}}</tr>",
+		"tpl_fieldColumns" => "<td>{{fieldValue}}</td>"
+	) ;
+	
+	$p = array(
+		"data" => array(),
+		"templates" => $default_tpl
+	);
+	
+	//extend options object $p
+	foreach( $params as $key=>$item ){
+		$p[ $key ] = $item;
+	}//next
+	
+	$p["templates"] = array_merge( $default_tpl, $p["templates"]);
+//echo _logWrap($p);
+	
+	if( count( $p["data"] ) == 0 ){
+		return false;
+	}
+	$records = $p["data"];
+	
+	$html = $p["templates"]["table"];
+	
+	$html_head = $p["templates"]["tpl_head"];
+	//form table column titles (field_names)
+	$tpl_fieldNames = $p["templates"]["tpl_fieldNames"];
+	$html_fieldNames = "";
+	foreach( $records[0] as $fieldName => $value){
+		$html_fieldNames .= str_replace("{{fieldName}}", $fieldName, $tpl_fieldNames);
+	}//next
+	$html_head = str_replace("{{field_names}}", $html_fieldNames, $html_head);
+
+	$html_rows = "";
+	for( $n = 0; $n < count( $records ); $n++){
+		$record = $records[$n];
+//echo _logWrap( $record );
+		$html_record = $p["templates"]["tpl_record"];
+		
+		//form table column (field values)
+		//{{fiels_columns}}
+		$tpl_fieldColumns = $p["templates"]["tpl_fieldColumns"];
+		$html_columns = "";
+		foreach( $record as $field=>$value ){
+			$html_columns .= str_replace( "{{fieldValue}}", $value, $tpl_fieldColumns);
+		}//next
+		
+		//second replacing in table record (action id, other values...)
+		$html_record = str_replace( "{{field_columns}}", $html_columns,  $html_record);	
+		foreach( $record as $field=>$value ){
+			$html_record = str_replace( "{{".$field."}}", $value, $html_record);
+		}//next
+
+		$html_rows .= $html_record;
+	}//next
+
+	$html = str_replace( "{{head}}", $html_head,  $html);
+	$html = str_replace( "{{rows}}", $html_rows,  $html);
+//echo _logWrap( htmlspecialchars($html));
+
+	return $html;
 }//end widget_table()
+
+/*	
+	$html = "<table border=1 cellspacing=3>{{rows}}</table>";
+$tpl_head = "<tr class='text-center'>
+	<td></td> 
+	<td><b>Title</b></td>
+	<td><b>type</b></td>
+	<td><b>actions</b></td>
+</tr>";
+$tpl_record = "<tr>
+	<td>
+<input type='checkbox' id='edit-nodes-{{id}}' name='nodes[]' value='id-{{id}}' class='form-checkbox'>
+	</td>
+	<td>{{title}}</td>
+	<td>{{type}}</td>
+	<td>
+<a href='?q=content/view&id={{id}}'>[view]</a>
+<a href='?q=content/edit&id={{id}}'>[edit]</a>
+<a href='?q=content/remove&id={{id}}'>[remove]</a>
+	</td>
+</tr>";
+	
+	$html_rows = $tpl_head;
+	for( $n = 0; $n < count( $params["content_list"] ); $n++){
+		$record = $params["content_list"][$n];
+//echo _logWrap( $record );
+		$html_record = $tpl_record;
+		foreach( $record as $field=>$value ){
+			if( empty($value) ){
+				$value="NULL";
+			}
+			$html_record = str_replace( "{{".$field."}}", $value,  $html_record);	
+		}//next
+		$html_rows .= $html_record;
+	}//next
+	$html = str_replace( "{{rows}}", $html_rows,  $html);	
+	//echo $html;
+	
+	$html_table = $html;
+*/	
 
 ?>
