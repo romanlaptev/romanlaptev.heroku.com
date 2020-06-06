@@ -26,51 +26,11 @@ if ( !empty( $params["content_list"] ) ) {
 </tr>"
 		) 
 	);
-	
-	echo widget_table($arg);
-/*	
-	$html = "<table border=1 cellspacing=3>{{rows}}</table>";
-$tpl_head = "<tr class='text-center'>
-	<td></td> 
-	<td><b>Title</b></td>
-	<td><b>type</b></td>
-	<td><b>actions</b></td>
-</tr>";
-$tpl_record = "<tr>
-	<td>
-<input type='checkbox' id='edit-nodes-{{id}}' name='nodes[]' value='id-{{id}}' class='form-checkbox'>
-	</td>
-	<td>{{title}}</td>
-	<td>{{type}}</td>
-	<td>
-<a href='?q=content/view&id={{id}}'>[view]</a>
-<a href='?q=content/edit&id={{id}}'>[edit]</a>
-<a href='?q=content/remove&id={{id}}'>[remove]</a>
-	</td>
-</tr>";
-	
-	$html_rows = $tpl_head;
-	for( $n = 0; $n < count( $params["content_list"] ); $n++){
-		$record = $params["content_list"][$n];
-//echo _logWrap( $record );
-		$html_record = $tpl_record;
-		foreach( $record as $field=>$value ){
-			if( empty($value) ){
-				$value="NULL";
-			}
-			$html_record = str_replace( "{{".$field."}}", $value,  $html_record);	
-		}//next
-		$html_rows .= $html_record;
-	}//next
-	$html = str_replace( "{{rows}}", $html_rows,  $html);	
-	//echo $html;
-	
-	$html_table = $html;
-*/	
+	$html_table = widget_table($arg);
 	$total = count($params["content_list"]);
 }
-
 ?>
+
 <h1>List content</h1>
 <h3>num elements: <?php echo $total ?></h3>
 <ul>

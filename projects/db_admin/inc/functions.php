@@ -243,6 +243,23 @@ function widget_body_format( $format_id=1 ){
 }//end widget_body_format()
 
 
+function widget_status( $status_id=0 ){
+	
+	$html = "<select name='status' class='form-select'>
+<option value='0' selected='selected'>not publush</option>
+<option value='1'>publish</option>
+</select>";
+
+	if( $status_id == 1){
+		$html = "<select name='status' class='form-select'>
+<option value='0'>not publush</option>
+<option value='1' selected='selected'>publish</option>
+</select>";
+	}
+	
+	return $html;
+}//end widget_status()
+
 function widget_content_links( $params=null ){
 	global $_vars;
 	global $content_links;
@@ -347,64 +364,6 @@ function get_children_items( $contentID, $level, $item_parent_id ){
 	return $html;
 }//end get_children_items()
 
-/*
-function widget_table_( $params=array() ){
-	//global $_vars;
-
-	$p = array(
-		"data" => array(),
-		"templates" => array(
-			"table" => "<table border=1 cellspacing=3>{{rows}}</table>",
-			
-			"tpl_head" => "<tr class='text-center'>
-	<td><b>id</b></td> 
-	<td><b>name</b></td>
-	<td><b>actions</b></td>
-</tr>",//add {{field_names}}!!!!	
-
-			"tpl_record" => "<tr>
-	<td>{{id}}</td> 
-	<td>{{name}}</td> 
-	<td>
-<a href='?q=tag-group/list&id={{id}}'>[list]</a>
-<a href='?q=tag-group/edit&id={{id}}'>[edit]</a>
-<a href='?q=tag-group/remove&id={{id}}'>[remove]</a>
-	</td>
-</tr>"//add {{fiels}}!!!!	
-
-		) 
-	);
-	
-	//extend options object $p
-	foreach( $params as $key=>$item ){
-		$p[ $key ] = $item;
-	}//next
-//echo _logWrap($p);
-	
-	if( count( $p["data"] ) == 0 ){
-		return false;
-	}
-	
-	$html = $p["templates"]["table"];
-	$html_rows = $p["templates"]["tpl_head"];//add form {{field_names}}!!!!	
-	$records = $p["data"];
-	for( $n = 0; $n < count( $records ); $n++){
-		$record = $records[$n];
-//echo _logWrap( $record );
-		$html_record = $p["templates"]["tpl_record"];
-		
-		//add form {{fields}}!!!!	
-		foreach( $record as $field=>$value ){
-			$html_record = str_replace( "{{".$field."}}", $value,  $html_record);	
-		}//next
-		
-		$html_rows .= $html_record;
-	}//next
-	$html = str_replace( "{{rows}}", $html_rows,  $html);	
-//echo _logWrap( htmlspecialchars($html));
-	return $html;
-}//end widget_table_()
-*/
 
 function widget_table( $params=array() ){
 
@@ -474,45 +433,5 @@ function widget_table( $params=array() ){
 
 	return $html;
 }//end widget_table()
-
-/*	
-	$html = "<table border=1 cellspacing=3>{{rows}}</table>";
-$tpl_head = "<tr class='text-center'>
-	<td></td> 
-	<td><b>Title</b></td>
-	<td><b>type</b></td>
-	<td><b>actions</b></td>
-</tr>";
-$tpl_record = "<tr>
-	<td>
-<input type='checkbox' id='edit-nodes-{{id}}' name='nodes[]' value='id-{{id}}' class='form-checkbox'>
-	</td>
-	<td>{{title}}</td>
-	<td>{{type}}</td>
-	<td>
-<a href='?q=content/view&id={{id}}'>[view]</a>
-<a href='?q=content/edit&id={{id}}'>[edit]</a>
-<a href='?q=content/remove&id={{id}}'>[remove]</a>
-	</td>
-</tr>";
-	
-	$html_rows = $tpl_head;
-	for( $n = 0; $n < count( $params["content_list"] ); $n++){
-		$record = $params["content_list"][$n];
-//echo _logWrap( $record );
-		$html_record = $tpl_record;
-		foreach( $record as $field=>$value ){
-			if( empty($value) ){
-				$value="NULL";
-			}
-			$html_record = str_replace( "{{".$field."}}", $value,  $html_record);	
-		}//next
-		$html_rows .= $html_record;
-	}//next
-	$html = str_replace( "{{rows}}", $html_rows,  $html);	
-	//echo $html;
-	
-	$html_table = $html;
-*/	
 
 ?>

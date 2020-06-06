@@ -1,5 +1,4 @@
-<h1>Edit content item</h1>
-<h3>{{title}}</h1>
+<h3>Edit content item: {{title}}</h3>
 
 <form name="form_edit_content" action="{{form-action}}" method='post' class="form-control">
 
@@ -27,8 +26,33 @@
 <input type='text' name='title' value='{{title}}'>
 	</fieldset>
 
-	<fieldset>
-		<legend>*<b>body_value</b></legend>
+<div class="row">	
+	
+	<div class="pull-left">	
+		<fieldset>
+			<legend><b>content type</b></legend>
+{{content_type_select}}		
+<!-- <input type='text' name='type_id' value='{{type_id}}' size='3'> -->
+		</fieldset>
+	</div>
+
+	
+	<div class="pull-left">	
+		<fieldset>
+			<legend><b>status</b></legend>
+{{status_select}}
+		</fieldset>
+	</div>
+	
+	<div class="pull-left">	
+		<fieldset><legend><b>body_format</b></legend>
+{{body_format_select}}
+		</fieldset>
+	</div>
+	
+</div>
+
+	<fieldset><legend>*<b>body_value</b></legend>
 <textarea id="body-value" name="body_value" class="form-control" rows="20">{{body_value}}</textarea>
 	</fieldset>
 	
@@ -76,12 +100,5 @@ clear any values from field - remove content link (NULL, no value)
 
 	</fieldset>
 
-	<fieldset>
-		<legend><b>content type</b></legend>
-{{content_type_select}}
-<!--				
-<input type='text' name='type_id' value='{{type_id}}' size='3'>
--->
-	</fieldset>
 
 </form>

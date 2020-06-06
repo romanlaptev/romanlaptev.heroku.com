@@ -10,6 +10,7 @@ class Content {
 		"title" => "string",
 		"body_value" => "string",
 		"body_format" => "integer",
+		"status" => "integer",
 		"created" => "DATETIME",
 		"changed" => "DATETIME"
 	);
@@ -86,11 +87,11 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 		//check input REQUEST parameters, select only from array $infoSchema[key]
 		$data = array();
 		foreach( $this->infoSchema as $key=>$value ){
-			if( !empty($p[ $key ]) ){
+			//if( !empty($p[ $key ]) ){
 				if( $key !== "id" ){
 					$data[ $key ] = $p[ $key ];
 				}
-			}
+			//}
 		}//next
 		
 		//remove id from field list (no need, when add/update note)
@@ -179,6 +180,10 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 			//$body = str_replace("&amp;", "&", $body);
 			//$body = str_replace("&lt;", "<", $body);
 			//$body = str_replace("&gt;", ">", $body);
+			return $body;
+		}
+		
+		if( $format == 4){//PHP code
 			return $body;
 		}
 		
@@ -271,7 +276,8 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 		$db = DB::getInstance();
 		$arg = array(
 			"tableName" => "content",
-			"fields" => array("id", "type_id", "title", "body_value", "created", "changed"),
+			//"fields" => array("id", "type_id", "title", "body_value", "created", "changed"),
+			"fields" => array_keys( $this->infoSchema ),
 			"query_condition" => "WHERE id=".$p["id"]
 		);
 		
@@ -488,8 +494,9 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 //----------------
 		//$p["data"][0]["html_type_options"] = "";
 		$p["data"][0]["content_type_select"] = widget_type_id( $p["data"][0]["type_id"] );
+
+		//$p["data"]["content_links"] = widget_content_links();
 		
-//----------------
 		if( !isset($p["data"][0]["parent_id"]) ){
 			$p["data"][0]["parent_id"] = "";
 		}
@@ -499,9 +506,11 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 			"item_parent_id" => $p["data"][0]["parent_id"]
 		);
 		$p["data"][0]["content_links"] = widget_content_links( $arg );
+		$p["data"][0]["body_format_select"] = widget_body_format($p["data"][0]["body_format"]);
+		$p["data"][0]["status_select"] = widget_status($p["data"][0]["status"]);
 
 //----------------
-//$_vars["log"][] = array("message" => $p["data"], "type" => "info");
+//$_vars["log"][] = array("message" => $p, "type" => "info");
 		
 		foreach( $p["data"][0] as $field=>$value){
 			$p["content"] = str_replace( "{{".$field."}}", $value, $p["content"] );
