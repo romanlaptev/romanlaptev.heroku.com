@@ -42,7 +42,7 @@ if ( $_vars["runType"] == "web") {
 		$_vars["config"]["export"]["content_type"] = $_REQUEST['content_type'];
 	}
 	
-	$res = _exportProcess();
+	$res = exportProcess( $_vars["config"]["export"] );
 	if( $res ){
 //echo _logWrap( htmlspecialchars( $_vars["xml"]) );
 		writeXML($_vars["xml"]);
@@ -63,7 +63,6 @@ if ( $_vars["runType"] == "web") {
 		$_vars["log"][] = array("message" => $msg, "type" => "info");
 */
 	}
-	
 }
 
 //==================================== CONSOLE run
@@ -82,14 +81,16 @@ if ( $_vars["runType"] == "console") {
 	$content_links = new ContentLinks();
 	$taxonomy = new Taxonomy();
 
-	$res = _exportProcess();
+	$res = exportProcess( $_vars["config"]["export"] );
 //echo _logWrap($_vars["xml"]);
 	if( $res ){
 		$filePath = $_vars["config"]["export"]["filePath"];
+
 		if ( !file_exists( $filePath ) ){
 			writeXML($_vars["xml"]);
-		} else {
-			
+		}
+		
+		if ( file_exists( $filePath ) ){
 			$oldfile = $filePath;
 			$newfile = $filePath."_";
 			if ( !copy($oldfile, $newfile) ) {
@@ -102,6 +103,13 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 			writeXML($_vars["xml"]);
 		}
 	}
+	$msg = "end of export...";
+	$_vars["log"][] = array("message" => $msg, "type" => "success");
+	
+	//====================================== RUNTIME
+	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
+	$msg = "export runtime, sec: ".$runtime;
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
 
 	//====================================== LOG
 	if ( !empty( $_vars["log"] ) ) {
@@ -117,11 +125,24 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 //====================
 // FUNCTIONS
 //====================
-function _exportProcess(){
+function exportProcess( $params = array() ){
 	global $_vars;
 	global $content;
 	global $content_links;
 	global $taxonomy;
+	
+	$p = array(
+		"type_export_content" => false,
+		"content_type" => ""//by default, export content any types
+	);
+	
+	//extend options object $p
+	foreach( $params as $key=>$item ){
+		$p[ $key ] = $item;
+	}//next
+	
+//echo _logWrap($p);
+	
 /*
 $_vars["sql"]["getContent"] = "SELECT id, title, created, changed, body_value
 FROM content WHERE type_id=(
@@ -134,134 +155,77 @@ $_vars["sql"]["getTaxonomyIndex"] = "SELECT content_id, term_id FROM taxonomy_in
 $_vars["sql"]["getTagList"] = "SELECT id, term_group_id, name, parent_id FROM taxonomy_term_data;";
 */
 
-//============ XML templates
-$_vars["config"]["export"]["export_tpl"] = '<?xml version="1.0" encoding="UTF-8"?>
-<xroot>
-	<schema>
-		<xdata db_name="" db_type="" export_date="" export_time="">
-			<content>
-					<node id="" type="">
-						<title></title>
-						<created></created>
-						<changed></changed>
-						<body_value></body_value>
-					</node>
-			</content>
-
-			<content_links>
-				<item content_id="" parent_id=""></item>
-			</content_links>		
-
-			<tag_groups>
-				<item id="" name=""></item>
-			</tag_groups>		
-
-			<tag_links>
-				<item content_id="" term_id=""></item>
-			</tag_links>		
-
-			<tag_list>
-				<item id="" term_group_id="" parent_id="" name=""></item>
-			</tag_list>		
-
-		</xdata>
-	</schema>
-
-	<xdata db_name="{{dbName}}" db_type="{{dbType}}" export_date="{{exportDate}}" export_time="{{exportTime}}">
-{{tag_groups}}
-{{tag_list}}
-{{tag_links}}
-{{content_links}}
-{{content}}
-	</xdata>
-</xroot>';
-
-	$_vars["config"]["export"]["tplContent"] = '<content>{{nodelist}}</content>';
-	$_vars["config"]["export"]["tplContentNode"] = '<node id="{{id}}" {{type}}>
-		<title>{{title}}</title>
-		<created>{{created}}</created>
-		<changed>{{changed}}</changed>
-		<body_value>{{body_value}}</body_value>
-	</node>';
-
-	$_vars["config"]["export"]["tplContentLinks"] = '<content_links>{{nodelist}}</content_links>';
-	$_vars["config"]["export"]["tplContentLink"] = '<item content_id="{{content_id}}" parent_id="{{parent_id}}"></item>';
-
-	$_vars["config"]["export"]["tplTagGroups"] = '<tag_groups>{{nodelist}}</tag_groups>';
-	$_vars["config"]["export"]["tplTagGroup"] = '<item id="{{id}}" name="{{name}}"></item>';
-
-	$_vars["config"]["export"]["tplTagList"] = '<tag_list>{{nodelist}}</tag_list>';
-	$_vars["config"]["export"]["tplTag"] = '<item id="{{id}}" term_group_id="{{term_group_id}}" parent_id="{{parent_id}}" name="{{name}}"></item>';
-			
-
-	$_vars["config"]["export"]["tplTagLinks"] = '<tag_links>{{nodelist}}</tag_links>';
-	$_vars["config"]["export"]["tplTagLink"] = '<item content_id="{{content_id}}" term_id="{{term_id}}"></item>';
-
 	$_vars["db_schema"] = false;//do not check database tables
 	//$_vars["display_log"] = false;
 	
 //------------------------------- get exists DB nodes
 	$arg = array(
-		//"tableName" => "content, content_type",
+		"tableName" => "content, content_type, filter_format",
 		"fields" => array(
 			"content.id", 
 			"content.title", 
 			"content.created",
 			"content.changed",
 			"content.body_value",
+			"filter_format.format as body_format", 
 			"content_type.name as type"
-		)
+		),
+		"query_condition" => "WHERE content.type_id=content_type.id 
+AND filter_format.id=content.body_format ORDER BY content.title;"
 	);
 	
-	//$content_type = $_vars["config"]["export"]["content_type"];
-	//if( !empty($content_type) ){
-		//$arg["query_condition"] = "WHERE content_type.name='".$content_type."' AND content.type_id=content_type.id ORDER BY content.title";
-	//}
-	if( !empty( $_vars["config"]["export"]["content_type"] ) ){
-		$content_type = $_vars["config"]["export"]["content_type"];
-		$arg["query_condition"] = "LEFT JOIN content_type ON content_type.name='".$content_type."' AND content.type_id=content_type.id ORDER BY content.title";
+//$p["content_type"] = "video";
+	if( !empty( $p["content_type"] ) ){
+		$content_type = $p["content_type"];
+		//$arg["query_condition"] = "LEFT JOIN content_type ON content_type.name='".$content_type."' AND content.type_id=content_type.id ORDER BY content.title";
+		$arg["query_condition"] = "WHERE content_type.name='".$content_type."' 
+AND content.type_id=content_type.id AND filter_format.id=content.body_format 
+ORDER BY content.title;";
 	}
 	
-	$_vars["xmlData"]["content"] = $content->getListWithType($arg);
-//echo _logWrap( $_vars["config"]["export"]["content_type"] );
-//echo _logWrap( $_vars["xmlData"]["content"] );
+	$_vars["dbData"]["content"] = $content->getListWithType($arg);
+//echo _logWrap( $_vars["dbData"]["content"] == false );
+//echo _logWrap( empty($_vars["dbData"]["content"]) );
+//echo _logWrap( count($_vars["dbData"]["content"]) );
+//echo _logWrap( $_vars["dbData"]["content"] );
 //return false;
 
-	if( $_vars["xmlData"]["content"] ){
-		$msg = "export: found " . count( $_vars["xmlData"]["content"] )." database nodes";
+	if( $_vars["dbData"]["content"] ){
+		$msg = "export: found " . count( $_vars["dbData"]["content"] )." database nodes";
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	} else {
 		$msg = "export: warning, not found content items";
 		if( !empty($content_type) ){
-			$msg .= ", type: " . $_vars["config"]["export"]["content_type"];
+			$msg .= ", type: " . $content_type;
 		}
 		$_vars["log"][] = array("message" => $msg, "type" => "warning");
 	}
+	
 //--------------------------
 	$arg = array(
 		"tableName" => "content_links",
 		"fields" => array("content_id", "parent_id"),
 		"query_condition" => null
 	);
-	$_vars["xmlData"]["content_links"] = $content_links->getList($arg);
+	$_vars["dbData"]["content_links"] = $content_links->getList($arg);
 
 //--------------------------
-	$_vars["xmlData"]["tag_groups"] = $taxonomy->getGroupList();
-	$_vars["xmlData"]["tag_list"] = $taxonomy->getTagList();
-	$_vars["xmlData"]["tag_links"] = $taxonomy->getTagLinks();
+	$_vars["dbData"]["tag_groups"] = $taxonomy->getGroupList();
+	$_vars["dbData"]["tag_list"] = $taxonomy->getTagList();
+	$_vars["dbData"]["tag_links"] = $taxonomy->getTagLinks();
 
-	$_vars["xml"] = formXML( $_vars["xmlData"] );
+	$_vars["xml"] = formXML( $_vars["dbData"] );
 	if ( !empty($_vars["xml"]) ) {
 		return true;
 	}
 	return false;
 	
-}//end _exportProcess()					
+}//end exportProcess()					
 
 
 function formXML( $xmlData ){
 	global $_vars;
-	$xml = $_vars["config"]["export"]["export_tpl"];
+	$xml = $_vars["config"]["export"]["xml_template"];
 
 //------------------ form content node	
 	$xml_content = "";
