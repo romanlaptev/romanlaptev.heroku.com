@@ -95,7 +95,9 @@ $config["export"]["tplContentNode"] = '<node id="{{id}}" {{type}}>
 	<title>{{title}}</title>
 	<created>{{created}}</created>
 	<changed>{{changed}}</changed>
-	<body_value body_format="{{body_format}}">{{body_value}}</body_value>
+	<body_value body_format="{{body_format}}">
+{{body_value}}
+	</body_value>
 </node>';
 
 $config["export"]["tplContentLinks"] = '<content_links>{{nodelist}}</content_links>';

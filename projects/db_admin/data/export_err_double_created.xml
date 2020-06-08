@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xroot>
+	<schema>
+		<xdata db_name="" db_type="" export_date="" export_time="">
+			<content>
+					<node id="" type="">
+						<title></title>
+						<created></created>
+						<changed></changed>
+						<body_value body_format=""></body_value>
+					</node>
+			</content>
+
+			<content_links>
+				<item content_id="" parent_id=""></item>
+			</content_links>		
+
+			<tag_groups>
+				<item id="" name=""></item>
+			</tag_groups>		
+
+			<tag_links>
+				<item content_id="" term_id=""></item>
+			</tag_links>		
+
+			<tag_list>
+				<item id="" term_group_id="" parent_id="" name=""></item>
+			</tag_list>		
+
+		</xdata>
+	</schema>
+
+	<xdata db_name="notes.sqlite" db_type="sqlite" export_date="23-May-2020 13:30:33" export_time="1590215433">
+		<content>
+
+<node  type='video'>
+	<title>Анонимные функции в PHP</title>
+	<body_value body_format="full_html">
+description: htmllab
+Анонимные функции позволяют создавать функции, не имеющие определенных имен.
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/IhPkWLRCjvQ" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+		
+
+<node  type='video'>
+	<title>Урок 1. CMS 1C-Битрикс: управление сайтом. Установка Битрикс</title>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/LmgxfPgmcCg" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+		
+<node  type='video'>
+	<title>Урок 2. CMS 1C-Битрикс: управление сайтом. Структура сайта. Исправление ошибок</title>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/L1cuC3dQFlM" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+
+		
+<node  type='video'>
+	<title>Урок 3. CMS 1C-Битрикс: управление сайтом. Создание шаблона</title>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/1VfbMhZQCcE" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+
+		
+<node  type='video'>
+	<title>Урок 4. CMS 1C-Битрикс: управление сайтом. Перенос верстки в шаблон</title>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/icR-DcqlRTY" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+
+		
+<node  type='video'>
+	<title>Урок 5. CMS 1C-Битрикс: управление сайтом. Компонент меню</title>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/mY2gR8Uvdrk" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+
+
+		</content>
+		
+	
+	</xdata>
+</xroot>

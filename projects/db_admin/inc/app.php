@@ -242,32 +242,34 @@ Array
     [type_id] => 7
 )
 */
-	if( isset($p["xmlNode"]["noupdate"]) ){
-		$msg = "import: warning, skip import ".$p["xmlNode"]["title"];
-		$_vars["log"][] = array("message" => $msg, "type" => "warning");
-		return false;
-	}
+		if( isset($p["xmlNode"]["noupdate"]) ){
+			$msg = "import: warning, skip import ".$p["xmlNode"]["title"];
+			$_vars["log"][] = array("message" => $msg, "type" => "warning");
+			return false;
+		}
 	
 	//-------------------check format 'created'
 //echo _logWrap( $p["xmlNode"]["created"] );
 //echo _logWrap( gettype( $p["xmlNode"]["created"] ) );
+		if( !empty($p["xmlNode"]["created"]) ){
+			$test = explode("-", $p["xmlNode"]["created"]);
+		//echo count( $test );
+		//echo "<br>";
+		//echo count( $test ) > 1;
+		//echo _logWrap( $test );
+			if( count( $test ) > 1 ){
+				$p["xmlNode"]["created"] = strtotime( $p["xmlNode"]["created"] );
+		//echo $p["xmlNode"]["created"];
+			}
+			$test = explode("-", $p["xmlNode"]["changed"]);
+			if( count( $test ) > 1 ){
+				$p["xmlNode"]["changed"] = strtotime( $p["xmlNode"]["changed"] );
+			}
+		}	
 
-	$test = explode("-", $p["xmlNode"]["created"]);
-//echo count( $test );
-//echo "<br>";
-//echo count( $test ) > 1;
-//echo _logWrap( $test );
-	if( count( $test ) > 1 ){
-		$p["xmlNode"]["created"] = strtotime( $p["xmlNode"]["created"] );
-//echo $p["xmlNode"]["created"];
-	}
-	$test = explode("-", $p["xmlNode"]["changed"]);
-	if( count( $test ) > 1 ){
-		$p["xmlNode"]["changed"] = strtotime( $p["xmlNode"]["changed"] );
-	}
-	
 	//------------------ Update exists db node or create new db node
 		$update = 0;
+if( !empty($p["xmlNode"]["created"]) ){
 		if( !empty($p["dbNodes"]) ){
 			for( $n1 = 0; $n1 < count( $p["dbNodes"] ); $n1++){
 				$dbNode = $p["dbNodes"][$n1];
@@ -289,6 +291,7 @@ Array
 			}//next
 		}
 
+}	
 		if( $update == 1){
 			$_vars["import"]["numUpdated"]++;
 		} else {

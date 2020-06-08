@@ -30,27 +30,33 @@ if ( $_vars["runType"] == "web") {
 //print_r($_FILES);
 //print_r($_vars);
 //echo "</pre>";
+	loadDrupal();
 	$_vars["form"] = "";
-	if (empty($_REQUEST['action']))	{
-		loadDrupal();
+	$_vars["request"] = $_REQUEST;
+	
+	if (empty( $_vars["request"]['action'] ) )	{
 		$_vars["form"] = importForm();
 	} else {
-		$action = $_REQUEST['action'];
-		switch ($action) {
+
+		switch ($_vars["request"]["action"]) {
+			
 			case "import":
-				if( !empty($_REQUEST['file_path']) ){
-					$_vars["config"]["export"]["file_path"] = $_REQUEST['file_path'];
+				if( !empty( $_vars["request"]['file_path'] ) ){
+					$_vars["config"]["export"]["file_path"] = $_vars["request"]['file_path'];
 				}
-				loadDrupal();
-				_importProcess();
+				importProcess();
 			break;
+
+			case "upload_import_file":
+				$_vars["files"] = $_FILES;
+				$response = uploadFile();
+				if( $response ){
+					$_vars["form"] = importForm();
+				}
+			break;
+			
 		}//end switch
 	}//end elseif
-
-//====================================== RUNTIME
-	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
-	$msg = "export runtime, sec: ".$runtime;
-	$_vars["log"][] = array("message" => $msg, "type" => "info");
 
 	echo PageHead();
 	echo $_vars["form"];
@@ -62,11 +68,12 @@ if ( $_vars["runType"] == "console") {
 //print_r($argv);
 //$_SERVER["argv"]
 	loadDrupal();
-	_importProcess();
+	importProcess();
+}
 
 //====================================== RUNTIME
 	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
-	$msg = "export runtime, sec: ".$runtime;
+	$msg = "import runtime, sec: ".$runtime;
 	$_vars["log"][] = array("message" => $msg, "type" => "info");
 	
 //====================================== LOG
@@ -77,12 +84,10 @@ if ( $_vars["runType"] == "console") {
 			echo _logWrap( $record["message"], $record["type"] );
 		}//next
 	}
-}
-
 
 
 //====================
-function _importProcess(){
+function importProcess(){
 	global $_vars;
 
 	//--------------------------- check PHP-module SimpleXML
@@ -142,15 +147,15 @@ unset($_vars["xml"]);
 //return false;
 
 
-	//import content info from XML nodes
+//---------- import content info from XML nodes
 	if( !empty( $_vars["xmlData"]["content"]["children"] ) ){
-		_importContent();
+		importContent();
 	}
 
 /*
 	//import content links info from XML nodes
 	if( !empty( $_vars["xmlData"]["content_links"]["children"] ) ){
-		_importContentLinks();
+		importContentLinks();
 		$msg = "Import ".$_vars["import"]["total"]." content links";
 		//$msg .= ", created: " .$_vars["import"]["numCreated"];
 		//$msg .= ", updated: " .$_vars["import"]["numUpdated"];
@@ -158,14 +163,14 @@ unset($_vars["xml"]);
 	}
 */
 
-}//end _importProcess()
+}//end importProcess()
 
 
 
 //-------------------------------
 // import content info from XML nodes
 //-------------------------------
-function _importContent(){
+function importContent(){
 	global $_vars;
 /*
 	global $content;
@@ -191,6 +196,52 @@ function _importContent(){
 //echo _logWrap( $_vars["table_content_type"] );
 //return false;
 */
+
+//------------------------------- get filter_format values		
+	$sql_query = "SELECT format, name FROM filter_format;";
+	$result = db_query($sql_query);
+	$n1=0;
+	foreach ($result as $row) {
+		$_vars["dbData"]["filter_format"][$n1] = $row;
+		$n1++;
+	}//next
+/*
+Array
+(
+    [0] => stdClass Object
+        (
+            [format] => 1
+            [name] => Filtered HTML
+        )
+*/	
+	//build body_format IDs table
+	if( !empty($_vars["dbData"]["filter_format"]) ){
+		$_vars["body_formats"] = array();
+		
+		for( $n1 = 0; $n1 < count($_vars["dbData"]["filter_format"]); $n1++ ){
+			
+			$format = $_vars["dbData"]["filter_format"][$n1];
+			if( $format->name == "Plain text"){
+				$_vars["body_formats"]["plain_text"] = $format->format;
+			}
+			
+			if( $format->name == "Filtered HTML"){
+				$_vars["body_formats"]["filtered_html"] = $format->format;
+			}
+			
+			if( $format->name == "Full HTML"){
+				$_vars["body_formats"]["full_html"] = $format->format;
+			}
+			
+			if( $format->name == "PHP code"){
+				$_vars["body_formats"]["php_code"] = $format->format;
+			}
+			
+		}//next
+	}
+//echo _logWrap( $_vars["body_formats"] );
+//return false;
+
 	
 //------------------------------- get exists DB nodes
 	//$sql_query = "SELECT nid, title, created FROM node GROUP BY created;";
@@ -306,7 +357,7 @@ function _importContent(){
 			"dbNodes" => $_vars["dbData"]["content"]
 		);
 
-		$response = saveXMLnode( $arg );
+		$response = saveXMLnode_drupal( $arg );
 		if( $response){
 			$_vars["import"]["total"]++;
 		} else {
@@ -320,7 +371,7 @@ function _importContent(){
 	$msg .= ", num created: " .$_vars["import"]["numCreated"];
 	$msg .= ", num updated: " .$_vars["import"]["numUpdated"];
 	$_vars["log"][] = array("message" => $msg, "type" => "success");
-}//end _importContent()					
+}//end importContent()					
 
 
 function getXMLcontent($params){
@@ -415,12 +466,22 @@ function getXMLchildren($node){
 //$msg = $item. ": ".strlen($ch_hode_value);
 //echo _logWrap( $msg );
 		$data[$item] = $ch_node_value;
+
+		$attr = getXMLattributes($value);
+//echo _logWrap( "attr: " );
+//echo _logWrap( $attr );
+		if( !empty($attr) ){
+			foreach( $attr as $key=>$value){
+				$data[$key] = $value;
+			}//next
+		}
+		
 	}//next
 	return $data;
 }//end
 
 
-function saveXMLnode( $params ){
+function saveXMLnode_drupal( $params ){
 	global $_vars;
 	
 	$p = array(
@@ -509,7 +570,18 @@ if( count( $test ) > 1 ){
 	$body_text =  $xmlNode["body_value"];
 	$node->body[ $node->language][0]['value'] = $body_text;
 	//$node->body[ $node->language][0]['summary'] = text_summary($body_text);
-	$node->body[ $node->language][0]['format'] = 1;//'filtered_html'
+	
+
+	$body_format = 1;//'filtered_html'
+	if( !empty($xmlNode["body_format"]) ){
+		if( !empty($_vars["body_formats"]) ){
+			$key = $xmlNode["body_format"];
+			if( isset($_vars["body_formats"][$key]) ){
+				$body_format = $_vars["body_formats"][$key];
+			}
+		}
+	}
+	$node->body[ $node->language][0]['format'] = $body_format;
 
 	$node->status = 1;     // public
 	//$node->revision = 1;
@@ -533,5 +605,86 @@ if( count( $test ) > 1 ){
 		$_vars["log"][] = array("message" => $msg, "type" => "error");
 		return false;		
 	}
-}//end saveXMLnode()
+}//end saveXMLnode_drupal()
+
+function uploadFile(){
+	global $_vars;
+	
+	$msg =  "<b>upload import file</b>";
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
+
+	$uploadDir = $_vars["request"]["upload_dir"];
+	$perms = substr(sprintf('%o', fileperms( $uploadDir ) ), -4);
+
+	if ( !is_writable( $uploadDir )){
+		$msg = "Cannot write to directory: <b>".$uploadDir."</b> (". $perms.") ";
+		$_vars["log"][] = array("message" => $msg, "type" => "error");
+		return false;
+	}
+//echo _logWrap($_vars["files"]);
+//return false;
+
+	$file_arr = $_vars["files"]["upload_file"];
+	$errors ="";
+	switch ($file_arr['error']){
+			case 0:
+				$msg = "UPLOAD_ERR_OK, not error....";
+				
+				if ( is_uploaded_file ($file_arr['tmp_name']) )	{
+					$uploaded_file = $uploadDir."/".$file_arr['name'];
+					
+					if ( move_uploaded_file( $file_arr['tmp_name'], $uploaded_file ) )	{
+$msg .= $file_arr['name'].", size= ".$file_arr['size']." bytes was uploaded successfully";
+$_vars["log"][] = array("message" => $msg, "type" => "success");
+						return true;
+					} else {
+$msg .= $file_arr['name'].", size= ".$file_arr['size']." bytes was not uploaded";
+$_vars["log"][] = array("message" => $msg, "type" => "error");
+						return false;
+					}
+					
+				} else {
+$msg .= "error, is_uploaded_file()";
+$msg .= $file_arr['name'].", size= ".$file_arr['size']." bytes was not uploaded";
+$_vars["log"][] = array("message" => $msg, "type" => "error");
+					return false;
+				}
+				
+			break;
+
+				case 1:
+$msg = "<p>UPLOAD_ERR_INI_SIZE, more than upload_max_filesize from php.ini.</p>";
+				break;
+
+				case 2:
+$msg = "<p>UPLOAD_ERR_FORM_SIZE.</p>";
+				break;
+
+				case 3:
+$msg = "<p>UPLOAD_ERR_PARTIAL.</p>";
+				break;
+
+				case 4:
+$msg = "<p>UPLOAD_ERR_NO_FILE.</p>";
+				break;
+
+				case 6:
+$msg = "<p>UPLOAD_ERR_NO_TMP_DIR.</p>";
+				break;
+
+				case 7:
+$msg = "<p>UPLOAD_ERR_CANT_WRITE.</p>";
+				break;
+
+				case 8:
+$msg = "<p>UPLOAD_ERR_EXTENSION.</p>";
+				break;
+
+		}// end switch
+
+		$msg .= "<p>Error code: " . $file_arr['error'] . "</p>";
+		$_vars["log"][] = array("message" => $msg, "type" => "error");
+		return fales;
+}//end uploadFile()
+
 ?>

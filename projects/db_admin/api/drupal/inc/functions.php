@@ -26,41 +26,76 @@ function PageEnd(){
 
 function ImportForm(){
 	global $_vars;
-	return "<form method=post name='form_import' action='' class='form'>
-		<fieldset>
-<legend>Import parameters:</legend>
-
-		<div class=class='form-group'>
-<b>filename</b>
-<input type='text' name='file_path' value='".$_vars["config"]["export"]["file_path"]."' size='60' class='form-control'/>
-		</div>
-
-		<div class=class='form-group'>
-<b>Drupal root (absolute path to CMS)</b>
+	
+	$upload_dir = dirname($_vars["config"]["export"]["file_path"]);
+	$max_filesize = ini_get('upload_max_filesize'); 
+	
+	return "<h2>Import parameters</h2>
+	<div class='panel'>
+		<form method=post name='form_import' action='' class='form'>
+		
+			<div class='row'>
+				<div class='pull-right'>
+					<input type=hidden name='action' value='import'/>
+					<input type=submit value='start import' class='btn btn-large btn-primary'>
+				</div>
+			</div>
+			
+			<fieldset><legend><b>Drupal root (absolute path to CMS)</b></legend>
 <input type='text' name='drupal_root' value='".$_vars["config"]["export"]["drupal_root"]."' size='60' class='form-control'/>
 <pre>".$_vars["config"]["export"]["list_drupal_cms_filepath"]."</pre>
-		</div>
+			</fieldset>
+
+			<fieldset>
+				<div class=class='form-group'>
+<b>filename</b>
+<input type='text' name='file_path' value='".$_vars["config"]["export"]["file_path"]."' size='60' class='form-control'/>
+				</div>
+			</fieldset>
+			
+		</form>
+	</div>
+	
+	<div class='panel'>
+		<form method='post' enctype='multipart/form-data' action='' target=''>
+		<fieldset><legend><b>upload import file on server</b></legend>
 		
-		<input type=hidden name='action' value='import'/>
-		<input type=submit value='start import' class='btn btn-large btn-primary'>
-		</fieldset>
-	</form>";
+			<div class=class='form-group'>
+				upload_dir:<input name='upload_dir' class='form-conrol' type='text' size='60' value='".$upload_dir."'>
+<pre>
+<small>
+".$upload_dir."
+/mnt/d2/temp
+</small>
+</pre>
+			</div>
+				
+				<input name='upload_file' class='form-conrol' type='file' >
+				<input type='hidden' name='action' value='upload_import_file'>
+				<input type='submit' value='upload'>
+			</fieldset>
+		</form>
+		<p><small>upload_max_filesize =".$max_filesize."</small></p>
+	</div>";
 }//end ImportForm()
 
 function exportForm(){
 	global $_vars;
 	return "<form method=post name='form_export' action='' class='form'>
+	
+		<div class='row'>
+			<div class='pull-right padding-small'>
+				<input type=hidden name='action' value='export'/>
+				<input type=submit value='start export' class='btn btn-large btn-primary'>
+			</div>
+		</div>
+	
 		<fieldset>
-			<legend>
-				<b>Export parameters</b>
-			</legend>
+			<legend><b>Export parameters</b></legend>
 
 		<div class=class='form-group'>
 			<fieldset>
-				<legend>
-					<b>Drupal root (absolute path to CMS)</b>
-				</legend>
-
+				<legend><b>Drupal root (absolute path to CMS)</b></legend>
 <input type='text' name='drupal_root' value='".$_vars["config"]["export"]["drupal_root"]."' size='60' class='form-control'/>
 <pre>".$_vars["config"]["export"]["list_drupal_cms_filepath"]."</pre>
 			</fieldset>
@@ -69,30 +104,13 @@ function exportForm(){
 <br>
 		<div class=class='form-group'>
 			<fieldset>
-				<div>
-<b>Drupal content book</b>
-<input type='text' name='content_book' value='".$_vars["config"]["export"]["content_book"]."' size='60' class='form-control'/>
-<pre>
-notes
-personal_info
-hosting sites
-библиотека
-</pre>
-				</div>
-				
-				<div>
-					<fieldset>
-<b>tag_group:</b><input type='text' name='tag_group' value='".$_vars["config"]["export"]["tag_group"]."' class='form-control'/>
-<pre>
-tags, library, alphabetical_voc
-</pre>
-<b>tag_name:</b><input type='text' name='tag_name' value='".$_vars["config"]["export"]["tag_name"]."' class='form-control'/>
-<pre>
-linux, windows, config, network, drupal, convert
-</pre>
-					</fieldset>
-				</div>
-
+				<legend><b>export content items (nodes)</b></legend>
+<ul>
+	<li><input type='radio' name='type_export_content' checked='checked' value='nodes_all'>all nodes</li>
+	<li><input type='radio' name='type_export_content' value='nodes_book'>nodes of the book</li>
+	<li><input type='radio' name='type_export_content' value='nodes_tag'>nodes by the tag</li>
+	<li><input type='radio' name='type_export_content' value='nodes_type'>nodes by the type</li>
+</ul>
 				<div>
 <b>Drupal content type</b>
 <input type='text' name='content_type' value='".$_vars["config"]["export"]["content_type"]."' class='form-control'/>
@@ -107,21 +125,38 @@ music
 videoclip
 </pre>
 				</div>
-				
+
 			</fieldset>
 		</div>
 
 		<div class=class='form-group'>
 			<fieldset>
-				<legend>
-					<b>export content items (nodes)</b>
-				</legend>
-<ul>
-	<li><input type='radio' name='type_export_content' checked='checked' value='nodes_all'>all nodes</li>
-	<li><input type='radio' name='type_export_content' value='nodes_book'>nodes of the book</li>
-	<li><input type='radio' name='type_export_content' value='nodes_tag'>nodes by the tag</li>
-	<li><input type='radio' name='type_export_content' value='nodes_type'>nodes by the type</li>
-</ul>
+				<legend><b>export content groups (content_links, book)</b></legend>
+				<div>
+<b>Drupal content book</b>
+<input type='text' name='content_book' value='".$_vars["config"]["export"]["content_book"]."' size='60' class='form-control'/>
+<pre>
+notes
+personal_info
+hosting sites
+библиотека
+</pre>
+				</div>
+
+			</fieldset>
+		</div>
+		
+		<div class=class='form-group'>
+			<fieldset>
+				<legend><b>export taxonomy (tags)</b></legend>
+<b>tag_group(vocabulary):</b><input type='text' name='tag_group' value='".$_vars["config"]["export"]["tag_group"]."' class='form-control'/>
+<pre>
+notes, tags, library, alphabetical_voc, ......
+</pre>
+<b>tag_name(termin):</b><input type='text' name='tag_name' value='".$_vars["config"]["export"]["tag_name"]."' class='form-control'/>
+<pre>
+linux, windows, config, network, drupal, convert, .....
+</pre>
 			</fieldset>
 		</div>
 		
@@ -142,12 +177,12 @@ videoclip
 <div class='form-group'>
 	<b>export format</b>
 	<label class='radio-inline'><input type='radio' name='export_format' checked='checked' value='xml'>XML</label>
+	<label class='radio-inline'><input type='radio' name='export_format' value='json'>JSON</label>
 	<label class='radio-inline'><input type='radio' name='export_format' value='wxr'>WXR ( WordPress eXtended Rss export/import )</label>
 </div>
 
 		</fieldset>
-		<input type=hidden name='action' value='export'/>
-		<input type=submit value='start export' class='btn btn-large btn-primary'>
+		
 	</form>";
 }//end exportForm()
 

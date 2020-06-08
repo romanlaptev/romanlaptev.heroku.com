@@ -19,7 +19,7 @@ $config = array(
 		"drupal_root"  => "/home/www/sites/mydb",
 		"content_book"  => "notes",
 		"tag_group" => "notes",
-		'content_type' => 'page', //note, book, video, playlist
+		'content_type' => '', //page, note, book, video, playlist
 		"content_book" => 'notes',
 		"tag_group" => 'tags',//library, alphabetical_voc
 		"tag_name" => 'linux',//windows, config
@@ -42,7 +42,7 @@ $config["export"]["xml_template"] = '<?xml version="1.0" encoding="UTF-8"?>
 						<title></title>
 						<created></created>
 						<changed></changed>
-						<body_value></body_value>
+						<body_value body_format=""></body_value>
 					</node>
 			</content>
 
@@ -79,7 +79,7 @@ $config["export"]["tplContentNode"] = '<node id="{{id}}" {{type}}>
 	<title>{{title}}</title>
 	<created>{{created}}</created>
 	<changed>{{changed}}</changed>
-	<body_value>{{body_value}}</body_value>
+	<body_value body_format="">{{body_value}}</body_value>
 </node>';
 
 $config["export"]["tplContentLinks"] = '<content_links>{{nodelist}}</content_links>';
@@ -207,6 +207,7 @@ LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid
 WHERE node.status=1 AND 
 node.type='{{content_type}}' ORDER BY node.created;";
 
+
 $config["sql"]["content_links"] = "SELECT 
 book.nid as content_id, 
 book.mlid,
@@ -214,31 +215,74 @@ menu_links.plid as parent_id_link
 FROM book, menu_links 
 WHERE menu_links.mlid=book.mlid;";
 
-/*
 $config["sql"]["content_links_book"] = "SELECT 
 book.nid as content_id, 
-menu_links.plid as parent_id 
-FROM book 
-LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
-WHERE book.mlid in (
-    SELECT menu_links.mlid FROM menu_links WHERE menu_links.menu_name IN (
-        SELECT menu_name FROM menu_links WHERE link_title LIKE '{{content_book}}' AND module='book'
+book.mlid,
+-- book.bid
+menu_links.plid as parent_id_link 
+FROM book, menu_links 
+WHERE book.bid=(
+    SELECT book.nid FROM book 
+    WHERE book.mlid=(
+        SELECT menu_links.mlid FROM menu_links WHERE link_title LIKE '{{content_book}}' AND module='book'
     )
-);";
+) AND menu_links.mlid=book.mlid;
+";
+
+/*
+$config["sql"]["content_links_type"] = "SELECT 
+book.nid as content_id, 
+book.mlid,
+menu_links.plid as parent_id_link 
+FROM book, menu_links, node 
+WHERE menu_links.mlid=book.mlid AND
+book.nid=node.nid AND
+node.type='{{content_type}}';
+";
 */
 
 /*
 SELECT 
 book.nid as content_id, 
-menu_links.plid as parent_id 
-FROM book 
-LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
+book.mlid,
+menu_links.plid as parent_id_link 
+FROM book, menu_links 
 WHERE book.nid in (
 	SELECT taxonomy_index.nid FROM  taxonomy_index WHERE taxonomy_index.tid IN ( 
 		SELECT  taxonomy_term_data.tid FROM  taxonomy_term_data WHERE taxonomy_term_data.name='drupal'
 	)
-);
+) AND menu_links.mlid=book.mlid;
 */
+
+$config["sql"]["tag_groups"] = "SELECT 
+vid as id, 
+name
+-- description
+-- hierarchy 
+FROM taxonomy_vocabulary;";
+
+$config["sql"]["tag_list"] = "SELECT 
+taxonomy_term_data.tid as id, 
+taxonomy_term_data.vid as term_group_id,
+name, 
+taxonomy_term_hierarchy.parent as parent_id
+FROM taxonomy_term_data, taxonomy_term_hierarchy 
+WHERE taxonomy_term_hierarchy.tid=id
+ORDER BY term_group_id;";
+
+$config["sql"]["tag_links"] = "SELECT 
+nid as content_id, 
+tid as term_id
+-- created
+FROM taxonomy_index 
+ORDER BY term_id;";
+
+//$config["drupal_body_format"] = array(
+	//"plain_text" => "Plain text",
+	//"filtered_html" => "Filtered HTML",
+	//"full_html" => "Full HTML",
+	//"php_code" => "PHP code"
+//);
  
 return $config;
 ?>

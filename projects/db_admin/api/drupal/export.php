@@ -132,7 +132,7 @@ if ( !empty( $_vars[ "log" ] ) ) {
 }
 
 //====================
-function exportProcess($params){
+function exportProcess( $params = array() ){
 	global $_vars;
 	
 	$p = array(
@@ -187,45 +187,18 @@ function exportProcess($params){
 //return false;
 
 //------------------------------- get content links ( book -> content_links )
-	//if( $type_export_content == "nodes_all"){
-		$sql_query = $_vars["config"]["sql"]["content_links"];
-	//}
-/*	
-	if( $type_export_content == "nodes_book"){
-		$sql_query = $_vars["config"]["sql"]["content_links_book"];
-		//prepare sql query: replace parameters
-		foreach( $p as $key=>$value ){
-			$sql_query = str_replace("{{".$key."}}", $value, $sql_query);
-		}//next
-	}
-*/
-//echo _logWrap("SQL:".$sql_query);
-	
-	//if( $type_export_content == "nodes_tag"){	}
-	//if( $type_export_content == "nodes_type"){	}
-
-	
-	$result = db_query($sql_query);
-	foreach ($result as $row) {
-		$_vars["dbData"]["content_links"][] = $row;
-	}//next
-	
-	// change content links, add parent_id (parent_id_link == mlid )
-	for( $n1 = 0; $n1 < count($_vars["dbData"]["content_links"]); $n1++ ){
-		$mlid = $_vars["dbData"]["content_links"][$n1]->parent_id_link;
-		
-		$parent_id = 0;
-		for( $n2 = 0; $n2 < count($_vars["dbData"]["content_links"]); $n2++ ){
-			$record = $_vars["dbData"]["content_links"][$n2];
-			if( $record->mlid == $mlid ){
-				$parent_id = $record->content_id;
-			}
-		}//next
-		$_vars["dbData"]["content_links"][$n1]->parent_id = $parent_id;
-		
-	}//next
-	
+	$_vars["dbData"]["content_links"] = getContentLinks($p);
 //echo _logWrap( $_vars["dbData"]["content_links"] );
+//echo _logWrap( count( $_vars["dbData"]["content_links"] ) );
+//echo _logWrap( $_vars["dbData"]["content_links"][0] );
+//return false;
+
+	$_vars["dbData"]["tag_groups"] = getGroupList($p);
+	$_vars["dbData"]["tag_list"] = getTagList($p);
+	$_vars["dbData"]["tag_links"] = getTagLinks($p);
+
+//echo _logWrap( count( $_vars["dbData"]["tag_list"] ) );
+//echo _logWrap( $_vars["dbData"]["tag_list"] );
 //return false;
 
 	$_vars["xml"] = formXML( $_vars["dbData"] );
@@ -235,6 +208,124 @@ function exportProcess($params){
 
 	return false;
 }//end exportProcess()
+
+
+function getContentLinks($params){
+	global $_vars;
+	$records = array();
+	
+	$type_export_content = $params["type_export_content"];
+	
+	if( $type_export_content == "nodes_all"){
+		$sql_query = $_vars["config"]["sql"]["content_links"];
+	}
+	
+	if( $type_export_content == "nodes_book"){
+		$sql_query = $_vars["config"]["sql"]["content_links_book"];
+		//prepare sql query: replace parameters
+		foreach( $params as $key=>$value ){
+			$sql_query = str_replace("{{".$key."}}", $value, $sql_query);
+		}//next
+	}
+	//if( $type_export_content == "nodes_tag"){	}
+	//if( $type_export_content == "nodes_type"){
+		//$sql_query = $_vars["config"]["sql"]["content_links_type"];
+	//}
+	if( empty($sql_query) ){
+		return false;
+	}
+//echo _logWrap("SQL:".$sql_query);
+
+	$result = db_query($sql_query);
+	foreach ($result as $row) {
+		$records[] = $row;
+	}//next
+
+	// change content links, add parent_id (parent_id_link == mlid )
+	for( $n1 = 0; $n1 < count($records); $n1++ ){
+		$mlid = $records[$n1]->parent_id_link;
+		
+		$parent_id = 0;
+		for( $n2 = 0; $n2 < count($records); $n2++ ){
+			$record = $records[$n2];
+			if( $record->mlid == $mlid ){
+				$parent_id = $record->content_id;
+			}
+		}//next
+		$records[$n1]->parent_id = $parent_id;
+	}//next
+
+	return $records;
+}//end getContentLinks()
+
+
+function getGroupList($params){
+	global $_vars;
+	$records = array();
+	
+	$type_export_content = $params["type_export_content"];
+	
+	if( $type_export_content == "nodes_all"){
+		$sql_query = $_vars["config"]["sql"]["tag_groups"];
+	}
+	if( empty($sql_query) ){
+		return false;
+	}
+//echo _logWrap("SQL:".$sql_query);
+
+	$result = db_query($sql_query);
+	foreach ($result as $row) {
+		$records[] = $row;
+	}//next
+	
+	return $records;
+}//end getGroupList()
+
+
+function getTagList($params){
+	global $_vars;
+	$records = array();
+	
+	$type_export_content = $params["type_export_content"];
+	
+	if( $type_export_content == "nodes_all"){
+		$sql_query = $_vars["config"]["sql"]["tag_list"];
+	}
+	if( empty($sql_query) ){
+		return false;
+	}
+//echo _logWrap("SQL:".$sql_query);
+
+	$result = db_query($sql_query);
+	foreach ($result as $row) {
+		$records[] = $row;
+	}//next
+	
+	return $records;
+}//end getTagList()
+
+
+function getTagLinks($params){
+	global $_vars;
+	$records = array();
+
+	$type_export_content = $params["type_export_content"];
+	
+	if( $type_export_content == "nodes_all"){
+		$sql_query = $_vars["config"]["sql"]["tag_links"];
+	}
+	if( empty($sql_query) ){
+		return false;
+	}
+//echo _logWrap("SQL:".$sql_query);
+
+	$result = db_query($sql_query);
+	foreach ($result as $row) {
+		$records[] = $row;
+	}//next
+	
+	return $records;
+}//end getTagLinks()
 
 
 function formXML( $xmlData ){
@@ -292,7 +383,7 @@ if( $field == "type"){
 	
 	$xml = str_replace("{{content}}", $xml_content, $xml);
 
-//------------------ form content links	
+//------------------ form content links	node
 	$xml_content = "";
 	if( !empty( $xmlData["content_links"] ) ){
 		$xml_content = $_vars["config"]["export"]["tplContentLinks"];
@@ -311,6 +402,74 @@ if( $field == "type"){
 	}
 	$xml = str_replace("{{content_links}}", $xml_content, $xml);
 
+//------------------ form tag groups node
+	$xml_content = "";
+	
+	$dataItemName = "tag_groups";
+	$xmlTplName = "tplTagGroups";
+	$xmlTplItemName = "tplTagGroup";
+//echo _logWrap(empty( $xmlData[$dataItemName] ));
+//return false;
+	if( !empty( $xmlData[$dataItemName] ) ){
+		$xml_content = $_vars["config"]["export"][$xmlTplName];
+		$nodeList = "";
+		for( $n1 = 0; $n1 < count( $xmlData[$dataItemName] ); $n1++)	{
+			$record = $xmlData[$dataItemName][$n1];
+			$node = $_vars["config"]["export"][$xmlTplItemName];
+			foreach( $record as $field=>$value){
+				$node = str_replace("{{".$field."}}", $value, $node);
+			}//next
+			$nodeList .= "\n".$node;
+		}//next
+
+		$xml_content = str_replace("{{nodelist}}", $nodeList."\n\t\t", $xml_content);
+		$xml_content = "\t\t".$xml_content."\t\t";
+	}
+	$xml = str_replace("{{".$dataItemName."}}", $xml_content, $xml);
+
+//------------------ form tag list node
+	$xml_content = "";
+	$dataItemName = "tag_list";
+	$xmlTplName = "tplTagList";
+	$xmlTplItemName = "tplTag";
+	if( !empty( $xmlData[$dataItemName] ) ){
+		$xml_content = $_vars["config"]["export"][$xmlTplName];
+		$nodeList = "";
+		for( $n1 = 0; $n1 < count( $xmlData[$dataItemName] ); $n1++)	{
+			$record = $xmlData[$dataItemName][$n1];
+			$node = $_vars["config"]["export"][$xmlTplItemName];
+			foreach( $record as $field=>$value){
+				$node = str_replace("{{".$field."}}", $value, $node);
+			}//next
+			$nodeList .= "\n".$node;
+		}//next
+
+		$xml_content = str_replace("{{nodelist}}", $nodeList."\n\t\t", $xml_content);
+		$xml_content = "\t\t".$xml_content."\t\t";
+	}
+	$xml = str_replace("{{".$dataItemName."}}", $xml_content, $xml);
+
+//------------------ form tag links node
+	$xml_content = "";
+	$dataItemName = "tag_links";
+	$xmlTplName = "tplTagLinks";
+	$xmlTplItemName = "tplTagLink";
+	if( !empty( $xmlData[$dataItemName] ) ){
+		$xml_content = $_vars["config"]["export"][$xmlTplName];
+		$nodeList = "";
+		for( $n1 = 0; $n1 < count( $xmlData[$dataItemName] ); $n1++)	{
+			$record = $xmlData[$dataItemName][$n1];
+			$node = $_vars["config"]["export"][$xmlTplItemName];
+			foreach( $record as $field=>$value){
+				$node = str_replace("{{".$field."}}", $value, $node);
+			}//next
+			$nodeList .= "\n".$node;
+		}//next
+
+		$xml_content = str_replace("{{nodelist}}", $nodeList."\n\t\t", $xml_content);
+		$xml_content = "\t\t".$xml_content."\t\t";
+	}
+	$xml = str_replace("{{".$dataItemName."}}", $xml_content, $xml);
 	
 //echo "<pre>";
 //echo htmlspecialchars($xml);
