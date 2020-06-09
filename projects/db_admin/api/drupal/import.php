@@ -271,17 +271,19 @@ Array
 			$key = $record->created;
 			//detect not unique key-field 'created'
 			if( $key == $old_key ){
-//echo _logWrap( $record );
+echo _logWrap( $record );
 				$msg = "import:  <b>not unique key-field 'created' detected</b>!!!!";
 				$msg .= " title: ".$record->title.", created: ".$key;
 				$_vars["log"][] = array("message" => $msg, "type" => "warning");
 				$num_warning++;
-				$_vars["dbData"]["content"][$n]["double"] = true;
+				$_vars["dbData"]["content"][$n]->double_node = true;
 			}
 
 			$dbNodes[ $key ] = $record;
 			$old_key = $key;
-		} else {
+		}
+		
+		if( empty( $record->created ) ){
 			$msg = "import: prepare DB content, <b>key-field 'created' not found or empty</b>.";
 			$_vars["log"][] = array("message" => $msg, "type" => "warning");
 		}
@@ -323,10 +325,16 @@ Array
 			}
 			//$xmlNodes[ $key ] = $record;
 			$old_key = $key;
-		} else {
+		} //else {
+			//$msg = "import: prepare XML content, <b>key-field 'created' not found or empty</b>.";
+			//$_vars["log"][] = array("message" => $msg, "type" => "warning");
+		//}
+		
+		if( empty( $record["created"] ) ){
 			$msg = "import: prepare XML content, <b>key-field 'created' not found or empty</b>.";
 			$_vars["log"][] = array("message" => $msg, "type" => "warning");
 		}
+		
 	}//next
 //echo _logWrap( count( $xmlNodes ) );
 //echo _logWrap( $xmlNodes );
@@ -535,14 +543,37 @@ if( count( $test ) > 1 ){
 //------------------ Update exists db node or create new db node
 	$update = 0;
 	if( !empty($p["dbNodes"]) ){
+		
+			//try detect existing node by field 'created'
 			$key = $p["xmlNode"]["created"];
-			$dbNode = $p["dbNodes"][$key];
-//echo _logWrap( $dbNode["title"] );
-//echo _logWrap( $p["xmlNode"]["title"] );
-			if( !empty($dbNode) ){
-					$p["xmlNode"]["id"] = $dbNode->nid;
-					$update = 1;
+			if( !empty($key) ){
+				$dbNode = $p["dbNodes"][$key];
+	//echo _logWrap( $dbNode["title"] );
+	//echo _logWrap( $p["xmlNode"]["title"] );
+				if( !empty($dbNode) ){
+						$p["xmlNode"]["id"] = $dbNode->nid;
+						$update = 1;
+				}
 			}
+			
+			//try detect existing node by 'title' hash
+			if( empty( $key ) ){
+$msg = "import: <b>key-field 'created' not found or empty</b>, ";
+$msg .= "try detect existing node by 'title' hash</b>.";
+$_vars["log"][] = array("message" => $msg, "type" => "warning");
+				foreach( $p["dbNodes"] as $key=>$dbNode ){
+					$dbTitle_hash = hash('ripemd160', $dbNode->title);
+					$xmlTitle_hash = hash('ripemd160', $p["xmlNode"]["title"]);
+					if( $dbTitle_hash ==  $xmlTitle_hash ){
+$msg = "update:". $dbNode->title ." = ". $p["xmlNode"]["title"];
+echo _logWrap( $msg );
+						$p["xmlNode"]["id"] = $dbNode->nid;
+						$update = 1;
+						break;
+					}
+				}//next
+			}
+			
 	}
 
 	if( $update == 1){

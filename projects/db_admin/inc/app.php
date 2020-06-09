@@ -277,6 +277,10 @@ if( !empty($p["xmlNode"]["created"]) ){
 //echo _logWrap( $p["xmlNode"]["title"] );
 				if( $dbNode["created"]  ==  $p["xmlNode"]["created"] ){
 					//if( strtoupper( $dbNode["title"] ) ==  strtoupper( $p["xmlNode"]["title"] ) ){
+					
+					//$dbTitle_hash = hash('ripemd160', $dbNode["title"]);
+					//$xmlTitle_hash = hash('ripemd160', $p["xmlNode"]["title"]);
+					//if( $dbTitle_hash ==  $xmlTitle_hash ){
 //$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
 //echo _logWrap( $msg );
 						$p["xmlNode"]["id"] = $dbNode["id"];
@@ -290,8 +294,30 @@ if( !empty($p["xmlNode"]["created"]) ){
 				
 			}//next
 		}
-
 }	
+
+if( empty($p["xmlNode"]["created"]) ){
+		if( !empty($p["dbNodes"]) ){
+			for( $n1 = 0; $n1 < count( $p["dbNodes"] ); $n1++){
+				$dbNode = $p["dbNodes"][$n1];
+//echo _logWrap( $dbNode["title"] );
+//echo _logWrap( $p["xmlNode"]["title"] );
+				//if( strtoupper( $dbNode["title"] ) ==  strtoupper( $p["xmlNode"]["title"] ) ){
+				
+				$dbTitle_hash = hash('ripemd160', $dbNode["title"]);
+				$xmlTitle_hash = hash('ripemd160', $p["xmlNode"]["title"]);
+				if( $dbTitle_hash ==  $xmlTitle_hash ){
+//$msg = "update:". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
+//echo _logWrap( $msg );
+					$p["xmlNode"]["id"] = $dbNode["id"];
+					$update = 1;
+					break;
+				}
+				
+			}//next
+		}
+}	
+
 		if( $update == 1){
 			$_vars["import"]["numUpdated"]++;
 		} else {

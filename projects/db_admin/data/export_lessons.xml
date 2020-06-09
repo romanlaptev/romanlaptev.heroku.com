@@ -1,0 +1,390 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xroot>
+	<schema>
+		<xdata db_name="" db_type="" export_date="" export_time="">
+			<content>
+					<node id="" type="">
+						<title></title>
+						<created></created>
+						<changed></changed>
+						<body_value body_format=""></body_value>
+					</node>
+			</content>
+
+			<content_links>
+				<item content_id="" parent_id=""></item>
+			</content_links>		
+
+			<tag_groups>
+				<item id="" name=""></item>
+			</tag_groups>		
+
+			<tag_links>
+				<item content_id="" term_id=""></item>
+			</tag_links>		
+
+			<tag_list>
+				<item id="" term_group_id="" parent_id="" name=""></item>
+			</tag_list>		
+
+		</xdata>
+	</schema>
+
+	<xdata db_name="notes.sqlite" db_type="sqlite" export_date="08-Jun-2020 13:43:46" export_time="1591598626">
+
+
+
+
+		<content>
+<node id="134" type='video'>
+	<title>Blender 3D моделирование / Урок #4 - Режим редактирования (введение)</title>
+	<created>1591597167</created>
+	<changed>1591597167</changed>
+	<body_value body_format="full_html">
+description: Гоша Дударь
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/icHLOFjy6Qs" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="119" type='video'>
+	<title>Bootstrap: Как создаются современные адаптивные сайты</title>
+	<created>1591587121</created>
+	<changed>1591587121</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/-wcy1Bsq-Ls" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+description: WebDesign Master
+	</body_value>
+</node>
+<node id="135" type='video'>
+	<title>Flexbox - полезные примеры</title>
+	<created>1591597168</created>
+	<changed>1591597168</changed>
+	<body_value body_format="full_html">
+description: Дмитрий Лаврик
+Сетка на основе флексбоксов - http://smartgrid.dmitrylavrik.ru/
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/KkH_i4nw_Bs" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="138" type='video'>
+	<title>Grunt - Обзор системы сборки</title>
+	<created>1591597531</created>
+	<changed>1591597531</changed>
+	<body_value body_format="full_html">
+description: Sorax
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/Cxo1vVI9--E" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="117" type='video'>
+	<title>JavaScript, Сравнения, var, eval и заключение</title>
+	<created>1591507537</created>
+	<changed>1591507537</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/-jZS8p5_quo" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+description: Hexlet University
+	</body_value>
+</node>
+<node id="78" type='video'>
+	<title>JavaScript, лекция 3 Функции. Замыкания</title>
+	<created>1591499951</created>
+	<changed>1591499951</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/r-W_BUG3EbI" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+description: Hexlet University
+	</body_value>
+</node>
+<node id="79" type='video'>
+	<title>JavaScript, лекция 4. Наследование</title>
+	<created>1591499912</created>
+	<changed>1591499912</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/-wY3IYmQzzc" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+description: Hexlet University
+	</body_value>
+</node>
+<node id="116" type='video'>
+	<title>JavaScript, лекция 6 Регулярные выражения</title>
+	<created>1591506890</created>
+	<changed>1591506890</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/VCgAvj9meHg" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+description &gt; Hexlet University
+	</body_value>
+</node>
+<node id="122" type='video'>
+	<title>Node JS - Быстрый курс за 1 час</title>
+	<created>1591590891</created>
+	<changed>1591590891</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/3aGSqasVPsI" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="131" type='video'>
+	<title>Set &amp; WeakSet</title>
+	<created>1591594510</created>
+	<changed>1591594510</changed>
+	<body_value body_format="full_html">
+description: .getInstance
+Типы коллекций Set и WeakSet представляют собой множество — набор уникальных значений.
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/aebSmg1DlN0" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="130" type='video'>
+	<title>Web Workers</title>
+	<created>1591594509</created>
+	<changed>1591594509</changed>
+	<body_value body_format="full_html">
+description: .getInstance
+Web Workers - HTML5 API, позволяющий выполнять JavaScript-код в нескольких потоках.
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/t_hrcpT6oYQ" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="127" type='video'>
+	<title>YII, Урок 21 Авторизация</title>
+	<created>1591593717</created>
+	<changed>1591593717</changed>
+	<body_value body_format="full_html">
+description: владимир чапурин &lt;a href="https://www.youtube.com/playlist?list=PLzYpjch86rTeN4GFpnd22zIUgIAQSllQY" target="blank"&gt;playlist&lt;/a&gt;
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/-S5x1cw5tcQ" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="140" type='video'>
+	<title>Yii Framework 2. Базовый и расширенный шаблоны приложения</title>
+	<created>1591597533</created>
+	<changed>1591597533</changed>
+	<body_value body_format="full_html">
+description: loftblog 
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/HGCRc0aJN9E" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="141" type='video'>
+	<title>Анонимные функции в PHP</title>
+	<created>1591598276</created>
+	<changed>1591598276</changed>
+	<body_value body_format="full_html">
+description: htmllab
+Анонимные функции позволяют создавать функции, не имеющие определенных имен.
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/IhPkWLRCjvQ" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="137" type='video'>
+	<title>Видео курс C# Базовый. Урок 1. Введение в ООП. Классы и объекты</title>
+	<created>1591597530</created>
+	<changed>1591597530</changed>
+	<body_value body_format="full_html">
+description: ITVDN
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/x0udrpe_gZE" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="133" type='video'>
+	<title>Инструменты Android разработчика. Genymotion как альтернатива эмулятору Eclipse</title>
+	<created>1591595782</created>
+	<changed>1591595782</changed>
+	<body_value body_format="full_html">
+description: Start Android
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/BgAgNBI498Y" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="139" type='video'>
+	<title>Как создать web-приложение на Java, часть 1. Basic structure</title>
+	<created>1591597532</created>
+	<changed>1591597532</changed>
+	<body_value body_format="full_html">
+description: Sigma Software
+Поэтапное создание web-приложения на Spring Framework. Примеры основных приемов для быстрого старта.
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/G0gN18Ws5Rc" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="126" type='video'>
+	<title>Обзор и установка PHP фреймворка Codeigniter [GeekBrains]</title>
+	<created>1591593714</created>
+	<changed>1591593714</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/Dr5Co1SXScY" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="129" type='video'>
+	<title>Пространства имен в PHP</title>
+	<created>1591594504</created>
+	<changed>1591594504</changed>
+	<body_value body_format="full_html">
+description: WebForMySelf
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/Ajmn6afKsYM" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="132" type='video'>
+	<title>Разработка на Android. Введение | Технострим</title>
+	<created>1591595781</created>
+	<changed>1591595781</changed>
+	<body_value body_format="full_html">
+description: Лекция читается в рамках образовательного проекта "Технотрек Mail.ru Group" при МФТИ
+Официальный канал образовательных проектов Mail.Ru Group
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/pIj-Gp6COEc" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="136" type='video'>
+	<title>Разработка на Android. Многопоточность в приложениях | Технострим</title>
+	<created>1591597169</created>
+	<changed>1591597169</changed>
+	<body_value body_format="full_html">
+description: Официальный канал образовательных проектов Mail.Ru Group
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/xyf8sK6X_lg" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="128" type='video'>
+	<title>Реализация паттернов ООП в PHP</title>
+	<created>1591594501</created>
+	<changed>1591594501</changed>
+	<body_value body_format="full_html">
+description: Singleton Adaper
+....
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/vJAt-7VCz80" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="142" type='video'>
+	<title>Урок 1. CMS 1C-Битрикс: управление сайтом. Установка Битрикс</title>
+	<created>1591598277</created>
+	<changed>1591598277</changed>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/LmgxfPgmcCg" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="143" type='video'>
+	<title>Урок 2. CMS 1C-Битрикс: управление сайтом. Структура сайта. Исправление ошибок</title>
+	<created>1591598278</created>
+	<changed>1591598278</changed>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/L1cuC3dQFlM" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="144" type='video'>
+	<title>Урок 3. CMS 1C-Битрикс: управление сайтом. Создание шаблона</title>
+	<created>1591598279</created>
+	<changed>1591598279</changed>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/1VfbMhZQCcE" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="145" type='video'>
+	<title>Урок 4. CMS 1C-Битрикс: управление сайтом. Перенос верстки в шаблон</title>
+	<created>1591598280</created>
+	<changed>1591598280</changed>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/icR-DcqlRTY" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="146" type='video'>
+	<title>Урок 5. CMS 1C-Битрикс: управление сайтом. Компонент меню</title>
+	<created>1591598281</created>
+	<changed>1591598281</changed>
+	<body_value body_format="full_html">
+description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/mY2gR8Uvdrk" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+<node id="120" type='video'>
+	<title>Уроки Bootstrap верстки. Верстка при помощи сеток (Grid-system)</title>
+	<created>1591587227</created>
+	<changed>1591587227</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/-A5LxeKi3Aw" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+description: WebDesign Master
+	</body_value>
+</node>
+<node id="118" type='video'>
+	<title>Уроки Bootstrap верстки. Основы и установка</title>
+	<created>1591585285</created>
+	<changed>1591585285</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/TZSY6rDUDrE" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+description&gt; WebDesign Master
+	</body_value>
+</node>
+<node id="121" type='video'>
+	<title>Уроки Bootstrap верстки. Система сеток и адаптивное меню</title>
+	<created>1591587322</created>
+	<changed>1591587322</changed>
+	<body_value body_format="full_html">
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/EgMIr5gc-sI" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+description: WebDesign Master
+	</body_value>
+</node>
+<node id="125" type='video'>
+	<title>Фреймворк Yii2 с Нуля до Профи. Часть 1. Урок 2. Установка фреймворка</title>
+	<created>1591593341</created>
+	<changed>1591593341</changed>
+	<body_value body_format="full_html">
+description: Степан Куштуев 
+&lt;a href="https://www.youtube.com/playlist?list=PL9XdPIVgBVVmYWGF3BFZwHu4Fz9fa6GJd" target="blank"&gt;playlist&lt;/a&gt;
+&lt;div style="width:640px;height:480px"&gt;
+&lt;iframe src="https://www.youtube.com/embed/Tme8P5JbdSw" width="100%" height="100%"&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+	</body_value>
+</node>
+		</content>		
+	</xdata>
+</xroot>

@@ -354,7 +354,7 @@ function formXML( $xmlData ){
 			$content_type="";
 			foreach( $record as $field=>$value){
 //----------- filter
-if( $field == "body_value"){
+if( $field == "body_value" || $field == "title" ){
 	if( !empty($value) ){
 		$value = str_replace("&", "&amp;", $value);
 		$value = str_replace("<", "&lt;", $value);

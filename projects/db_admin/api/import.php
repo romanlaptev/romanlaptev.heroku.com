@@ -154,9 +154,9 @@ unset($_vars["xml"]);
 
 	//import content links info from XML nodes
 	if( !empty( $_vars["xmlData"]["content_links"]["children"] ) ){
-		//importContentLinks();
-		//$msg = "Import ".$_vars["import"]["total"]." content links";
-		//$_vars["log"][] = array("message" => $msg, "type" => "success");
+		importContentLinks();
+		$msg = "Import ".$_vars["import"]["total"]." content links";
+		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
 
 /*
@@ -287,6 +287,7 @@ function importContent(){
 		$response = $app->saveXMLnode( $arg );
 		if( $response){
 			$_vars["import"]["total"]++;
+			//sleep(1);//timeout before next saving (for form unique filed 'created')
 		} else {
 			$msg = "import warning: node " .$node["title"]. " not saved....";
 			$_vars["log"][] = array("message" => $msg, "type" => "warning");

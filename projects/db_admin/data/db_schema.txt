@@ -1,3 +1,13 @@
+-- вывести кол-во записей с одинаковым временем создания
+SELECT nid, title, created, COUNT( created ) AS count FROM	node
+GROUP BY created 
+HAVING COUNT( created ) > 1;
+
+-- вывести кол-во записей с одинаковым временем создания
+SELECT id, title, created, COUNT( created ) AS count FROM	content
+GROUP BY created 
+HAVING COUNT( created ) > 1;
+-------------------
 filter_format
 INSERT INTO filter_format(format, name) VALUES('plain_text', 'Plain text');
 INSERT INTO filter_format(format, name) VALUES('filtered_html', 'Filtered HTML');
