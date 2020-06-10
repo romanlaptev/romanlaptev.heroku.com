@@ -39,7 +39,6 @@ if ( $_vars["runType"] == "web") {
 
 	$_vars["form"] = "";
 	if (empty($_REQUEST['action']))	{
-		loadDrupal();
 //echo _logWrap( $databases );
 //echo _logWrap( $conf );
 		
@@ -48,6 +47,11 @@ if ( $_vars["runType"] == "web") {
 		$action = $_REQUEST['action'];
 		switch ($action) {
 			case "export":
+			
+				if( !empty( $_vars["request"]['drupal_root'] ) ){
+					$_vars["config"]["export"]["drupal_root"] = $_vars["request"]['drupal_root'];
+				}
+			
 				foreach( $_REQUEST as $param => $value){
 					if( !empty($value) ){
 						$_vars["config"]["export"][$param] = $value;
@@ -57,8 +61,6 @@ if ( $_vars["runType"] == "web") {
 //echo _logWrap( $_vars["config"]["export"] );
 //echo _logWrap( htmlspecialchars( $_vars["config"]["export"]["xml_template"]) );
 //exit();
-
-				loadDrupal();
 				$res = exportProcess( $_vars["config"]["export"] );
 				if( $res ){
 //echo _logWrap( htmlspecialchars( $_vars["xml"]) );
@@ -83,8 +85,6 @@ if ( $_vars["runType"] == "web") {
 if ( $_vars["runType"] == "console") {
 //print_r($argv);
 //$_SERVER["argv"]
-
-	loadDrupal();
 	$res = exportProcess( $_vars["config"]["export"] );
 //echo _logWrap($_vars["xml"]);
 	if( !$res ){
@@ -151,6 +151,14 @@ function exportProcess( $params = array() ){
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		return false;
 	}
+	
+	$drupal_root = $_vars["config"]["export"]["drupal_root"];
+	if ( empty($drupal_root) ) {
+		$msg = "import: error, required DRUPAL_PATH is empty...";
+		$_vars["log"][] = array("message" => $msg, "type" => "error");
+		return false;
+	}
+	loadDrupal($drupal_root);
 
 	//--------------------------- check PHP-module SimpleXML
 	$loadedExt = get_loaded_extensions();
@@ -180,11 +188,45 @@ function exportProcess( $params = array() ){
 	foreach ($result as $row) {
 		$_vars["dbData"]["content"][] = $row;
 	}//next
-	
 //echo _logWrap( count( $_vars["dbData"]["content"] ) );
 //echo _logWrap( $_vars["dbData"]["content"][0] );
 //echo _logWrap( $_vars["dbData"]["content"] );
 //return false;
+
+	//change body_format - ("Full HTML" => "full_html")
+	for( $n1 = 0; $n1 < count($_vars["dbData"]["content"]); $n1++ ){
+		$node = $_vars["dbData"]["content"][$n1];
+		$body_format = $node->body_format;
+		foreach( $_vars["config"]["filter_formats"] as $format_code=>$format_name ){
+			if( $body_format == $format_name ){
+				$_vars["dbData"]["content"][$n1]->body_format = $format_code;
+			}
+		}//next
+	}//next
+
+/*	
+	//detect not unique key-field 'created'
+	$_time = 0;
+	$old_time = 0;
+	for( $n1 = 0; $n1 < count($_vars["dbData"]["content"]); $n1++ ){
+		$node = $_vars["dbData"]["content"][$n1];
+		$_time = $node->created;
+		if( $_time == $old_time ){
+echo _logWrap( $node );
+			$msg = "import:  <b>not unique key-field 'created' detected</b>!!!!";
+			$msg .= " title: ".$node->title.", created: ".$_time;
+				
+			$new_time = time()+$n;
+			$node->created = $new_time;
+			$msg .= ", fix, new key-field created: ".$new_time;
+			$_vars["log"][] = array("message" => $msg, "type" => "warning");
+echo _logWrap( $node );
+		}
+		$old_time = $_time;
+
+	}//next
+return false;
+*/
 
 //------------------------------- get content links ( book -> content_links )
 	$_vars["dbData"]["content_links"] = getContentLinks($p);

@@ -50,6 +50,7 @@ description: htmllab
 -->
 <node id="144" type='video'>
 	<title>CMS 1C-Битрикс: управление сайтом. Создание шаблона</title>
+	<created>1591753827</created>
 	<body_value body_format="full_html">
 description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
 &lt;div style="width:640px;height:480px"&gt;
@@ -57,9 +58,10 @@ description: Битрикс уроки с нуля.WebForMySelf.Сергей Б�
 &lt;/div&gt;
 	</body_value>
 </node>
-<node id="145" type='video'>
-	<title> CMS 1C-Битрикс: управление сайтом. Перенос верстки в шаблон</title>
-	<body_value body_format="full_html">
+<node id="145" type='article'>
+	<title>CMS 1C-Битрикс: управление сайтом. Перенос верстки в шаблон</title>
+	<created>1591753828</created>
+	<body_value body_format="plain_text">
 description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
 &lt;div style="width:640px;height:480px"&gt;
 &lt;iframe src="https://www.youtube.com/embed/icR-DcqlRTY" width="100%" height="100%"&gt;&lt;/iframe&gt;
@@ -68,6 +70,7 @@ description: Битрикс уроки с нуля.WebForMySelf.Сергей Б�
 </node>
 <node id="146" type='video'>
 	<title>CMS 1C-Битрикс: управление сайтом. Компонент меню</title>
+	<created>1591753829</created>
 	<body_value body_format="full_html">
 description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
 &lt;div style="width:640px;height:480px"&gt;

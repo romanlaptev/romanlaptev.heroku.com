@@ -78,6 +78,9 @@ if ( !empty( $_vars["log"] ) ) {
 	//for( $n = 0; $n < count( $_vars["log"] ); $n++){
 	for( $n = count( $_vars["log"] ) - 1; $n >= 0; $n--){
 		$record = $_vars["log"][$n];
+		if( gettype($record["message"]) == "string"){
+			$record["message"] = $n.". ".$record["message"];
+		}
 		echo _logWrap( $record["message"], $record["type"] );
 	}//next
 }

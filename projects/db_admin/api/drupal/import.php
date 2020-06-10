@@ -30,7 +30,6 @@ if ( $_vars["runType"] == "web") {
 //print_r($_FILES);
 //print_r($_vars);
 //echo "</pre>";
-	loadDrupal();
 	$_vars["form"] = "";
 	$_vars["request"] = $_REQUEST;
 	
@@ -41,6 +40,10 @@ if ( $_vars["runType"] == "web") {
 		switch ($_vars["request"]["action"]) {
 			
 			case "import":
+			
+				if( !empty( $_vars["request"]['drupal_root'] ) ){
+					$_vars["config"]["export"]["drupal_root"] = $_vars["request"]['drupal_root'];
+				}
 				if( !empty( $_vars["request"]['file_path'] ) ){
 					$_vars["config"]["export"]["file_path"] = $_vars["request"]['file_path'];
 				}
@@ -67,7 +70,6 @@ if ( $_vars["runType"] == "web") {
 if ( $_vars["runType"] == "console") {
 //print_r($argv);
 //$_SERVER["argv"]
-	loadDrupal();
 	importProcess();
 }
 
@@ -90,6 +92,14 @@ if ( $_vars["runType"] == "console") {
 function importProcess(){
 	global $_vars;
 
+	$drupal_root = $_vars["config"]["export"]["drupal_root"];
+	if ( empty($drupal_root) ) {
+		$msg = "import: error, required DRUPAL_PATH is empty...";
+		$_vars["log"][] = array("message" => $msg, "type" => "error");
+		return false;
+	}
+	loadDrupal($drupal_root);
+				
 	//--------------------------- check PHP-module SimpleXML
 	$loadedExt = get_loaded_extensions();
 	$module_name = "SimpleXML";
@@ -271,12 +281,17 @@ Array
 			$key = $record->created;
 			//detect not unique key-field 'created'
 			if( $key == $old_key ){
-echo _logWrap( $record );
+//echo _logWrap( $record );
 				$msg = "import:  <b>not unique key-field 'created' detected</b>!!!!";
 				$msg .= " title: ".$record->title.", created: ".$key;
-				$_vars["log"][] = array("message" => $msg, "type" => "warning");
+
 				$num_warning++;
 				$_vars["dbData"]["content"][$n]->double_node = true;
+				
+				//$key = time()+$n;
+				//$record->created = $key;
+				//$msg .= ", fix, new key-field created: ".$key;
+				//$_vars["log"][] = array("message" => $msg, "type" => "warning");
 			}
 
 			$dbNodes[ $key ] = $record;
@@ -296,6 +311,7 @@ echo _logWrap( $record );
 
 //echo _logWrap( count( $dbNodes ) );
 //echo _logWrap( $dbNodes );
+//return false;
 
 	if( !empty( $dbNodes) ){
 		$_vars["dbData"]["content"] = $dbNodes;
@@ -565,8 +581,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 					$dbTitle_hash = hash('ripemd160', $dbNode->title);
 					$xmlTitle_hash = hash('ripemd160', $p["xmlNode"]["title"]);
 					if( $dbTitle_hash ==  $xmlTitle_hash ){
-$msg = "update:". $dbNode->title ." = ". $p["xmlNode"]["title"];
-echo _logWrap( $msg );
+$msg = "import update: <small>". $dbNode->title ." = ". $p["xmlNode"]["title"]."</small>";
+$_vars["log"][] = array("message" => $msg, "type" => "info");
 						$p["xmlNode"]["id"] = $dbNode->nid;
 						$update = 1;
 						break;

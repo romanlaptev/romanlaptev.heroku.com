@@ -337,7 +337,7 @@ input[type="range"] {
 }
 
 .btn-blue:hover {
-	background-color: #ff8c00 !important;
+	/*background-color: #ff8c00 !important;*/
 	color: #000 !important;
 }
 
@@ -366,9 +366,9 @@ input[type="range"] {
 }
 
 .btn-darkblue:hover {
-	background-color: #ff8c00;
-	border-color: #ff8c00;
-	color: #000 !important;
+	/*background-color: #ff8c00;
+	border-color: #ff8c00;*/
+	color: #ccf !important;
 }
 
 .btn-darkblue:focus {
@@ -385,8 +385,8 @@ input[type="range"] {
 	color: #fff;
 }
 .btn-blue-green:hover {
-	background: #ff8c00;
-	border-color: #ff8c00;
+	/*background: #ff8c00;
+	border-color: #ff8c00;*/
 	color: #000 !important;
 }
 .btn-blue-green:focus {

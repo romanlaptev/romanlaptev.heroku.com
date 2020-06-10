@@ -261,6 +261,8 @@ Array
 				$p["xmlNode"]["created"] = strtotime( $p["xmlNode"]["created"] );
 		//echo $p["xmlNode"]["created"];
 			}
+		}	
+		if( !empty($p["xmlNode"]["changed"]) ){
 			$test = explode("-", $p["xmlNode"]["changed"]);
 			if( count( $test ) > 1 ){
 				$p["xmlNode"]["changed"] = strtotime( $p["xmlNode"]["changed"] );
@@ -281,12 +283,13 @@ if( !empty($p["xmlNode"]["created"]) ){
 					$xmlTitle_hash = hash('ripemd160', $p["xmlNode"]["title"]);
 					if( $dbTitle_hash ==  $xmlTitle_hash ){
 					//if( strtoupper( $dbNode["title"] ) ==  strtoupper( $p["xmlNode"]["title"] ) ){
-$msg = "update: ". $dbNode["title"] ." = ". $p["xmlNode"]["title"];
-echo _logWrap( $msg, "info" );
-						$p["xmlNode"]["id"] = $dbNode["id"];
-						$update = 1;
-						break;
+$msg = "import update: <small>". $dbNode["title"] ." = ". $p["xmlNode"]["title"]."</small>";
+$_vars["log"][] = array("message" => $msg, "type" => "info");
 					}
+					
+					$p["xmlNode"]["id"] = $dbNode["id"];
+					$update = 1;
+					break;
 				} //else {
 //$msg = "update warning:". $dbNode["title"] ." != ". $p["xmlNode"]["title"];
 //echo _logWrap( $msg, "error" );

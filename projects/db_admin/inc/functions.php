@@ -54,7 +54,7 @@ function _logWrap( $msg, $level = "info"){
 	){
 			if ( $runType == "web" ) {
 				$out = "<pre>".print_r($msg,1)."</pre>";
-				return $out;
+				return "<div class='alert alert-info'>".$out."</div>";
 			} else {
 				$out = print_r($msg,1)."\n";
 				return $out;

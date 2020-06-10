@@ -160,27 +160,34 @@ xmlns:wp="http://wordpress.org/export/1.2/">
 
  */ 
  
-$config["sql"]["nodes_all"] = "SELECT 
+$config["sql"]["nodes_all"] = "
+SELECT 
 node.nid as id, 
 node.title, 
 node.type, 
 node.created, 
 node.changed,
-field_data_body.body_value 
+field_data_body.body_value, 
+-- field_data_body.body_format 
+filter_format.name as body_format
 FROM node 
 LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid 
+LEFT JOIN filter_format ON filter_format.format=field_data_body.body_format 
 WHERE node.status=1
-ORDER BY node.created;";
+ORDER BY node.created;
+";
 
 $config["sql"]["nodes_book"] = "SELECT 
 -- book.mlid, book.nid, 
 -- menu_links.plid, 
 node.nid as id, node.type, node.status, node.created,  node.changed, node.title, 
-field_data_body.body_value
+field_data_body.body_value,
+filter_format.name as body_format
 FROM book 
 LEFT JOIN menu_links ON menu_links.mlid=book.mlid 
 LEFT JOIN node ON node.nid=book.nid
-LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid 
+LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid
+LEFT JOIN filter_format ON filter_format.format=field_data_body.body_format 
 WHERE node.status=1 AND book.mlid in (
     SELECT menu_links.mlid FROM menu_links WHERE menu_links.menu_name IN (
         SELECT menu_name FROM menu_links WHERE link_title LIKE '{{content_book}}' AND module='book'
@@ -203,9 +210,11 @@ node.title,
 node.type, 
 node.created, 
 node.changed,
-field_data_body.body_value 
+field_data_body.body_value,
+filter_format.name as body_format 
 FROM node 
 LEFT JOIN field_data_body ON field_data_body.entity_id=node.nid 
+LEFT JOIN filter_format ON filter_format.format=field_data_body.body_format
 WHERE node.status=1 AND 
 node.type='{{content_type}}' ORDER BY node.created;";
 
@@ -285,6 +294,14 @@ ORDER BY term_id;";
 	//"full_html" => "Full HTML",
 	//"php_code" => "PHP code"
 //);
- 
+
+
+$config["filter_formats"] = array(
+		"plain_text" => "Plain text",
+		"filtered_html" => "Filtered HTML",
+		"full_html" => "Full HTML",
+		"php_code" => "PHP code"
+); 
+
 return $config;
 ?>
