@@ -277,6 +277,13 @@ function importContent(){
 				$node["body_format"] = $_vars["table_filter_format"][$key];
 			}
 		}
+		
+//-------------------
+		if( empty($node["created"]) ){//fix import error, not unique created time
+			$node["created"] = time()+$n1;
+			$node["changed"] = time()+$n1;
+		}	
+		
 //-------------------
 		unset( $node["id"] );//do not save node old ID
 		$arg = array(

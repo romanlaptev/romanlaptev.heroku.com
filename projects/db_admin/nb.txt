@@ -192,7 +192,7 @@ mydb.sqlite
 неверно происходит замена старых ID на новые при иморте ссылок content_links
 
 
-*-------------------------------------------- import error!!!!!!!!
+*-------------------------------------------- import error, not unique created time
 при импорте content (export lessons) происходит создание нод с
 одинаковым полем created
 ИСПРАВИТЬ, поле created должно быть уникальным!!!!
@@ -205,11 +205,24 @@ export_test.xml
 	144	Урок 3. CMS 1C-Битрикс: управление сайтом. Создание шаблона	1591598277	video		[view] [edit] [remove]
 	145	Урок 4. CMS 1C-Битрикс: управление сайтом. Перенос верстки в шаблон	1591598277	video		[view] [edit] [remove]
 	146	Урок 5. CMS 1C-Битрикс: управление сайтом. Компонент меню	1591598277	video		[view] [edit] [remove]
+1.
 import.php
 		$response = $app->saveXMLnode( $arg );
 		if( $response){
 			$_vars["import"]["total"]++;
 			sleep(1);//timeout before next saving (for form unique filed 'created')
+
+
+2.
+import.php
+function importContent(){
+.....
+		if( empty($node["created"]) ){//fix import error, not unique created time
+			$node["created"] = time()+$n1;
+			$node["changed"] = time()+$n1;
+		}	
+
+https://www.php.net/manual/ru/function.microtime.php
 			
 ------------
 попробовать использование уникального ID для отслеживания элемента в процессе импорта/экспорта

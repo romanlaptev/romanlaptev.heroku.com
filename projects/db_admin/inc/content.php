@@ -31,7 +31,7 @@ class Content {
 			"body_format" => 1, //default filter type "plain text"
 			"status" => 1, //default status "publish"
 			"created" => time(),
-			"changed" => time(),
+			"changed" => time(),//microtime(true),//uniqid()
 			"parent_id" => null//no content link by default
 		);
 		
