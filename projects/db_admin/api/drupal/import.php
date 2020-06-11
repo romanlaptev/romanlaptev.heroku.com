@@ -322,6 +322,7 @@ Array
 //return false;
 
 //----------------------- check XML nodes
+/*
 	//$xmlNodes = array();
 	$key = 0;
 	$old_key = 0;
@@ -349,9 +350,31 @@ Array
 		if( empty( $record["created"] ) ){
 			$msg = "import: prepare XML content, <b>key-field 'created' not found or empty</b>.";
 			$_vars["log"][] = array("message" => $msg, "type" => "warning");
+			//fix import error, not unique created time
+			//$record["created"] = time()+$n;
+			//$record["changed"] = time()+$n;
 		}
 		
 	}//next
+*/
+
+//------------------- fix error, not unique created time
+	for( $n1 = 0; $n1 < count($_vars["xmlData"]["content"]["children"]); $n1++){
+		$node = $_vars["xmlData"]["content"]["children"][$n1];
+		if( empty( $node["created"] ) ){
+			$_vars["xmlData"]["content"]["children"][$n1]["created"] = time()+$n1;
+			$_vars["xmlData"]["content"]["children"][$n1]["changed"] = time()+$n1;
+			continue;
+		}	
+		for( $n2 = $n1+1; $n2 < count($_vars["xmlData"]["content"]["children"]); $n2++){
+			$node2 = $_vars["xmlData"]["content"]["children"][$n2];
+//echo _logWrap( $node["created"].", ".$node2["created"] );
+			if( $node["created"] == $node2["created"]){
+				$_vars["xmlData"]["content"]["children"][$n1]["created"] = time()+$n1;
+			}
+		}//next
+	}//next
+
 //echo _logWrap( count( $xmlNodes ) );
 //echo _logWrap( $xmlNodes );
 //return false;
@@ -644,11 +667,15 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
   	// node_save() does not return a value. It instead populates the $node object. Thus to check if the save was successful, we check the nid.
 	node_save($node);
 	if( !empty($node->nid) ){
-		$msg =  "create/update new node, nid: " . $node->nid .", title: ".$node->title;
+		$msg =  "create/update new node, <b>nid</b>: " . $node->nid;
+		$msg .=  ", <b>title</b>: ".$node->title;
+		$msg .=  ", <b>created</b>: ".$node->created;
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 		return true;
 	} else {
-		$msg = "error, not created node, nid: ". $node->nid . ", title: ".$node->title;
+		$msg = "error, not created node, <b>nid</b>: ". $node->nid;
+		$msg .=  ", <b>title</b>: ".$node->title;
+		$msg .=  ", <b>created</b>: ".$node->created;
 		$_vars["log"][] = array("message" => $msg, "type" => "error");
 		return false;		
 	}

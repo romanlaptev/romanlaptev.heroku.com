@@ -190,16 +190,33 @@ ORDER BY content.title;";
 //echo _logWrap( $_vars["dbData"]["content"] );
 //return false;
 
-	if( $_vars["dbData"]["content"] ){
-		$msg = "export: found " . count( $_vars["dbData"]["content"] )." database nodes";
-		$_vars["log"][] = array("message" => $msg, "type" => "success");
-	} else {
+	if( !$_vars["dbData"]["content"] ){
 		$msg = "export: warning, not found content items";
 		if( !empty($content_type) ){
 			$msg .= ", type: " . $content_type;
 		}
 		$_vars["log"][] = array("message" => $msg, "type" => "warning");
 	}
+
+	if( $_vars["dbData"]["content"] ){
+		$msg = "export: found " . count( $_vars["dbData"]["content"] )." database nodes";
+		$_vars["log"][] = array("message" => $msg, "type" => "success");
+		
+		//fix error, not unique created time
+		for( $n1 = 0; $n1 < count($_vars["dbData"]["content"]); $n1++){
+			$node = $_vars["dbData"]["content"][$n1];
+			for( $n2 = $n1+1; $n2 < count($_vars["dbData"]["content"]); $n2++){
+				$node2 = $_vars["dbData"]["content"][$n2];
+//echo _logWrap( $node["created"] == $node2["created"] );
+				if( $node["created"] == $node2["created"]){
+					$_vars["dbData"]["content"][$n1]["created"] = time()+$n1;
+				}
+			}//next
+		}//next
+	}
+//echo _logWrap( $_vars["dbData"]["content"] );
+//return false;
+	
 	
 //--------------------------
 	$arg = array(
@@ -242,6 +259,9 @@ if( $field == "body_value" || $field == "title" ){
 	$value = str_replace("&", "&amp;", $value);
 	$value = str_replace("<", "&lt;", $value);
 	$value = str_replace(">", "&gt;", $value);
+//https://www.fileformat.info/info/unicode/char/0c0a/index.htm
+	//$value = str_replace('', '', $value);
+	$value = str_replace( chr(0x0C), '', $value);//remove Form Feed
 }
 //-----------				
 if( $field == "type"){

@@ -180,6 +180,11 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 			//$body = str_replace("&amp;", "&", $body);
 			//$body = str_replace("&lt;", "<", $body);
 			//$body = str_replace("&gt;", ">", $body);
+			
+//https://www.fileformat.info/info/unicode/char/0c0a/index.htm
+//$body = str_replace('', '', $body);//0C0A
+$body = str_replace( chr(0x0C), '', $body);//remove Form Feed
+
 			return $body;
 		}
 		

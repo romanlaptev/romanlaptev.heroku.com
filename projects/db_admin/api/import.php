@@ -259,6 +259,30 @@ function importContent(){
 	$_vars["import"]["numCreated"] = 0;
 	$_vars["import"]["total"] = 0;
 
+//------------------- fix error, not unique created time
+	for( $n1 = 0; $n1 < count($_vars["xmlData"]["content"]["children"]); $n1++){
+		$node = $_vars["xmlData"]["content"]["children"][$n1];
+		if( empty( $node["created"] ) ){
+			$_vars["xmlData"]["content"]["children"][$n1]["created"] = time()+$n1;
+			$_vars["xmlData"]["content"]["children"][$n1]["changed"] = time()+$n1;
+			continue;
+		}	
+		for( $n2 = $n1+1; $n2 < count($_vars["xmlData"]["content"]["children"]); $n2++){
+			$node2 = $_vars["xmlData"]["content"]["children"][$n2];
+//echo _logWrap( $node["created"].", ".$node2["created"] );
+			if( $node["created"] == $node2["created"]){
+				$new_time = time()+$n1;
+				
+				$_vars["xmlData"]["content"]["children"][$n1]["created"] = $new_time;
+				$msg = "import:  <b>not unique field 'created' detected</b>, ";
+				$msg .= " title: ".$node["title"].", created: ".$node["created"];
+				$msg .= ", fix, new created: ".$new_time;
+				$_vars["log"][] = array("message" => $msg, "type" => "warning");
+			}
+		}//next
+	}//next
+
+
 	for( $n1 = 0; $n1 < count($_vars["xmlData"]["content"]["children"]); $n1++){
 		$node = $_vars["xmlData"]["content"]["children"][$n1];
 //echo _logWrap( $node["title"] );
@@ -279,10 +303,10 @@ function importContent(){
 		}
 		
 //-------------------
-		if( empty($node["created"]) ){//fix import error, not unique created time
-			$node["created"] = time()+$n1;
-			$node["changed"] = time()+$n1;
-		}	
+		//if( empty($node["created"]) ){//fix import error, empty created time
+			//$node["created"] = time()+$n1;
+			//$node["changed"] = time()+$n1;
+		//}	
 		
 //-------------------
 		unset( $node["id"] );//do not save node old ID

@@ -227,6 +227,24 @@ echo _logWrap( $node );
 	}//next
 return false;
 */
+	//fix error, not unique created time
+	for( $n1 = 0; $n1 < count($_vars["dbData"]["content"]); $n1++){
+		$node = $_vars["dbData"]["content"][$n1];
+		for( $n2 = $n1+1; $n2 < count($_vars["dbData"]["content"]); $n2++){
+			$node2 = $_vars["dbData"]["content"][$n2];
+//echo _logWrap( $node->created == $node2->created );
+			if( $node->created == $node2->created ){
+				$new_time = time()+$n1;
+				$_vars["dbData"]["content"][$n1]->created = $new_time;
+				
+				//$msg = "export:  <b>not unique field 'created' detected</b>, ";
+				//$msg .= " title: ".$node->title.", created: ".$node->created;
+				//$msg .= ", fix, new key-field created: ".$new_time;
+				//$_vars["log"][] = array("message" => $msg, "type" => "warning");
+//echo _logWrap( $node );
+			}
+		}//next
+	}//next
 
 //------------------------------- get content links ( book -> content_links )
 	$_vars["dbData"]["content_links"] = getContentLinks($p);
@@ -401,6 +419,7 @@ if( $field == "body_value" || $field == "title" ){
 		$value = str_replace("&", "&amp;", $value);
 		$value = str_replace("<", "&lt;", $value);
 		$value = str_replace(">", "&gt;", $value);
+		$value = str_replace( chr(0x0C), '', $value);//remove Form Feed
 	}
 }
 //-----------				

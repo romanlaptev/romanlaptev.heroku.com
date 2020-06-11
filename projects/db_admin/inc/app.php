@@ -329,12 +329,12 @@ if( empty($p["xmlNode"]["created"]) ){
 		
 		$response = $content->save( $p["xmlNode"] );
 		if( !$response["status"] ){
-			$msg = "import: error, could not save content item ".$p["xmlNode"]["title"];
-			$_vars["log"][] = array("message" => $msg, "type" => "error");
+$msg = "import: error, not save content item ".$p["xmlNode"]["title"].", created: ".$p["xmlNode"]["created"];
+$_vars["log"][] = array("message" => $msg, "type" => "error");
 			return false;		
 		} else {
-			$msg = "import: save content item ".$p["xmlNode"]["title"];
-			$_vars["log"][] = array("message" => $msg, "type" => "success");
+$msg = "import: save content item ".$p["xmlNode"]["title"].", created: ".$p["xmlNode"]["created"];
+$_vars["log"][] = array("message" => $msg, "type" => "success");
 			return true;
 		}
 
