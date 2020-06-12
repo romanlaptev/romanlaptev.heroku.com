@@ -84,7 +84,7 @@ $_vars["log"][] = array("message" => $params["content_links"][0], "type" => "inf
 				"tpl_record" => "<tr>
 	{{field_columns}}	
 		<td>
-<a href='?q=content-links/remove&content_id={{content_id}}'>remove link</a>
+<a class='btn btn-red' href='?q=content-links/remove&content_id={{content_id}}'>remove link</a>
 		</td>
 	</tr>"
 			) 

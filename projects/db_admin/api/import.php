@@ -34,13 +34,6 @@ if ( $_vars["runType"] == "web") {
 	$_vars["display_log"] = false;
 	
 	importProcess();
-	
-	//RUNTIME
-	$runtime_s = round( microtime(true) - $_vars["timer"]["start"], 2);
-	$runtime_m = round( $runtime_s / 60, 2);
-	$msg = "export runtime, sec: ".$runtime_s.", min: ".$runtime_m;
-	$_vars["log"][] = array("message" => $msg, "type" => "info");
-	
 }
 
 //==================================== CONSOLE run
@@ -65,11 +58,6 @@ if ( $_vars["runType"] == "console") {
 	$_vars["display_log"] = false;
 	
 	importProcess();
-	
-	//RUNTIME
-	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
-	$msg = "export runtime, sec: ".$runtime;
-	$_vars["log"][] = array("message" => $msg, "type" => "info");
 
 	//====================================== LOG
 	if ( !empty( $_vars["log"] ) ) {
@@ -122,6 +110,15 @@ function importProcess(){
 	}
 //echo _logWrap( $_vars["xml"]->schema );
 //echo _logWrap( gettype( $_vars["xml"]->schema ) );
+
+	$_vars["import_info"] = array();
+	$_vars["import_info"]["xml_filepath"] = $xml_filepath;
+	foreach( $_vars["xml"]->xdata->attributes() as $attr => $attr_value){
+//$msg = $attr. ": ".$attr_value;
+//echo _logWrap( $msg );
+		$_vars["import_info"][$attr] = (string)$attr_value;
+	}//next
+//echo _logWrap( $_vars["import_info"] );
 	
 	//--------------------------- get XML values
 	foreach( $_vars["xml"]->schema->xdata as $item => $value){
@@ -180,6 +177,21 @@ unset($_vars["xml"]);
 	}
 //echo _logWrap( $_vars["import"]["replacement_table"] );
 */
+
+	//--------------------------- get XML import info
+//<xdata db_name="notes.sqlite" db_type="sqlite" export_date="23-May-2020 13:30:33" export_time="1590215433">
+	$msg = "import info: <ul>";
+	foreach( $_vars["import_info"] as $attr => $attr_value){
+		$msg .= "<li><b>".$attr."</b> : ".$attr_value."</li>";
+	}//next
+
+	//RUNTIME
+	$runtime_s = round( microtime(true) - $_vars["timer"]["start"], 2);
+	$runtime_m = round( $runtime_s / 60, 2);
+	$msg .= "<li><b>import runtime</b>: ".$runtime_s." sec, ".$runtime_m." min</li>";
+
+	$msg .= "</ul>";
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
 	
 }//end importProcess()					
 
@@ -301,7 +313,17 @@ function importContent(){
 				$node["body_format"] = $_vars["table_filter_format"][$key];
 			}
 		}
-		
+/*
+		$key = $_vars["config"]["default_filter_formats"];
+		$body_format = $_vars["table_filter_format"][$key];
+		if( !empty($node["body_format"]) ){
+			$key = $node["body_format"];
+			if( isset($_vars["table_filter_format"][$key]) ){
+				$body_format = $_vars["table_filter_format"][$key];
+			}
+		}
+		$node["body_format"] = $body_format;
+ */		
 //-------------------
 		//if( empty($node["created"]) ){//fix import error, empty created time
 			//$node["created"] = time()+$n1;

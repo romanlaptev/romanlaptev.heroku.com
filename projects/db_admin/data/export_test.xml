@@ -48,38 +48,35 @@ description: htmllab
 	</body_value>
 </node>
 -->
-<node id="144" type='video'>
-	<title>1CMS 1C-Битрикс: управление сайтом. Создание шаблона</title>
-<!--	<created>1591753827</created>-->
-	<body_value body_format="full_html">
-description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
-&lt;div style="width:640px;height:480px"&gt;
-&lt;iframe src="https://www.youtube.com/embed/1VfbMhZQCcE" width="100%" height="100%"&gt;&lt;/iframe&gt;
-&lt;/div&gt;
+
+<node id="1" type='book'>
+	<title>библиотека</title>
+	<created>1345076832</created>
+	<changed>1383187254</changed>
+	<body_value body_format="">
+t1
 	</body_value>
 </node>
-<node id="145" type='article'>
-	<title>2CMS 1C-Битрикс: управление сайтом. Перенос верстки в шаблон</title>
-<!--	<created>1591753828</created>-->
+<node id="2" type='book'>
+	<title>компьютерная литература</title>
+	<created>1345123119</created>
+	<changed>1374296605</changed>
 	<body_value body_format="plain_text">
-description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
-&lt;div style="width:640px;height:480px"&gt;
-&lt;iframe src="https://www.youtube.com/embed/icR-DcqlRTY" width="100%" height="100%"&gt;&lt;/iframe&gt;
-&lt;/div&gt;
+
 	</body_value>
 </node>
-<node id="146" type='video'>
-	<title>3CMS 1C-Битрикс: управление сайтом. Компонент меню</title>
-<!--	<created>1591753829</created>-->
-	<body_value body_format="full_html">
-description: Битрикс уроки с нуля.WebForMySelf.Сергей Бондин
-&lt;div style="width:640px;height:480px"&gt;
-&lt;iframe src="https://www.youtube.com/embed/mY2gR8Uvdrk" width="100%" height="100%"&gt;&lt;/iframe&gt;
-&lt;/div&gt;
+<node id="3" type='book'>
+	<title>художественая литература</title>
+	<created>1345123258</created>
+	<changed>1426516950</changed>
+	<body_value body_format="plain_text">
+Ивакин Алексей, Туробов Андрей
+...и заплакал 
+http://okopka.ru/i/iwakin_a_g/text_0620.shtml
+----------------------------------
 	</body_value>
-</node>			
+</node>
+			
 		</content>
-		
-	
 	</xdata>
 </xroot>

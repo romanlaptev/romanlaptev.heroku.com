@@ -19,7 +19,7 @@ if ( !empty( $params["content_list"] ) ) {
 </td>
 {{field_columns}}	
 	<td>
-<a class='btn btn-darkblue' href='?q=content/view&id={{id}}'>view</a>
+<a class='btn btn-blue' href='?q=content/view&id={{id}}'>view</a>
 <a class='btn btn-darkblue' href='?q=content/edit&id={{id}}'>edit</a>
 <a class='btn btn-red' href='?q=content/remove&id={{id}}'>remove</a>
 	</td>

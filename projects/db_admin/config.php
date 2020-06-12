@@ -47,6 +47,7 @@ $config["filter_formats"] = array(
 		"name" => "PHP code",
 	)
 );
+$config["default_filter_formats"] = "plain_text";
 
 //============ XML templates
 $config["export"]["xml_template"] = '<?xml version="1.0" encoding="UTF-8"?>

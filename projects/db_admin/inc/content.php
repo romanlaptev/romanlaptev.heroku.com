@@ -37,7 +37,9 @@ class Content {
 		
 		//extend options object $p
 		foreach( $params as $key=>$item ){
-			$p[ $key ] = $item;
+			if( !empty($params[$key]) ){
+				$p[ $key ] = $item;
+			}
 		}//next
 		
 		//remove not requred id (no need, when add note)
