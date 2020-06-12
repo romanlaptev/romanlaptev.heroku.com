@@ -72,11 +72,6 @@ if ( $_vars["runType"] == "console") {
 //$_SERVER["argv"]
 	importProcess();
 }
-
-//====================================== RUNTIME
-	$runtime = round( microtime(true) - $_vars["timer"]["start"], 4);
-	$msg = "import runtime, sec: ".$runtime;
-	$_vars["log"][] = array("message" => $msg, "type" => "info");
 	
 //====================================== LOG
 	if ( !empty( $_vars[ "log" ] ) ) {
@@ -133,6 +128,14 @@ function importProcess(){
 
 //echo _logWrap( $_vars["xml"]->schema );
 //echo _logWrap( gettype( $_vars["xml"]->schema ) );
+	$_vars["import_info"] = array();
+	$_vars["import_info"]["xml_filepath"] = $xml_filepath;
+	foreach( $_vars["xml"]->xdata->attributes() as $attr => $attr_value){
+//$msg = $attr. ": ".$attr_value;
+//echo _logWrap( $msg );
+		$_vars["import_info"][$attr] = (string)$attr_value;
+	}//next
+//echo _logWrap( $_vars["import_info"] );
 	
 	//--------------------------- get XML values
 	foreach( $_vars["xml"]->schema->xdata as $item => $value){
@@ -172,6 +175,22 @@ unset($_vars["xml"]);
 		$_vars["log"][] = array("message" => $msg, "type" => "success");
 	}
 */
+
+
+	//--------------------------- get XML import info
+//<xdata db_name="notes.sqlite" db_type="sqlite" export_date="23-May-2020 13:30:33" export_time="1590215433">
+	$msg = "import info: <ul>";
+	foreach( $_vars["import_info"] as $attr => $attr_value){
+		$msg .= "<li><b>".$attr."</b> : ".$attr_value."</li>";
+	}//next
+
+	//RUNTIME
+	$runtime_s = round( microtime(true) - $_vars["timer"]["start"], 2);
+	$runtime_m = round( $runtime_s / 60, 2);
+	$msg .= "<li><b>import runtime</b>: ".$runtime_s." sec, ".$runtime_m." min</li>";
+
+	$msg .= "</ul>";
+	$_vars["log"][] = array("message" => $msg, "type" => "info");
 
 }//end importProcess()
 

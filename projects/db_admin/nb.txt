@@ -480,10 +480,15 @@ query2. error, query: REPLACE INTO `content_links` (`content_id`,`parent_id`) VA
 query1. run query: REPLACE INTO `content` (`type_id`,`title`,`body_value`,`created`,`changed`) VALUES ('2','note33','t1','1589342980','1589342980'); 
 
 ------------------------
-- СДЕЛАТЬ страницу для вставки записей в content_type
+*- СДЕЛАТЬ ссылку для вставки записей в content_type
 
 INSERT INTO content_type(name) VALUES('page');
 INSERT INTO content_type(name) VALUES('note');
 INSERT INTO content_type(name) VALUES('book');
 INSERT INTO content_type(name) VALUES('video');
 INSERT INTO content_type(name) VALUES('music');
+
+
+--------------------------
+- сделать фильтр для body_format.plain_text
+не просто <pre>....

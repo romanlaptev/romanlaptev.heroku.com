@@ -368,7 +368,7 @@ input[type="range"] {
 .btn-darkblue:hover {
 	/*background-color: #ff8c00;
 	border-color: #ff8c00;*/
-	color: #ccf !important;
+	color: #000;
 }
 
 .btn-darkblue:focus {
@@ -393,6 +393,22 @@ input[type="range"] {
 	color: #fff !important;
 }
 
+.btn-green-shadow {
+	color: #fff;
+	background-color: #008b8b;
+	border-color: #008b8b;
+	-webkit-box-shadow: inset 0 36px 38px -38px #fff;
+	-moz-box-shadow: inset 0 36px 38px -38px #fff;
+	box-shadow: inset 0 36px 38px -38px #fff;
+  font-size: 14px;
+  font-weight: 400;
+}
+.btn-green-shadow:hover, 
+.btn-green-shadow:focus {
+	color: #000;
+}
+
+
 .btn-red {
 	background: -webkit-linear-gradient(#f27966, #eb4d4d);
 	background: -o-linear-gradient(#f27966, #eb4d4d);
@@ -409,6 +425,21 @@ input[type="range"] {
 .btn-red:hover {
 	color: #000 !important;
 }
+
+.btn-orange-m {
+	background: -webkit-linear-gradient(#ffd862, #ffc30b);
+	background: -o-linear-gradient(#ffd862, #ffc30b);
+	background: -moz-linear-gradient(#ffd862, #ffc30b);
+	background: linear-gradient(#ffb644, #ff9e07);
+	border-color: #ffb644;
+	color:#000;
+}
+
+.btn-orange-m:focus:not(:disabled):not(.disabled){
+	border-color: #B36C00;
+}
+
+
 
 
 /* =========================== */

@@ -197,12 +197,18 @@ function exportProcess( $params = array() ){
 	for( $n1 = 0; $n1 < count($_vars["dbData"]["content"]); $n1++ ){
 		$node = $_vars["dbData"]["content"][$n1];
 		$body_format = $node->body_format;
+		
+		$body_format = $_vars["config"]["default_filter_formats"];
 		foreach( $_vars["config"]["filter_formats"] as $format_code=>$format_name ){
 			if( $body_format == $format_name ){
-				$_vars["dbData"]["content"][$n1]->body_format = $format_code;
+				$body_format = $format_code;
 			}
 		}//next
+		$_vars["dbData"]["content"][$n1]->body_format = $body_format;
+		
 	}//next
+//echo _logWrap( $_vars["dbData"]["content"][0] );
+//return false;
 
 /*	
 	//detect not unique key-field 'created'

@@ -302,6 +302,7 @@ $config["filter_formats"] = array(
 		"full_html" => "Full HTML",
 		"php_code" => "PHP code"
 ); 
+$config["default_filter_formats"] = "plain_text";
 
 return $config;
 ?>
