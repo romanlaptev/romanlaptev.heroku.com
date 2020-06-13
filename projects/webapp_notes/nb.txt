@@ -1,1 +1,5 @@
-- установить CMS (Drupal, Wordpress, Modx...)
++- установить CMS (Drupal, Wordpress, Modx...)
+
+- сделать форму тестирования создания заметки в БД
+через удаленный запрос к 
+romanlaptev.heroku.com/projects/db_admin/index.php?q=content/rpc_save

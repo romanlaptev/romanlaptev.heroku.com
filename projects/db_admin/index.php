@@ -92,6 +92,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 		
 		//Remote Procedure Call, save item by remote request
 		case "content/rpc_save":
+			if(!empty($_vars["request"]["rpc_request"]) ){
+				$response = $content->rpc_save( $_vars["request"]["rpc_request"] );
+			}
 		break;
 		
 		case "content/list":

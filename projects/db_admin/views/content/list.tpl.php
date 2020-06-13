@@ -35,7 +35,7 @@ if ( !empty( $params["content_list"] ) ) {
 <h3>num elements: <?php echo $total ?></h3>
 <ul>
 	<li><a href='?q=content/create'>add new content item</a></li>
-	<li><a href='?q=content/rpc_save'>Remote Procedure Call, save item by remote request</a></li>
+	<li class="inline-list"><a href='?q=content/rpc_save'>save item by remote request</a></li>
 </ul>
 
 <ul>
