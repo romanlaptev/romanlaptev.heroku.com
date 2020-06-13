@@ -19,7 +19,7 @@ if ( !empty( $params["content_list"] ) ) {
 </td>
 {{field_columns}}	
 	<td>
-<a class='btn btn-green-shadow' href='?q=content/view&id={{id}}'>view</a>
+<a class='btn btn-blue' href='?q=content/view&id={{id}}'>view</a>
 <a class='btn btn-darkblue' href='?q=content/edit&id={{id}}'>edit</a>
 <a class='btn btn-red' href='?q=content/remove&id={{id}}'>remove</a>
 	</td>
@@ -35,6 +35,10 @@ if ( !empty( $params["content_list"] ) ) {
 <h3>num elements: <?php echo $total ?></h3>
 <ul>
 	<li><a href='?q=content/create'>add new content item</a></li>
+	<li><a href='?q=content/rpc_save'>Remote Procedure Call, save item by remote request</a></li>
+</ul>
+
+<ul>
 	<li><a href='?q=content/clear'>clear table content</a></li>
 	<li><a href='?q=content/set_values'>set init values (content types, filter formats...)</a></li>
 <!-- class="inline-list" -->	

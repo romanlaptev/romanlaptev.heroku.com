@@ -90,6 +90,10 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 			//header("Location:".$_SERVER["SCRIPT_NAME"]);
 		break;
 		
+		//Remote Procedure Call, save item by remote request
+		case "content/rpc_save":
+		break;
+		
 		case "content/list":
 			$views_params["content_list"] = $content->getListWithType();
 			$views_params["tpl_content_filename"] = "views/content/list.tpl.php";
@@ -242,19 +246,19 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 			$views_params["tpl_content_filename"] = "views/notes.tpl.php";
 		break;
 */		
-//======================================= test API
-		case "api":
-			$views_params["tpl_content_filename"] = "views/test_api.tpl.php";
-		break;
 
 //======================================= IMPORT/EXPORT
+		case "exchange":
+			$views_params["tpl_content_filename"] = "views/exchange.tpl.php";
+		break;
+		
 		case "form-import":
 			$arg = array();
 			$arg["tpl_content_path"] = "views/import.tpl.php";
 			$views_params["content"] = $app->importForm($arg);
 		break;
 		case "import":
-			require_once dirname(__FILE__)."/api/import.php";
+			require_once dirname(__FILE__)."/exchange/import.php";
 		break;
 
 		case "form-export":
@@ -263,7 +267,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 			$views_params["content"] = $app->exportForm($arg);
 		break;
 		case "export":
-			require_once dirname(__FILE__)."/api/export.php";
+			require_once dirname(__FILE__)."/exchange/export.php";
 		break;
 
 		//default:

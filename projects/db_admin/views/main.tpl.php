@@ -38,7 +38,7 @@ if ( !empty( $params["login"] ) ) {
 			<li><a href="?q=content/list">content</a></li>
 			<li><a href="?q=content-links/list">content links</a></li>
 			<li><a href="?q=taxonomy/list">tag taxonomy</a></li>
-<li><a href="?q=api">API</a></li>
+<li><a href="?q=exchange">data exchange</a></li>
 <li><a href="data/notes.sqlite">download notes.sqlite</a></li>
 <!-- <li><a href="?q=notes">Notes</a></li> -->
 
