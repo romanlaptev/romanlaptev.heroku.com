@@ -2,6 +2,7 @@
 class ContentLinks {
 
 	private $tableName;
+	private	static $instance = null;
 
 	public $infoSchema = array(
 		"content_id" => "integer",
@@ -15,7 +16,20 @@ class ContentLinks {
 	
 	
 	public function __construct(){
+		global $_vars;
+$msg = "Object of class ".__CLASS__." was created.";
+$_vars["log"][] = array("message" => $msg, "type" => "info");
+		
 		$this->tableName = "content_links";
+	}
+	public static function getInstance() {
+		global $_vars;
+$msg = "get instance ".__CLASS__;
+$_vars["log"][] = array("message" => $msg, "type" => "info");
+		if( is_null( self::$instance ) ) {
+			self::$instance = new self;
+		}
+		return self::$instance;
 	}
 
 

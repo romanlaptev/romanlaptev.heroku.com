@@ -34,6 +34,9 @@ class DB {
 		$_vars["log"][] = array("message" => $msg, "type" => "info");
 	}
 	public static function getInstance() {
+		global $_vars;
+$msg = "get instance ".__CLASS__;
+$_vars["log"][] = array("message" => $msg, "type" => "info");
 		if( is_null( self::$instance ) ) {
 			self::$instance = new self;
 		}

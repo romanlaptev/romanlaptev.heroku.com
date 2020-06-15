@@ -1,7 +1,13 @@
 c2e.convert_special: 0
 e2c.convert_num: 0
-openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/nb.txt:550:438:1:
+openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/nb.txt:606:0:0:
 openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/index.php:0:0:0:
+openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/api/export.php:0:0:0:
+openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/api/import_notes_xml.php:824:0:0:
+openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/css/main.css:82:0:0:
+openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/config.php:0:0:0:
+openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/exchange/import.sh:22:0:1:
+openfiles: /mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/exchange/export.sh:14:0:0:
 snr_recursion_level: 5
 convertcolumn_horizontally: 0
 adv_open_matchname: 0
@@ -13,7 +19,7 @@ view_left_panel: 1
 default_mime_type: text/plain
 e2c.convert_xml: 1
 c2e.convert_iso: 0
-opendir: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin
+opendir: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/exchange
 wrap_text_default: 0
 bookmarks_filename_mode: 0
 snr_casesens: 0
@@ -33,9 +39,16 @@ ssearch_regex: 0
 e2c.convert_iso: 0
 ssearch_casesens: 0
 charmap_block: 1
-recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/nb.txt
 recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/index.php
+recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/api/export.php
+recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/api/import_notes_xml.php
+recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/css/main.css
+recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/config.php
+recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/nb.txt
+recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/exchange/import.sh
+recent_files: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/exchange/export.sh
 snr_replacetype: 0
+savedir: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/exchange
 spell_check_default: 1
 spell_insert_entities: 0
 last_filefilter: 
@@ -69,7 +82,10 @@ filegloblist: *.cgi
 filegloblist: *.c
 filegloblist: *
 recent_dirs: file:///home/roman
+recent_dirs: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/api
+recent_dirs: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/css
 recent_dirs: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin
+recent_dirs: file:///mnt/d2/www/projects/romanlaptev.heroku.com/projects/db_admin/exchange
 fb_focus_follow: 1
 ssearch_unescape: 0
 c2e.convert_symbol: 0

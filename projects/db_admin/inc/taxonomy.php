@@ -1,6 +1,8 @@
 <?php
 class Taxonomy {
 
+	private	static $instance = null;
+	
 	public $infoSchema = array(
 		"taxonomy_groups" => array(
 			"id" => "integer",
@@ -19,7 +21,21 @@ class Taxonomy {
 		)
 	);
 
-	public function __construct(){}
+	public function __construct(){
+		global $_vars;
+$msg = "Object of class ".__CLASS__." was created.";
+$_vars["log"][] = array("message" => $msg, "type" => "info");
+		
+	}
+	public static function getInstance() {
+		global $_vars;
+$msg = "get instance ".__CLASS__;
+$_vars["log"][] = array("message" => $msg, "type" => "info");
+		if( is_null( self::$instance ) ) {
+			self::$instance = new self;
+		}
+		return self::$instance;
+	}
 
 	public function getGroupList(){
 		global $_vars;

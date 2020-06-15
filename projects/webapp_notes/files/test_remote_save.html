@@ -23,7 +23,9 @@
 			
 			<div class="form-group">
 	<button type="reset" class="">reset form</button>
+<!--
 	<input type='text' name="q" value='content/rpc_save'>
+-->
 
 	<input type='submit' value='Save changes'>
 			</div>
@@ -39,6 +41,7 @@ parent_id:<input type='text' name='parent_id' value='0'>
 	<label>Request data (JSON-RPC 1.0)</label>
 	<textarea name="rpc_request" class="form-control" rows="20">
 {
+	"action": "content/rpc_save",
 	"request_data": [
 		{
 			"title":"item1",
