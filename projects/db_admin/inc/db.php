@@ -553,6 +553,7 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 			$sql_query = "DELETE FROM ".$tableName." WHERE ".$p["query_condition"]."; ";
 		}
 //echo _logWrap( $sql_query );
+//return false;
 		
 		$response = $this->initDb();
 		if( !$response ){

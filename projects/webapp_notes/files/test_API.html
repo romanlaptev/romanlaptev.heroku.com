@@ -12,22 +12,25 @@
 <body>
 <div class="container">
 
+	<div class="panel-heading">
+		<h1>Test API (RPC, Remote Call Procedures)</h1>
+	</div>
 			
 <form name="form_test" action="../../db_admin/index.php" method='post' class="">
 
 	<div class="panel panel-primary">
 		<div class="panel-heading">
-			<h1>Test remote save note</h1>
+			<h1>save content</h1>
 		</div>
 		<div class="panel-body">
 			
 			<div class="form-group">
-	<button type="reset" class="">reset form</button>
 <!--
+	<button type="reset" class="">reset form</button>
 	<input type='text' name="q" value='content/rpc_save'>
 -->
 
-	<input type='submit' value='Save changes'>
+	<input type='submit' value='send request'>
 			</div>
 <!--
 title:<input type='text' name='title' value='new content item'>
@@ -65,6 +68,65 @@ parent_id:<input type='text' name='parent_id' value='0'>
 	</div><!-- end panel -->
 
 </form>
+
+
+<!-- =================================================== -->
+<form name="form_test" action="../../db_admin/index.php" method='post' class="">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h1>remove content</h1>
+		</div>
+		<div class="panel-body">
+			
+			<div class="form-group">
+<input type='submit' value='send request'>
+			</div>
+			<div class="form-group">
+	<label>Request data (JSON-RPC 1.0)</label>
+	<textarea name="rpc_request" class="form-control" rows="5">
+{
+	"action": "content/rpc_remove",
+	"request_data": [{"id":"3497"}]
+}
+
+	</textarea>
+			</div>
+	
+		</div>
+	</div><!-- end panel -->
+
+</form>
+
+
+<!-- =================================================== -->
+<form name="form_test" action="../../db_admin/index.php" method='post' class="">
+
+	<div class="panel panel-primary">
+		<div class="panel-heading">
+			<h1>get list content</h1>
+		</div>
+		<div class="panel-body">
+			
+			<div class="form-group">
+<input type='submit' value='send request'>
+			</div>
+			<div class="form-group">
+	<label>Request data (JSON-RPC 1.0)</label>
+	<textarea name="rpc_request" class="form-control" rows="5">
+{
+	"action": "content/rpc_list"
+}
+
+	</textarea>
+			</div>
+	
+		</div>
+	</div><!-- end panel -->
+
+</form>
+
+
 
 <pre>
 https://ru.wikipedia.org/wiki/REST

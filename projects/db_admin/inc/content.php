@@ -6,14 +6,25 @@ class Content {
 	private $tableName;
 	
 	public $infoSchema = array(
-		"id" => "integer",
-		"type_id" => "integer",
-		"title" => "string",
-		"body_value" => "string",
-		"body_format" => "integer",
-		"status" => "integer",
-		"created" => "DATETIME",
-		"changed" => "DATETIME"
+		"content" => array(
+			"id" => "integer",
+			"type_id" => "integer",
+			"title" => "string",
+			"body_value" => "string",
+			"body_format" => "integer",
+			"status" => "integer",
+			"created" => "DATETIME",
+			"changed" => "DATETIME"
+		),		
+		"content_type" => array(
+			"id" => "integer",
+			"name" => "string"
+		),
+		"filter_format" => array(
+			"id" => "integer",
+			"format" => "string",
+			"name" => "string"
+		)
 	);
 	
 	private $defaultValues = array(
@@ -115,7 +126,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 		
 		//check input REQUEST parameters, select only from array $infoSchema[key]
 		$data = array();
-		foreach( $this->infoSchema as $key=>$value ){
+		foreach( $this->infoSchema["content"] as $key=>$value ){
 			//if( !empty($p[ $key ]) ){
 				if( $key !== "id" ){
 					$data[ $key ] = $p[ $key ];
@@ -136,99 +147,109 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 //echo _logWrap($arg);
 //return false;
 
-		$msg = "error, not save content item";
-		$msg_type = "error";
 		
 		//$db = new DB();
 		$db = DB::getInstance();
 		$res = $db->saveRecord($arg);
-		if( $res["status"] ){
-			//$msg = "save record";
-			//$msg_type = "success";
-			//$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
-			
+
+		if( !$res["status"] ){
+			$msg = "error, not save content item";
+			$msg_type = "error";
+			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+			return false;
+		}
+		
 //------------------------------ set content link, parent
-			if( !empty($p["parent_id"]) ){
-				$msg2 = "error, not save content links info.";
-				$msg2_type = "error";
-				$content_links = new ContentLinks();
-				if( $content_links ){
-					$arg = array(
-						"content_id" => $p["id"], 
-						"parent_id" => $p["parent_id"]
-					);
+		if( !empty($p["parent_id"]) ){
+			$msg2 = "error, not save content links info.";
+			$msg2_type = "error";
+			$content_links = new ContentLinks();
+			if( $content_links ){
+				$arg = array(
+					"content_id" => $p["id"], 
+					"parent_id" => $p["parent_id"]
+				);
 //---------------------
-	if( $p["parent_id"] == "top"){
-		$arg["parent_id"] = 0;
-	}
+if( $p["parent_id"] == "top"){
+	$arg["parent_id"] = 0;
+}
 //---------------------					
-					$save_res = $content_links->save( $arg );
-					if( $save_res["status"] ){
-						$msg2 = "save content links info.";
-						$msg2_type = "success";
-						$_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
-					}
+				$save_res = $content_links->save( $arg );
+				if( $save_res["status"] ){
+					$msg2 = "save content links info.";
+					$msg2_type = "success";
+					$_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 				}
-			} 
+			}
+		} 
 			
 //$_vars["log"][] = array("message" => "parent_id:".$p["parent_id"] , "type" => "info");
 //----------------------------- remove node content link
 
-			if( !$p["id"] ){//skip, if new node
-				return $res;
-			}
+		if( !$p["id"] ){//skip, if new node
+			$msg = "save content item ".$p["title"];
+			$msg_type = "success";
+			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+			return $res["status"];
+		}
+
 			
-			if( isset($p["parent_id"]) &&
-				empty($p["parent_id"]) )
-			{
-				$content_links = new ContentLinks();
-				if( $content_links ){
-					$arg = array(
-						"content_id" => $p["id"] 
-					);
-					$_res = $content_links->remove( $arg );
-					if( $_res ){
+		if( isset($p["parent_id"]) &&
+			empty($p["parent_id"]) )
+		{
+			$content_links = new ContentLinks();
+			if( $content_links ){
+				$arg = array(
+					"content_id" => $p["id"] 
+				);
+				$_res = $content_links->remove( $arg );
+				if( $_res ){
 $msg2 = "remove content links info.";
 $msg2_type = "warning";
 $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
-					}
 				}
 			}
-			return $res;
 		}
+			
+		$msg = "save content item ".$p["title"];
+		$msg_type = "success";
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+		return $res["status"];
 		
 	}//end save()
 
 
 	public function rpc_save( $request_data ){
-		global $_vars;
-echo _logWrap( count($request_data) );
-echo _logWrap( $request_data );
-/*
-Array
-(
-    [0] => Array
-        (
-            [title] => item1
-            [content_type] => page
-            [body_format] => plain_text
-            [body_value] => test1
-        )
+		$jsonStr = "";
+		for($n = 0; $n < count($request_data); $n++){
+			
+			$arg = array(
+				"name" => $request_data[$n]["content_type"]
+			);
+			$request_data[$n]["content_type"] = $this->getContentTypeID($arg);
 
-    [1] => Array
-        (
-            [title] => item2
-            [content_type] => note
-            [body_format] => full_html
-            [body_value] => test2
-        )
+			$arg = array(
+				"format" => $request_data[$n]["body_format"]
+			);
+			$request_data[$n]["body_format"] = $this->getFilterFormatID($arg);
+			
+			$eventType = "error";
+			$message = "content item ".$request_data[$n]["title"]." NOT saved...";
+			$response = $this->save( $request_data[$n] );
+			if($response){
+				$eventType = "success";
+				$message = "content item ".$request_data[$n]["title"]." was saved...";
+			}
+			$jsonStr .= '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			
+		}//next
+//echo _logWrap( count($request_data) );
+//echo _logWrap( $request_data );
 
-)
-*/
-		return false;
+		$jsonStr = "[".$jsonStr."]";
+		echo $jsonStr;
+		exit();
 	}//end rpc_save()
-
 
 
 	private function filterBody( $body, $format){
@@ -280,12 +301,11 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 	}//end getListWithType()
 		
 		
-		
 	public function getList( $params=array() ){
 		global $_vars;
 		$p = array(
 			"tableName" => "content",
-			"fields" => array_keys( $this->infoSchema )
+			"fields" => array_keys( $this->infoSchema["content"] )
 		);
 		
 		//extend options object $p
@@ -313,6 +333,104 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		return false;
 	}//end getList()
+
+	public function rpc_list(){
+		
+		if ( !function_exists("json_encode") ){//PHP 5 >= 5.2.0
+			$eventType = "error";
+			$message = "error, not support function <b>json_encode()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.2.0";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			echo $jsonStr;
+			exit();
+		}
+		
+		$contentArr = $this->getListWithType();
+//echo _logWrap($contentArr);
+
+		$json_string = json_encode( $contentArr );
+		if ( !function_exists("json_last_error") ){ //PHP 5 >= 5.3.0
+			$eventType = "error";
+			//http://php.net/manual/ru/function.json-encode.php
+			$message = "<p>error, not support function <b>json_last_error()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.3.0</p>";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			echo $jsonStr;
+			exit();
+		}
+
+//https://www.php.net/manual/en/function.json-last-error.php
+		switch ( json_last_error() ) {
+			case JSON_ERROR_NONE:
+				$jsonStr = '{"eventType": "success", "data": "'.$json_string.'"}';
+				echo $jsonStr;
+				exit();
+			break;
+			
+			case JSON_ERROR_DEPTH:
+$eventType = "error";
+$message = "The maximum stack depth has been exceeded";
+			break;
+
+			case JSON_ERROR_STATE_MISMATCH:
+$eventType = "error";
+$message = "Invalid or malformed JSON";
+			break;
+
+			case JSON_ERROR_CTRL_CHAR:
+$eventType = "error";
+$message = "Control character error, possibly incorrectly encoded";
+			break;
+
+			case JSON_ERROR_SYNTAX:
+$eventType = "error";
+$message = "Syntax error";
+			break;
+			
+			case JSON_ERROR_UTF8:
+$eventType = "error";
+$message = "Malformed UTF-8 characters, possibly incorrectly encoded";
+			break;
+			
+			case JSON_ERROR_RECURSION:
+$eventType = "error";
+$message = "One or more recursive references in the value to be encoded";
+//PHP 5.5.0
+			break;
+
+			case JSON_ERROR_INF_OR_NAN:
+$eventType = "error";
+$message = "One or more NAN or INF values in the value to be encoded";
+//PHP 5.5.0
+			break;
+
+			case JSON_ERROR_UNSUPPORTED_TYPE:
+$eventType = "error";
+$message = "A value of a type that cannot be encoded was given";
+//PHP 5.5.0
+			break;
+
+			case JSON_ERROR_INVALID_PROPERTY_NAME:
+$eventType = "error";
+$message = "A property name that cannot be encoded was given";
+//PHP 7.0.0
+			break;
+
+			case JSON_ERROR_UTF16:
+$eventType = "error";
+$message = "Malformed UTF-16 characters, possibly incorrectly encoded";
+//PHP 7.0.0
+			break;
+			
+			default:
+$eventType = "error";
+$message = "json_last_error(), Unknown error";
+			break;
+		}//end switch
+		
+		$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+		echo $jsonStr;
+		
+		exit();
+	}//end rpc_list()
 
 	
 	public function getItem($params){
@@ -343,7 +461,7 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		$arg = array(
 			"tableName" => "content",
 			//"fields" => array("id", "type_id", "title", "body_value", "created", "changed"),
-			"fields" => array_keys( $this->infoSchema ),
+			"fields" => array_keys( $this->infoSchema["content"] ),
 			"query_condition" => "WHERE id=".$p["id"]
 		);
 		
@@ -402,13 +520,12 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		$response = $db->removeRecords($arg);
 		if( $response ){
 			//remove content links info
-			$msg2 = "error, not remove content links info.";
-			$msg2_type = "error";
-			
 			if( $content_links ){
 				$arg = array(
 					"content_id" => $p["id"] 
 				);
+				$msg2 = "error, not remove content links info.";
+				$msg2_type = "error";
 				$res = $content_links->remove( $arg );
 				if( $res ){
 					$msg2 = "remove content links info.";
@@ -420,106 +537,31 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		return $response;
 	}//end removeItem()
 
-
-	public function clear(){
-		global $_vars;
-
-		$sql_query = "DELETE FROM ".$this->tableName.";";
+	public function rpc_remove( $request_data ){
+		$jsonStr = "";
 		
-		$msg =  "error: database table <b>".$this->tableName."</b> was not cleaned";
-		$msg_type = "warning";
+		for($n = 0; $n < count($request_data); $n++){
+			if( empty($request_data[$n]["id"]) ){
+				continue;
+			}
+			$response = $this->removeItem( $request_data[$n] );
 
-		$db = DB::getInstance();
-		$arg = array(
-			"sql_query" => $sql_query,
-			"query_type" => "exec"
-		);
-		$response = $db->runQuery($arg);
-//echo _logWrap( $response );
-				
-		if( $response["status"] ){
-			$msg =  "database table <b>". $this->tableName."</b> was cleared...";
-			$msg_type = "success";
-		}
-		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
-		
-	}//end clear()
-
-
-	public function setContentTypes(){
-		global $_vars;
-		
-		$tableName = "content_type";
-		$types = $_vars["config"]["content_types"];
-		
-		$sql_query_tpl = "INSERT INTO {{tableName}}(name) VALUES('{{type}}'); ";
-		$sql_query = "";
-		for( $n=0; $n<count($types); $n++){
-			
-			$query = $sql_query_tpl;
-			$query = str_replace( "{{tableName}}", $tableName, $query);
-			$query = str_replace( "{{type}}", $types[$n], $query );
-			
-			$sql_query .= $query;
+			$eventType = "error";
+			$message = "content item ID: ".$request_data[$n]["id"]." NOT removed...";
+			if($response){
+				$eventType = "success";
+				$message = "content item ID: ".$request_data[$n]["id"]." was removed...";
+			}
+			$jsonStr .= '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
 		}//next
-//echo _logWrap( $sql_query );
-//return false;
 		
-		$db = DB::getInstance();
-		$arg = array(
-			"sql_query" => $sql_query,
-			"query_type" => "exec"
-		);
-		$response = $db->runQuery($arg);
-//echo _logWrap( $response );
-
-		if( $response["status"] ){
-			$msg = "content_type values added...";
-			$_vars["log"][] = array("message" => $msg, "type" => "success");
-		} else {
-			$msg = "error: not add content_type values";
-			$_vars["log"][] = array("message" => $msg, "type" => "error");
-		}
-		
-	}//end setContentTypes()
-
-	public function setFilterFormats(){
-		global $_vars;
-		
-		$tableName = "filter_format";
-		$formats = $_vars["config"]["filter_formats"];
-		
-		$sql_query_tpl = "INSERT INTO {{tableName}}(format, name) VALUES('{{format}}', '{{name}}'); ";
-		$sql_query = "";
-		for( $n=0; $n<count( $formats ); $n++){
-			
-			$query = $sql_query_tpl;
-			$query = str_replace( "{{tableName}}", $tableName, $query);
-			$query = str_replace( "{{format}}", $formats[$n]["format"], $query );
-			$query = str_replace( "{{name}}", $formats[$n]["name"], $query );
-			
-			$sql_query .= $query;
-		}//next
-//echo _logWrap( $sql_query );
-//return false;
-		
-		$db = DB::getInstance();
-		$arg = array(
-			"sql_query" => $sql_query,
-			"query_type" => "exec"
-		);
-		$response = $db->runQuery($arg);
-//echo _logWrap( $response );
-
-		if( $response["status"] ){
-			$msg = "filter_format values added...";
-			$_vars["log"][] = array("message" => $msg, "type" => "success");
-		} else {
-			$msg = "error: not add filter_format values";
-			$_vars["log"][] = array("message" => $msg, "type" => "error");
-		}
-		
-	}//end setFilterFormats()
+//echo _logWrap( count($request_data) );
+//echo _logWrap( $request_data );
+		//return false;
+		$jsonStr = "[".$jsonStr."]";
+		echo $jsonStr;
+		exit();
+	}//end rpc_remove()
 
 
 	public function editItem($params){
@@ -634,6 +676,183 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		
 		return $p["content"];
 	}//end addItem()
+
+
+
+	public function clear(){
+		global $_vars;
+
+		$sql_query = "DELETE FROM ".$this->tableName.";";
+		
+		$msg =  "error: database table <b>".$this->tableName."</b> was not cleaned";
+		$msg_type = "warning";
+
+		$db = DB::getInstance();
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $db->runQuery($arg);
+//echo _logWrap( $response );
+				
+		if( $response["status"] ){
+			$msg =  "database table <b>". $this->tableName."</b> was cleared...";
+			$msg_type = "success";
+		}
+		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+		
+	}//end clear()
+
+
+	public function setContentTypes(){
+		global $_vars;
+		
+		$tableName = "content_type";
+		$types = $_vars["config"]["content_types"];
+		
+		$sql_query_tpl = "INSERT INTO {{tableName}}(name) VALUES('{{type}}'); ";
+		$sql_query = "";
+		for( $n=0; $n<count($types); $n++){
+			
+			$query = $sql_query_tpl;
+			$query = str_replace( "{{tableName}}", $tableName, $query);
+			$query = str_replace( "{{type}}", $types[$n], $query );
+			
+			$sql_query .= $query;
+		}//next
+//echo _logWrap( $sql_query );
+//return false;
+		
+		$db = DB::getInstance();
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $db->runQuery($arg);
+//echo _logWrap( $response );
+
+		if( $response["status"] ){
+			$msg = "content_type values added...";
+			$_vars["log"][] = array("message" => $msg, "type" => "success");
+		} else {
+			$msg = "error: not add content_type values";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+		
+	}//end setContentTypes()
+
+	public function getContentTypeID( $params=array() ){
+		global $_vars;
+		
+		$p = array(
+			"name" => false
+		);
+		
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+
+		if( !$p["name"] ){
+			$msg = "error, empty type 'name' value...";
+			$msg_type = "error";
+			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+			return false;
+		}
+		
+		$sql_query = "SELECT id FROM content_type WHERE name='".$p["name"]."';";
+		$db = DB::getInstance();
+		$arg = array(
+			"sql_query" => $sql_query
+		);
+		$response = $db->runQuery($arg);
+//echo _logWrap( $response );
+
+		if( $response["status"] ){
+			//$msg = "content_type values added...";
+			//$_vars["log"][] = array("message" => $msg, "type" => "success");
+			return $response["data"][0]["id"];
+		} else {
+			$msg = "warning: not found content_type ID";
+			$_vars["log"][] = array("message" => $msg, "type" => "warning");
+			return false;
+		}
+	}//end getContentTypeID()
+
+
+	public function setFilterFormats(){
+		global $_vars;
+		
+		$tableName = "filter_format";
+		$formats = $_vars["config"]["filter_formats"];
+		
+		$sql_query_tpl = "INSERT INTO {{tableName}}(format, name) VALUES('{{format}}', '{{name}}'); ";
+		$sql_query = "";
+		for( $n=0; $n<count( $formats ); $n++){
+			
+			$query = $sql_query_tpl;
+			$query = str_replace( "{{tableName}}", $tableName, $query);
+			$query = str_replace( "{{format}}", $formats[$n]["format"], $query );
+			$query = str_replace( "{{name}}", $formats[$n]["name"], $query );
+			
+			$sql_query .= $query;
+		}//next
+//echo _logWrap( $sql_query );
+//return false;
+		
+		$db = DB::getInstance();
+		$arg = array(
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
+		);
+		$response = $db->runQuery($arg);
+//echo _logWrap( $response );
+
+		if( $response["status"] ){
+			$msg = "filter_format values added...";
+			$_vars["log"][] = array("message" => $msg, "type" => "success");
+		} else {
+			$msg = "error: not add filter_format values";
+			$_vars["log"][] = array("message" => $msg, "type" => "error");
+		}
+		
+	}//end setFilterFormats()
+
+	public function getFilterFormatID( $params=array() ){
+		global $_vars;
+		
+		$p = array(
+			"format" => false
+		);
+		
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+
+		if( !$p["format"] ){
+			$msg = "error, empty format value...";
+			$msg_type = "error";
+			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+			return false;
+		}
+		
+		$sql_query = "SELECT id FROM filter_format WHERE format='".$p["format"]."';";
+		$db = DB::getInstance();
+		$arg = array(
+			"sql_query" => $sql_query
+		);
+		$response = $db->runQuery($arg);
+//echo _logWrap( $response );
+
+		if( $response["status"] ){
+			return $response["data"][0]["id"];
+		} else {
+			$msg = "warning: not found content format ID";
+			$_vars["log"][] = array("message" => $msg, "type" => "warning");
+			return false;
+		}
+	}//end getFilterFormatID()
 
 }//end class
 ?>

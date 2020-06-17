@@ -6,9 +6,6 @@ class App {
 		global $_vars;
 $msg = "Object of class ".__CLASS__." was created.";
 $_vars["log"][] = array("message" => $msg, "type" => "info");
-		
-		$this->tableName = "content";
-		//$this->infoSchema = $db->infoSchema["content"];
 	}
 	public static function getInstance() {
 		global $_vars;
@@ -64,24 +61,20 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 				break;
 				
 				case "content/save":
-					$response = $content->save( $request );
-					if( !$response ){
-		$msg = "error,  could not save content item...";
-		$_vars["log"][] = array("message" => $msg, "type" => "error");
-					} else {
-		$msg = "save content item...";
-		$_vars["log"][] = array("message" => $msg, "type" => "success");
-					}
+					$content->save( $request );
 					//header("Location:".$_SERVER["SCRIPT_NAME"]);
 				break;
 				
 				case "content/rpc_save":
-					$response = $content->rpc_save( $request["request_data"] );
+					$content->rpc_save( $request["request_data"] );
 				break;
 				
 				case "content/list":
 					$_vars["views_params"]["content_list"] = $content->getListWithType();
 					$_vars["views_params"]["tpl_content_filename"] = "views/content/list.tpl.php";
+				break;
+				case "content/rpc_list":
+					$content->rpc_list();
 				break;
 
 				case "content/view":
@@ -111,6 +104,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 						//header("Location:".$_SERVER["SCRIPT_NAME"]);
 					}
 					$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+				break;
+				case "content/rpc_remove":
+					$content->rpc_remove( $request["request_data"] );
 				break;
 
 				case "content/clear":
@@ -582,7 +578,7 @@ if( empty($p["xmlNode"]["created"]) ){
 		}
 		
 		$response = $content->save( $p["xmlNode"] );
-		if( !$response["status"] ){
+		if( !$response ){
 $msg = "import: error, not save content item ".$p["xmlNode"]["title"].", created: ".$p["xmlNode"]["created"];
 $_vars["log"][] = array("message" => $msg, "type" => "error");
 			return false;		
@@ -638,7 +634,7 @@ Array
 //---------------------------- RPC, Remote Procedure Call
 	public function rpc_request_handler( $rpc_request ){
 		global $_vars;
-echo _logWrap( $rpc_request );
+//echo _logWrap( $rpc_request );
 		//$p = array(
 			//"format" => "json",//xml
 			//"request_data" => array()
@@ -688,13 +684,13 @@ if( empty($request_arr["action"]) ){
 	return false;
 }
 //echo _logWrap( $request_arr );
-			$arg = array(
-				"q" => $request_arr["action"],
-				"request_data" => $request_arr["request_data"]
-			);
-			$this->urlManager($arg);
-	//$this->rpc_request_data_handler( $request_arr["request_data"] );
-	//"action": "content/save",
+				$arg = array(
+					"q" => $request_arr["action"]
+				);
+				if( !empty($request_arr["request_data"]) ){
+					$arg["request_data"] = $request_arr["request_data"];
+				}
+				$this->urlManager($arg);
 			break;
 			
 			case JSON_ERROR_DEPTH:
