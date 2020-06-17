@@ -518,7 +518,10 @@ $message = "json_last_error(), Unknown error";
 		);
 		
 		$response = $db->removeRecords($arg);
+//echo _logWrap($response);
+//return false;
 		if( $response ){
+			
 			//remove content links info
 			if( $content_links ){
 				$arg = array(

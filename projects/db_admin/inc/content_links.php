@@ -300,9 +300,14 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$sql_query .= "SELECT parent_id FROM content_links WHERE content_id=".$p["content_id"].") ";
 		$sql_query .= "WHERE parent_id=".$p["content_id"].";";
 //echo _logWrap($sql_query);
+//return false;
 
 		$db = DB::getInstance();
-		$response = $db->runQuery( $db->dbConnection, $sql_query);
+		//$response = $db->runQuery( $db->dbConnection, $sql_query);
+		$arg = array(
+			"sql_query" => $sql_query
+		);
+		$response = $db->runQuery( $arg );
 //echo _logWrap( $response );
 		if( $response["status"] ){
 			return true;

@@ -562,7 +562,8 @@ $sql_query .= "REPLACE INTO `".$tableName."` (".$fields_string.") VALUES (".$val
 		
 		//$response = $this->runQuery( $this->dbConnection, $sql_query);
 		$arg = array(
-			"sql_query" => $sql_query
+			"sql_query" => $sql_query,
+			"query_type" => "exec"
 		);
 		$response = $this->runQuery( $arg );
 //echo _logWrap( $response );
