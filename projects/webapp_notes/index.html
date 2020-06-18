@@ -28,8 +28,8 @@
 	<!-- <link rel="stylesheet" href="css/fonts.css"> -->
 	<link rel="stylesheet" href="css/custom.css">
 	
-	<script src="js/shared_functions.js"></script>
-	<script src="js/notes.js"></script>
+	<script src="js/functions.js"></script>
+	<script src="js/app.js"></script>
 </head>
 <body>
 		
@@ -72,7 +72,8 @@
 			</div>
 -->
 		<div class="panel-body" id="messages">
-<script id="tpl-message-list" type="text/template">
+			
+<script id="tpl-node-list" type="text/template">
 <div class="row">
 	<div class="" id="note-{{id}}">
 		<div class="panel panel-primary">
@@ -89,25 +90,18 @@
 			
 			<div class="panel-footer">
 				<p class="text-muted">
-					<small>created:</small><strong class="author">{{author}}</strong>, 
-					<span class="date">
-						<small>date:</small> {{client_date}} 
-					</span>
-					<span class="server-date">
-						<small>( server date: {{server_date}})</small>,
-					</span>
-					<span class="ip">
-						<small>send from ip: {{ip}}</small>
-					</span>
+<b>created: </b><span class="date">{{created}}</span>
+<b>body_format: </b>{{body_format}}
 				</p>
 			</div>
 			
-			<div class="panel-body text-message">{{text_message}}</div>
+			<div class="panel-body body-value">{{body_value}}</div>
 			
 		</div><!-- /panel -->
 	</div>
 </div><!-- end row -->
-</script> 			
+</script> 	
+		
 		</div>
 	</div>
 

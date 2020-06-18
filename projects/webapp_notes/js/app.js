@@ -1,5 +1,6 @@
+var webNotes = null;
 window.onload = function(){
-	var webNotes = _notes();
+	webNotes = _notes();
 console.log( webNotes );	
 	webNotes.init();
 }//end load
@@ -12,7 +13,9 @@ var _notes = function ( opt ){
 //console.log(arguments);	
 	var _vars = {
 		
-		"requestUrl" : "upload/notes.xml",
+		"requestUrl" : "data/export.xml",
+		//"requestUrl" : "upload/notes.xml",
+		
 		"exportUrl" : "",
 		"requestRemoteAjaxUrl" : "http://graphic-art-collection.16mb.com/notes/",
 
@@ -169,7 +172,7 @@ console.log(errorCode);
 		
 		"messages" : getById("messages"),
 		"templates" : {
-			"tpl-message-list" : _getTpl("tpl-message-list")
+			"tpl-node-list" : _getTpl("tpl-node-list")
 		},
 		"messagesList" : getById("messages"),		
 		"controlPanel" : getById("control-btn"),
@@ -1008,13 +1011,12 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 			"url" : _vars["requestUrl"], 
 			"callback": function( data ){
 //console.log(data.length, typeof data, data);				
-				//_parseXML( data );
-				xmlNotes = _parseXmlToObj(data);
-//console.log(obj);				
-				if( xmlNotes.length > 0 ){
-					_drawNotes({
-						"data": xmlNotes
-					});
+				//xmlNotes = _parseXmlToObj(data);
+				xmlNotes = _convertXmlToObj(data);
+var _nodes=xmlNotes["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"][0]["childNodes"]["node"];				
+//console.log(_nodes);
+				if( _nodes.length > 0 ){
+					_drawNodes({ "data": _nodes });
 				} else {
 					_vars["messagesList"].innerHTML = "<h2>no notes added...</h2>";
 					_vars["$num_notes"].innerHTML  = "0";//set number of notes
@@ -1032,10 +1034,10 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 		}//end _onerror()
 		
 	}//end loadNotesXml()
-	
-	function _drawNotes( opt ){
+
+	function _drawNodes( opt ){
 		var p = {
-			"templateID": "tpl-message-list",
+			"templateID": "tpl-node-list",
 			"data" : null
 		};
 		//extend options object
@@ -1045,9 +1047,6 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 //console.log(p);
 		
 		var templateID = p["templateID"];
-		//var html = _vars["templates"][templateID];
-		//html = html.replace("{{textMessage}}", p["data"][0]["textMessage"] );
-		//_vars["messages"].innerHTML = html;
 		
 		//set number of notes
 		_vars["$num_notes"].innerHTML  = p["data"].length;
@@ -1059,19 +1058,31 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 		for( var n= 0; n < p["data"].length; n++){
 			
 			itemHtml = _vars["templates"][ templateID];
-			var items = p["data"][n];
-			
-			//filter text message
-			// if( items["text_message"] ){
-				items["text_message"] = __filter( items["text_message"] );
-			// } else {
-				
-				// if( items["text"] ){
-					// items["text_message"] = __filter( items["text"] );
-				// }
-				
-			// }
-			
+
+			//convert xml object to js object
+			var items = {};
+			var xmlObj = p["data"][n];
+			for( var key in xmlObj["attributes"]){
+					items[key] = xmlObj["attributes"][key];
+			}//next
+			for( var key in xmlObj["childNodes"]){
+					items[key] = xmlObj["childNodes"][key][0]["text"];
+					
+					var items_attr = xmlObj["childNodes"][key][0]["attributes"];
+					for( var attr in items_attr){
+							items[attr] = items_attr[attr];
+					}//next
+					
+			}//next
+//console.log(items);
+
+			//filter
+			if( items["body_value"] ){
+				if( items["body_format"] === "plain_text"){
+					items["body_value"] = "<pre>"+items["body_value"]+"</pre>";
+				}
+			}
+
 			for( var key in items){
 //console.log(key, items[key]);
 				if( itemHtml.indexOf("{{"+key+"}}") !== -1 ){
@@ -1080,19 +1091,19 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 					itemHtml = itemHtml.replace(new RegExp(key2, 'g'), items[key]);
 				}
 			}//next
+
 			listHtml += itemHtml;
 //console.log(listHtml);
-			
 		}//next
 		
 		_vars["messages"].innerHTML = listHtml;
-		
+
 		//hide EDIT, DELETE btn
 		if( _vars["hideControlPanel"] ){
 			$(".btn-delete-note, .btn-edit-note").hide();			
 		}
 		
-//filter
+/*
 		function __filter(textMessage){
 //console.log(textMessage);
 			if( textMessage.length === 0){
@@ -1144,8 +1155,8 @@ console.log("error in __filter()");
 			
 			return textMessage.trim();
 		}//end __filter()
-		
-	}//end _drawNotes()
+*/		
+	}//end _drawNodes()
 	
 	function serviceAction(opt, callback){
 		var p = {

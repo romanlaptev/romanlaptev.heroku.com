@@ -227,7 +227,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 					$_vars["views_params"]["content"] = $this->importForm($arg);
 				break;
 				case "import":
-					require_once dirname(__FILE__)."/exchange/import.php";
+					require_once dirname(__FILE__)."/../exchange/import.php";
 				break;
 
 				case "form-export":
@@ -236,7 +236,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 					$_vars["views_params"]["content"] = $this->exportForm($arg);
 				break;
 				case "export":
-					require_once dirname(__FILE__)."/exchange/export.php";
+//echo _logWrap( dirname(__FILE__)."/exchange/export.php" );				
+					require_once dirname(__FILE__)."/../exchange/export.php";
 				break;
 
 				default:

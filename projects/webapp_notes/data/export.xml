@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<xroot>
+	<schema>
+		<xdata db_name="" db_type="" export_date="" export_time="">
+			<content>
+					<node id="" type="">
+						<title></title>
+						<created></created>
+						<changed></changed>
+						<body_value body_format=""></body_value>
+					</node>
+			</content>
+
+			<content_links>
+				<item content_id="" parent_id=""></item>
+			</content_links>		
+
+			<tag_groups>
+				<item id="" name=""></item>
+			</tag_groups>		
+
+			<tag_links>
+				<item content_id="" term_id=""></item>
+			</tag_links>		
+
+			<tag_list>
+				<item id="" term_group_id="" parent_id="" name=""></item>
+			</tag_list>		
+
+		</xdata>
+	</schema>
+
+	<xdata db_name="notes.sqlite" db_type="sqlite" export_date="18-Jun-2020 08:47:36" export_time="1592444856">
+
+
+
+
+		<content>
+<node id="3493" type='note'>
+	<title>code pen</title>
+	<created>1591936698</created>
+	<changed>1591936698</changed>
+	<body_value body_format="plain_text">
+https://glitch.com/
+https://romanlaptev-bookmarks.glitch.me/
+
+-----------------
+https://codepen.io/romanlaptev
+https://codepen.io/dashboard/
+
+------------------
+https://jsfiddle.net/
+roman-laptev@yandex.ru, w***s
+
+------------------
+https://plnkr.co/users/romanlaptev/plunks
+	</body_value>
+</node>
+<node id="3508" type='page'>
+	<title>Извлечение субтитров из файлов mkv</title>
+	<created>1592444342</created>
+	<changed>1592444342</changed>
+	<body_value body_format="plain_text">
+https://ubuntugeeks.com/questions/2457/extract-subtitle-from-mkv-files
+Извлечение субтитров из файлов mkv
+---------------
+
+- Установите mkvtoolnix с sudo apt-get install mkvtoolnix
+
+- roman@i5:/mnt/d2/for_record/video/Game.of.Thrones/s05$ 
+
+mkvinfo S05E01.mkv
+.....
+| + Дорожка
+|  + Номер дорожки: 3 (ID дорожки для mkvmerge и mkvextract: 2)
+|  + UID дорожки: 1459382409830721168
+|  + Тип дорожки: subtitles
+|  + Флаг по умолчанию: 0
+|  + Флаг сшивания: 0
+|  + ID кодека: S_TEXT/UTF8
+
+.....
+
+- mkvextract tracks S05E01.mkv 2:test1.srt
+	</body_value>
+</node>
+		</content>		
+	</xdata>
+</xroot>
