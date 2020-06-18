@@ -1,27 +1,175 @@
-var webApp = null;
-
 window.onload = function(){
-	webApp = _app();
-console.log( webApp );	
-
-	webApp.init();
+	var webNotes = _notes();
+console.log( webNotes );	
+	webNotes.init();
 }//end load
 
 $(document).ready(function(){
 	$("input[type=file]").bootstrapFileInput();
 });//end ready	
 
-var _app = function ( opt ){
+var _notes = function ( opt ){
 //console.log(arguments);	
 	var _vars = {
 		
-		"requestUrl" : "data/export.xml",
-		
+		"requestUrl" : "upload/notes.xml",
 		"exportUrl" : "",
+		"requestRemoteAjaxUrl" : "http://graphic-art-collection.16mb.com/notes/",
+
+		"tests" : [{
+				"name" : "checkPHP",
+				"url" : "api/test.php",
+				"successMsg" : "test PHP success, suppored by server <b>" + window.location.host + "</b>...",
+				"errorMsg" : "test PHP failed, PHP not suppored by server <b>" + window.location.host + "</b>...",
+				"callback" : function(res){
+					
+						_vars["supportPHP"] = false;
+						if( res[0] === "4" ){
+							_vars["supportPHP"] = true;
+							_alert( this["successMsg"], "success" );
+						} else {
+							_alert( this["errorMsg"], "error" );
+						}
+					}//end callback
+				}, //end test
+				
+				{
+				"name" : "checkMySQL",
+				"url" : "api/test_mysql.php",
+				"successMsg" : "test local MySQL success...",
+				"errorMsg" : "test local MySQL failed, cannot connect to database server...",
+				"callback" : function(res){
+console.log(res, typeof res);					
+						_vars["supportMySQL"] = false;
+						
+						if( typeof res !== "string"){
+							_alert( this["errorMsg"], "error" );
+							return;
+						}
+
+						parseLog({
+							"successMsg" : this["successMsg"],
+							"errorMsg" : this["errorMsg"],
+							"jsonLog" : res,
+							"onSuccess" : function(){
+								_vars["supportMySQL"] = true;
+								_alert( this["successMsg"], "success" );
+							},
+							"onError" : function( errorCode  ){
+//console.log(errorCode);
+								var msg = this["errorMsg"];
+								msg += ", error code: "+errorCode;
+								_alert( msg, "error" );
+							}//,
+							//"callback" : function(){
+							//}//end callback
+						});	
+					
+					}//end callback
+				}, //end test
+
+				{
+				"name" : "checkPostgreSQL",
+				"url" : "api/test_postgresql.php",
+				"successMsg" : "test local PostgreSQL success...",
+				"errorMsg" : "test local PostgreSQL failed, cannot connect to database server...",
+				"callback" : function(res){
+console.log(res, typeof res);					
+						_vars["supportPostgreSQL"] = false;
+						
+						if( typeof res !== "string"){
+							_alert( this["errorMsg"], "error" );
+							return;
+						}
+
+						parseLog({
+							"successMsg" : this["successMsg"],
+							"errorMsg" : this["errorMsg"],
+							"jsonLog" : res,
+							"onSuccess" : function(){
+								_vars["supportPostgreSQL"] = true;
+								_alert( this["successMsg"], "success" );
+							},
+							"onError" : function( errorCode  ){
+								var msg = this["errorMsg"];
+								msg += ", error code: "+errorCode;
+								_alert( msg, "error" );
+							}//,
+							//"callback" : function(){
+							//}//end callback
+						});	
+					
+					}//end callback
+				}, //end test
+
+				{
+				"name" : "checkASPX",
+				"url" : "api/test.aspx",
+				"successMsg" : "test ASPX success, suppored by server <b>" + window.location.host + "</b>...",
+				"errorMsg" : "test ASPX failed, ASP.NET not suppored by server <b>" + window.location.host + "</b>...",
+				"callback" : function(res){
+					
+						_vars["supportASPX"] = false;
+						if( res[0] === "4" ){
+							
+							_vars["supportASPX"] = true;
+							_alert( this["successMsg"], "success" );
+						} else {
+							_alert( this["errorMsg"], "error" );
+						}
+					}//end callback
+				}, //end test
+				
+				{
+				"name" : "checkMSSQL",
+				"url" : "api/test_mssql.aspx",
+				"successMsg" : "test MSSQL success...",
+				"errorMsg" : "test MSSQL failed, cannot connect to database server...",
+				"callback" : function(res){
+//console.log(res);					
+						_vars["supportMSSQL"] = false;
+						parseLog({
+							"successMsg" : this["successMsg"],
+							"errorMsg" : this["errorMsg"],
+							"jsonLog" : res,
+							"onSuccess" : function(){
+								_vars["supportMSSQL"] = true;
+								_alert( this["successMsg"], "success" );
+							},
+							"onError" : function( errorCode ){
+console.log(errorCode);
+								var msg = this["errorMsg"] + errorCode;
+								_alert( msg, "error" );
+							}//,
+							//"callback" : function(){
+							//}//end callback
+						});	
+					
+					}//end callback
+				}, //end test
+
+				{
+				"name" : "checkJAVA",
+				"url" : "api/test_java.jsp",
+				"successMsg" : "test JAVA success, suppored by server <b>" + window.location.host + "</b>...",
+				"errorMsg" : "test JAVA failed, not suppored by server <b>" + window.location.host + "</b>...",
+				"callback" : function(res){
+//console.log("res", res.charAt(0) );
+						if( res[0] === "4" ){
+							_vars["supportJAVA"] = true;
+							_alert( this["successMsg"], "success" );
+						} else {
+							_vars["supportJAVA"] = false;
+							_alert( this["errorMsg"], "error" );
+						}
+					}//end callback
+				} //end test
+				
+		],//end tests
 		
 		"messages" : getById("messages"),
 		"templates" : {
-			"tpl-node-list" : _getTpl("tpl-node-list")
+			"tpl-message-list" : _getTpl("tpl-message-list")
 		},
 		"messagesList" : getById("messages"),		
 		"controlPanel" : getById("control-btn"),
@@ -29,17 +177,43 @@ var _app = function ( opt ){
 		"$num_notes" : getById("num-notes")
 	};
 	
+	//correct for remote run
+	// if( window.location.hostname === "romanlaptev.github.io"){
+		// _vars["requestUrl"] = _vars["requestRemoteAjaxUrl"] + _vars["requestUrl"];
+		// var btn_export = getById("btn-export");
+		// btn_export.href = _vars["requestUrl"] + "?action=export_notes";
+// //console.log( btn_export.href );	
+		// _vars["testUrlPHP"] = _vars["requestRemoteAjaxUrl"] + _vars["testUrlPHP"];
+	// }
+	
+//test	
+// console.log(_vars["controlPanel"]["children"]);
+// for( var key in _vars["controlPanel"]["children"]){
+	// var btn = _vars["controlPanel"]["children"][key];
+// console.log( key, btn["tagName"], btn["href"] );	
+// }
 
+	// function _error( id ){
+		// switch(id){
+			// case "errorPHP":
+				// var msg = "<p>test PHP failed, PHP not suppored by server <b>" + window.location.host + "</b>...</p>";
+			// break
+			// case "errorASPX":
+				// var msg = "<p>test ASPX failed, ASP.NET not suppored by server <b>" + window.location.host + "</b>...</p>";
+			// break
+			// case "errorMSSQL":
+				// var msg = "<p>test MSSQL failed, cannot connect to database server...</p>";
+			// break
+		// }//end switch()
+		// _log("<div class='alert alert-danger'>" + msg + "</div>");
+	// }//end _error()
 
 	var _init = function(){
 //console.log("init _notes");
 		defineEvents();
-		
-		//_vars["requestUrl"] = "api/notes_mysql.php";
-		//_vars["exportUrl"] = "api/notes_mysql.php?action=export_notes";
-		//loadNotes();
-		
-		loadNotesXml();
+		//testServer();
+		var startNumTest = 0;
+		testServerMod( startNumTest );
 	};
 
 	function _getTpl( id ){
@@ -665,6 +839,72 @@ _log("<div class='alert alert-warning'>" + msg + "</div>");
 
 	}//end sendForm
 
+	//async requests (one by one), server capabilities check
+	function testServerMod( numTest ){
+
+		var test = _vars["tests"][ numTest ];
+		runAjax({
+			"requestMethod" : "GET", 
+			"url" : test["url"], 
+			"onError" : _postReq,
+			"callback": _postReq
+		});
+		
+		function _postReq( data ){
+// var all_headers = xhr.getAllResponseHeaders();
+// console.log( all_headers );
+//console.log(data, typeof data, data.length);
+			if( typeof test["callback"] === "function"){
+				test["callback"]( data );
+			} 
+			numTest++;
+			if( numTest < _vars["tests"].length ){
+			//if( numTest < 2 ){
+				testServerMod( numTest );
+			} else {
+// console.log("PHP: " , _vars["supportPHP"]);
+// console.log("ASPX: " , _vars["supportASPX"]);
+// console.log("MSSQL: " , _vars["supportMSSQL"]);
+// console.log("JAVA: " , _vars["supportJAVA"]);
+				var noSupport = true;
+				if( _vars["supportPHP"] ){
+					if( _vars["supportMySQL"] ){
+						noSupport = false;
+						_vars["requestUrl"] = "api/notes_mysql.php";
+						_vars["exportUrl"] = "api/notes_mysql.php?action=export_notes";
+						loadNotes();
+					}
+					if( _vars["supportPostgreSQL"] ){
+						noSupport = false;
+						_vars["requestUrl"] = "api/notes_postgresql.php";
+						_vars["exportUrl"] = "api/notes_postgresql.php?action=export_notes";
+						loadNotes();
+					}
+				}
+				
+				if( _vars["supportASPX"] ){
+					if( _vars["supportMSSQL"] ){
+						noSupport = false;
+						_vars["requestUrl"] = "api/notes_mssql.aspx";
+						_vars["exportUrl"] = "api/notes_mssql.aspx?action=export_notes";
+						loadNotes();
+					}
+				}
+
+				if( _vars["supportJAVA"] ){
+					noSupport = false;
+					_vars["requestUrl"] = "api/notes_java.jsp";
+					_vars["exportUrl"] = "api/notes_java.jsp?action=export_notes";
+					// loadNotes();
+				}
+				
+				if( noSupport ){
+					loadNotesXml();
+				}
+
+			}
+		}//end _postReq()
+	}//end testServerMod()
 
 	function loadNotes(){
 //console.log( _vars["templates"] );
@@ -759,8 +999,8 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 	function loadNotesXml(){
 		
 		//hide CONTROL PANEL
-		//$("#control-btn").children("div").hide();
-		//_vars["hideControlPanel"]=true;
+		$("#control-btn").children("div").hide();
+		_vars["hideControlPanel"]=true;
 		
 		_vars["messagesList"].innerHTML = "";
 		runAjax( {
@@ -768,12 +1008,13 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 			"url" : _vars["requestUrl"], 
 			"callback": function( data ){
 //console.log(data.length, typeof data, data);				
-				//xmlNotes = _parseXmlToObj(data);
-				xmlNotes = _convertXmlToObj(data);
-var _nodes=xmlNotes["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"][0]["childNodes"]["node"];				
-//console.log(_nodes);
-				if( _nodes.length > 0 ){
-					_drawNodes({ "data": _nodes });
+				//_parseXML( data );
+				xmlNotes = _parseXmlToObj(data);
+//console.log(obj);				
+				if( xmlNotes.length > 0 ){
+					_drawNotes({
+						"data": xmlNotes
+					});
 				} else {
 					_vars["messagesList"].innerHTML = "<h2>no notes added...</h2>";
 					_vars["$num_notes"].innerHTML  = "0";//set number of notes
@@ -785,15 +1026,16 @@ var _nodes=xmlNotes["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"][
 		});
 		
 		function _onerror( xhr ){
-_vars["logMsg"] = "error, " +_vars["requestUrl"]+ " not found by server <b>" + window.location.host + "</b>";
-_alert( _vars["logMsg"], "error");
+var msg = "";
+msg += "<p>error, " +_vars["requestUrl"]+ " not found by server <b>" + window.location.host + "</b></p>";
+_log("<div class='alert alert-danger'>" + msg + "</div>");
 		}//end _onerror()
 		
 	}//end loadNotesXml()
-
-	function _drawNodes( opt ){
+	
+	function _drawNotes( opt ){
 		var p = {
-			"templateID": "tpl-node-list",
+			"templateID": "tpl-message-list",
 			"data" : null
 		};
 		//extend options object
@@ -803,6 +1045,9 @@ _alert( _vars["logMsg"], "error");
 //console.log(p);
 		
 		var templateID = p["templateID"];
+		//var html = _vars["templates"][templateID];
+		//html = html.replace("{{textMessage}}", p["data"][0]["textMessage"] );
+		//_vars["messages"].innerHTML = html;
 		
 		//set number of notes
 		_vars["$num_notes"].innerHTML  = p["data"].length;
@@ -814,31 +1059,19 @@ _alert( _vars["logMsg"], "error");
 		for( var n= 0; n < p["data"].length; n++){
 			
 			itemHtml = _vars["templates"][ templateID];
-
-			//convert xml object to js object
-			var items = {};
-			var xmlObj = p["data"][n];
-			for( var key in xmlObj["attributes"]){
-					items[key] = xmlObj["attributes"][key];
-			}//next
-			for( var key in xmlObj["childNodes"]){
-					items[key] = xmlObj["childNodes"][key][0]["text"];
-					
-					var items_attr = xmlObj["childNodes"][key][0]["attributes"];
-					for( var attr in items_attr){
-							items[attr] = items_attr[attr];
-					}//next
-					
-			}//next
-//console.log(items);
-
-			//filter
-			if( items["body_value"] ){
-				if( items["body_format"] === "plain_text"){
-					items["body_value"] = "<pre>"+items["body_value"]+"</pre>";
-				}
-			}
-
+			var items = p["data"][n];
+			
+			//filter text message
+			// if( items["text_message"] ){
+				items["text_message"] = __filter( items["text_message"] );
+			// } else {
+				
+				// if( items["text"] ){
+					// items["text_message"] = __filter( items["text"] );
+				// }
+				
+			// }
+			
 			for( var key in items){
 //console.log(key, items[key]);
 				if( itemHtml.indexOf("{{"+key+"}}") !== -1 ){
@@ -847,19 +1080,19 @@ _alert( _vars["logMsg"], "error");
 					itemHtml = itemHtml.replace(new RegExp(key2, 'g'), items[key]);
 				}
 			}//next
-
 			listHtml += itemHtml;
 //console.log(listHtml);
+			
 		}//next
 		
 		_vars["messages"].innerHTML = listHtml;
-
+		
 		//hide EDIT, DELETE btn
 		if( _vars["hideControlPanel"] ){
 			$(".btn-delete-note, .btn-edit-note").hide();			
 		}
 		
-/*
+//filter
 		function __filter(textMessage){
 //console.log(textMessage);
 			if( textMessage.length === 0){
@@ -911,8 +1144,8 @@ console.log("error in __filter()");
 			
 			return textMessage.trim();
 		}//end __filter()
-*/		
-	}//end _drawNodes()
+		
+	}//end _drawNotes()
 	
 	function serviceAction(opt, callback){
 		var p = {
@@ -1079,4 +1312,4 @@ console.log(msg);
 		}
 	};
 	
-}//end _app()
+}//end _notes()
