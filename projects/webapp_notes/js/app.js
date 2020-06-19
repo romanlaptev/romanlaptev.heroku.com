@@ -769,8 +769,8 @@ _log("<div class='alert alert-danger'>" + msg + "</div>");
 			"callback": function( data ){
 //console.log(data.length, typeof data, data);				
 				//xmlNotes = _parseXmlToObj(data);
-				xmlNotes = _convertXmlToObj(data);
-var _nodes=xmlNotes["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"][0]["childNodes"]["node"];				
+				xmlNodes = _convertXmlToObj(data);
+var _nodes=xmlNodes["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"][0]["childNodes"]["node"];				
 //console.log(_nodes);
 				if( _nodes.length > 0 ){
 					_drawNodes({ "data": _nodes });
