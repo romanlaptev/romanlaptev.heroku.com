@@ -6,23 +6,23 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge">
-	<link rel="stylesheet" href="../css/bootstrap337.min.css">
+	<link rel="stylesheet" href="../css/bootstrap450.min.css">
 </head>
 
 <body>
 <div class="container">
 
-	<div class="panel-heading">
+	<div class="card-title">
 		<h1>Test API (RPC, Remote Call Procedures)</h1>
 	</div>
 			
 <form name="form_test" action="../../db_admin/index.php" method='post' class="">
 
-	<div class="panel panel-primary">
-		<div class="panel-heading">
+	<div class="card">
+		<div class="card-title bg-primary text-center text-white">
 			<h1>save content</h1>
 		</div>
-		<div class="panel-body">
+		<div class="card-body">
 			
 			<div class="form-group">
 <!--
@@ -30,7 +30,7 @@
 	<input type='text' name="q" value='content/rpc_save'>
 -->
 
-	<input type='submit' value='send request'>
+	<input type='submit' class="btn btn-primary" value='send request'>
 			</div>
 <!--
 title:<input type='text' name='title' value='new content item'>
@@ -73,11 +73,11 @@ parent_id:<input type='text' name='parent_id' value='0'>
 <!-- =================================================== -->
 <form name="form_test" action="../../db_admin/index.php" method='post' class="">
 
-	<div class="panel panel-primary">
-		<div class="panel-heading">
-			<h1>remove content</h1>
+	<div class="card">
+		<div class="card-header bg-secondary">
+			<h1 class="text-right text-white">remove content</h1>
 		</div>
-		<div class="panel-body">
+		<div class="card-body">
 			
 			<div class="form-group">
 <input type='submit' value='send request'>
@@ -102,11 +102,11 @@ parent_id:<input type='text' name='parent_id' value='0'>
 <!-- =================================================== -->
 <form name="form_test" action="../../db_admin/index.php" method='post' class="">
 
-	<div class="panel panel-primary">
-		<div class="panel-heading">
-			<h1>get list content</h1>
+	<div class="card">
+		<div class="card-header bg-info">
+			<h1 class="card-title text-center text-white">get list content</h1>
 		</div>
-		<div class="panel-body">
+		<div class="card-body">
 			
 			<div class="form-group">
 <input type='submit' value='send request'>
@@ -122,10 +122,37 @@ parent_id:<input type='text' name='parent_id' value='0'>
 			</div>
 	
 		</div>
-	</div><!-- end panel -->
+	</div><!-- end card -->
 
 </form>
 
+<!-- =================================================== -->
+<form name="form_test" action="https://romanlaptev.herokuapp.com/projects/db_admin/" method='post' class="">
+
+	<div class="card">
+		<div class="card-header bg-warning">
+			<h1 class="card-title bg-danger text-white">get list content</h1>
+			<h6 class="card-subtitle">https://romanlaptev.herokuapp.com/projects/db_admin/</h6>
+		</div>
+		<div class="card-body">
+			
+			<div class="form-group">
+<input type='submit' value='send request'>
+			</div>
+			<div class="form-group">
+	<label>Request data (JSON-RPC 1.0)</label>
+	<textarea name="rpc_request" class="form-control" rows="5">
+{
+	"action": "content/rpc_list"
+}
+
+	</textarea>
+			</div>
+	
+		</div>
+	</div><!-- end card -->
+
+</form>
 
 
 <pre>
