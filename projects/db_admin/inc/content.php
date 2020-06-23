@@ -353,7 +353,6 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 			//http://php.net/manual/ru/function.json-encode.php
 			$message = "<p>error, not support function <b>json_last_error()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.3.0</p>";
 			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
-header('Access-Control-Allow-Origin: *');
 			echo $jsonStr;
 			exit();
 		}
