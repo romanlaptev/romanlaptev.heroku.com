@@ -29,7 +29,7 @@
 </head>
 <body>
 		
-<div class="container" id="App">
+<div class="container">
 
 	<div class="card">
 		<div class="card-body navbar navbar-expand-sm">
@@ -54,11 +54,10 @@
 			<div class="card-body">
 	<a data-toggle="collapse" href="#collapse-panel-service" aria-expanded="true" class="close" title="close panel">&times;</a>
 
-				<ul class="list-inline">
-	<li><a href="#" id="btn-new" class="btn btn-primary" data-toggle="modal" data-target="#newModal">add new note</a></li>
-	<li><a href="#" id="btn-export" class="btn btn-info">export content</a></li>
-	<li><a href="#" id="btn-import" class="btn btn-warning">import content</a></li>
-				</ul>
+
+<a href="#" id="btn-new" class="btn btn-success" data-toggle="modal" data-target="#newModal">add new note</a>
+<a href="#" id="btn-export" class="btn btn-info">export content</a>
+<a href="#" id="btn-import" class="btn btn-warning">import content</a>
 <!--
 <a href="#clear_notes" class="btn btn-sm btn-danger">remove all notes</a>
 <a href="#remove_table" class="btn btn-sm btn-danger">refresh table</a>
@@ -73,212 +72,30 @@
 			</div>
 		</div>
 	</div><!-- end collapse-panel-service -->
-
 		
-	<div id="log-wrap" class="log-panel">
-<!--
-		<div class="progress">ajax load:
-			<div id="load-progress-bar" class="progress-bar hide"></div>
-		</div>
--->
-		<div id="log"></div>
-	</div>		
+	<div id="App">
 		
-	<div class="card">
-<!--
-			<div class="card-header">
-				<h4>list of notes:</h4>
+		<div class="log-panel panel">
+			<div class="panel-body">
+				<span class="pull-right">
+					<a id="btn-toggle-log" href="?q=toggle-log" title="Toggle log" class="btn btn-sm btn-light">-</a>
+					<a id="btn-clear-log" href="?q=clear-log" title="Clear log" class="btn btn-sm btn-dark">x</a>
+				</span>
+				<div id="log" class="panel-body"></div>
 			</div>
--->
-		<div class="card-body" id="messages">
-			
-<script id="tpl-node-list" type="text/template">
-<div class="row">
-	<div class="" id="note-{{id}}">
+		</div>
+		
 		<div class="card">
-			<div class="card-header bg-info">
-				<h6 class="title text-white">{{title}}</h6> 
-				<!--<a href="#edit_note-{{id}}" class="btn btn-sm btn-warning">edit</a>-->
-<div class="float-right">
-	<button class="btn btn-primary btn-sm btn-edit-note" data-toggle="modal" data-target="#editModal" data-id="{{id}}">edit note</button>
-	<a href="#delete_note-{{id}}" class="btn btn-sm btn-danger btn-delete-note">delete note</a>
-</div>
- <br><br>
- 
-			</div>
-			
-			<div class="card-footer">
-				<p class="text-muted">
-<b>created: </b><span class="date">{{created}}</span>
-<b>body_format: </b>{{body_format}}
-				</p>
-			</div>
-			
-			<div class="card-body body-value">{{body_value}}</div>
-			
-		</div><!-- /panel -->
-	</div>
-</div><!-- end row -->
-</script> 	
+			<div class="card-body" id="content-list"></div>
+		</div>
 		
-		</div>
-	</div>
+	</div><!-- end App -->
 
-<!-- ********************** newModal ************************** -->	
-	<div id="newModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-
-			<div class="modal-content">
-			
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">add new note</h4>
-				</div>
-				
-<form name="form_message" id="message-form" action="" method="POST" enctype="application/x-www-form-urlencoded">
-				<div class="modal-body">
-				
-					<div class="card">
-						<div class="card-body">
-							<div class="form-group">
-								<label id="name-label">*Name: </label>
-								<input type="text" class="form-control" name="author_name" value="anonymous">
-							</div>
-
-							<div class="form-group">
-								<label id="title-label">Title (subject): </label>
-								<input type="text" class="form-control" name="title" value="">
-							</div>
-
-							<div class="form-group">
-								<label id="text-message-label">*text message: </label>
-								<textarea id="notes-text" name="text_message" class="form-control" rows="10"></textarea>
-							</div>						
-	<p><small>
-	use <b>[code] unformatted text [/code]</b>,
-	<b>[url] url | text [/url]</b> for link adding, 
-	<b>[br]</b> for break line
-	</small>
-	</p>
-						</div>
-						
-						<div class="card-footer">
-							<button type="reset" class="btn btn-large btn-warning">reset form</button>
-							<button type="submit" class="btn btn-large btn-primary">save</button>
-						</div>
-					</div><!-- end panel-->
-					
-				</div><!-- end modal-body-->
-</form>
-				
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-				
-			</div><!-- end modal-content-->
-		</div>
-	</div><!-- end newModal -->
-
-<!-- ********************** editModal ************************** -->	
-	<div id="editModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">edit note</h4>
-				</div>
-				
-<form 
-name="form_message_edit" 
-id="message-edit-form" 
-action=""
-method="POST" 
-enctype="application/x-www-form-urlencoded">
-<!-- action="?action=edit_note"  -->
-				<div class="modal-body">
-					<div class="card">
-						<div class="card-body">
-							<input type="text" name="id" value="32" readonly>
-							<div class="form-group">
-								<label id="name-label">*Name: </label>
-								<input type="text" class="form-control test" name="author_name" value="">
-							</div>
-
-							<div class="form-group">
-								<label id="title-label">Title (subject): </label>
-								<input type="text" class="form-control test" name="title" value="">
-							</div>
-
-							<div class="form-group">
-								<label id="text-message-label">*text message: </label>
-								<textarea id="notes-text" name="text_message" class="form-control test" rows="10"></textarea>
-							</div>						
-	<p><small>
-	use <b>[code] unformatted text [/code]</b>,
-	<b>[url] url | text [/url]</b> for link adding, 
-	<b>[br]</b> for break line
-	</small>
-	</p>
-						</div>
-						<div id="form-edit-log"></div>
-						<div class="card-footer">
-							<!-- <button type="reset" class="btn btn-large btn-warning">reset form</button> -->
-							<button type="submit" class="btn btn-large btn-primary">save</button>
-						</div>
-					</div><!-- end panel-->
-				</div><!-- end modal-body-->
-</form>
-				
-				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-				
-			</div><!-- end modal-content-->
-		</div>
-	</div><!-- end editModal -->
-	
-<!-- ********************** importModal ************************** -->	
-	<div id="importModal" class="modal fade" role="dialog">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">&times;</button>
-					<h4 class="modal-title">upload XML and import notes to DB</h4>
-				</div>
-				
-<form name="form_import" id="import-form" action="api/notes_mysql.php" method="POST" enctype="multipart/form-data">
-				<div class="modal-body">
-	<input type="file" name="upload_file" title="Search for a file to add" class="btn-primary"><br>
-<!--
-	<input type="hidden" name="action" value="upload">
-<input type="file" name="upload_files[]" id="file-select" multiple>
-				upload_max_filesize = '.$upload_max_filesize.'
--->	
-					
-				</div><!-- end modal-body-->
-				
-				<div class="modal-footer">
-					<button type="submit" class="btn btn-primary">upload & import</button>
-					<button id="btn-import" class="btn btn-warning">import</button>
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				</div>
-</form>
-				
-			</div><!-- end modal-content-->
-		</div>
-	</div><!-- end importModal -->
-	
 </div><!-- end container -->
 
-<!--
-<div class="top">
-	<a title="scroll to top page" href="#top" class="">
-		<div class="arrow"></div>
-	</a>
-</div>
--->	
+
 <div class="">
-	<button id="btn-scroll-to-top" class="btn btn-sm btn-info scroll-to nolink" data-target="top">scroll to top</button>
+	<button id="btn-scroll-to-top" class="btn btn-sm btn-info scroll-to nolink" data-target="App">scroll to top</button>
 </div>
 
 <div id="wait-window" class="modal-dialog hide">
@@ -294,18 +111,51 @@ enctype="application/x-www-form-urlencoded">
 </div>
 <div id="overlay" class="hide"></div>
 
+
+
+<!-- ********************** TEMPLATES ************************** -->	
+
+<script id="tpl-node" type="text/template">
+	<div class="bookpage" id="page-{{id}}">
+			<div class="breadcrumb-custom">{{breadcrumbs}}</div>
+		
+			<div class="card">
+
+				<div class="card-header bg-primary">
+<h3 class="title text-white">{{title}}</h3> 
+<small class="date text-white">
+	created:<b>{{created}}</b>, changed:<b>{{changed}}</b>
+</small>
+<div class="float-right">
+	<button class="btn btn-light btn-sm btn-edit-note" data-toggle="modal" data-target="#editModal" data-id="{{id}}">edit note</button>
+	<a href="#delete_note-{{id}}" class="btn btn-sm btn-danger btn-delete-note">delete note</a>
+</div>
 <!--
-	<script src="editor/tinymce/js/tinymce/tinymce.min.js"></script>
-	<script>
-	tinymce.init({ 
-		selector:"#notes-text" 
-	});
-	</script>
+<b>body_format: </b>{{body_format}}
+-->
+				</div>
+				
+				<div class="card-body child-nodes">
+{{child_nodes}}
+				</div>
+					
+				<div class="card-body body-value">
+<pre>{{body_value}}</pre>
+				</div>
+
+			
+			</div><!-- end card -->
+	</div>
+</script>
 	
-	<script src="editor/ckeditor/ckeditor.js"></script>
-	<script>
-		CKEDITOR.replace( "notes-text" );
-	</script>
--->	
+
+<script id="tpl-page-list" type="text/template">
+	<ul>{{list}}</ul>
+</script>
+<script id="tpl-page-list-item" type="text/template">
+	<li><a href="?q=view-node&id={{id}}" class="">{{title}}</a></li>
+</script>
+		
+
 </body>
 </html>

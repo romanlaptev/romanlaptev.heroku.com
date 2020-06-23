@@ -7,40 +7,57 @@ console.log( webApp );
 	webApp.init();
 }//end load
 
-$(document).ready(function(){
-	$("input[type=file]").bootstrapFileInput();
-});//end ready	
 
 var _app = function ( opt ){
 //console.log(arguments);	
 	var _vars = {
-		
+		//"init_url" : "?q=load-xml",
+		"init_url" : "?q=send_rpc_request&action=get_content_list",
 		"requestUrl" : "data/export.xml",
+		//"requestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
+		//"serverUrl" : "/projects/romanlaptev.heroku.com/projects/db_admin/",
+//		"serverUrl" : "https://romanlaptev-cors.herokuapp.com/\
+//https://romanlaptev.herokuapp.com/projects/db_admin/",
+
+		"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
 		
-		"exportUrl" : "",
-		
-		"messages" : getById("messages"),
 		"templates" : {
-			"tpl-node-list" : _getTpl("tpl-node-list")
+			"tpl-node" : _getTpl("tpl-node"),
+			"tpl-page-list" : _getTpl("tpl-page-list"),
+			"tpl-page-list-item" : _getTpl("tpl-page-list-item"),
+			"tpl-booklist" : "<h3>Book list</h3><ul>{{list}}</ul>"
 		},
-		"messagesList" : getById("messages"),		
-		"controlPanel" : getById("control-btn"),
-		"hideControlPanel" : false,
-		"$num_notes" : getById("num-notes")
+		"appContainer" : getById("App"),
+		"contentList" : getById("content-list"),
+		"log" :  getById("log"),
+		"btnToggle" : getById("btn-toggle-log"),
+		"$num_notes" : getById("num-notes"),
+		"breadcrumbs": {}
 	};
-	
 
 
 	var _init = function(){
 //console.log("init _notes");
 		defineEvents();
-		
 		//_vars["requestUrl"] = "api/notes_mysql.php";
 		//_vars["exportUrl"] = "api/notes_mysql.php?action=export_notes";
 		//loadNotes();
 		
-		loadNotesXml();
-	};
+		var parseUrl = window.location.search; 
+		if( parseUrl.length > 0 ){
+			_vars["GET"] = parseGetParams(); 
+			_urlManager();
+		} else {
+			if( _vars["init_url"] ){
+					//parseUrl = _vars["init_url"].substring(2);
+					parseUrl = _vars["init_url"];
+console.log(parseUrl);					
+			}
+			_vars["GET"] = parseGetParams( parseUrl ); 
+			_urlManager();
+		}
+		
+	};//end _init()
 
 	function _getTpl( id ){
 		var tpl = getById(id);
@@ -50,1026 +67,519 @@ var _app = function ( opt ){
 	
 
 	function defineEvents(){
-//console.log( _vars.messagesList );
-
-		//ADD NEW NOTE
-		document.forms["form_message"].onsubmit = function(e){  
-//console.log("Submit form", e, this);
-			if( _vars["supportPHP"] ){
-				checkForm({
-					"form" : this, 
-					"modalWindowId" : "#newModal",
-					"action" : "save_note"
-				});
-			} else {
-				//_error("errorPHP");
-			}
-			
-			if( _vars["supportASPX"] ){
-				checkForm({
-					"form" : this, 
-					"modalWindowId" : "#newModal",
-					"action" : "save_note"
-				});
-			} else {
-				//_error("errorASPX");
-			}
-			
+//console.log( _vars.contentList );
+		if( !_vars.appContainer ){
+_vars["logMsg"] = "error, 'appContainer' undefined, _defineEvents()";
+_alert(_vars["logMsg"], "error");
 			return false;
-		};//end event
+		}
 
-		//EDIT
-		$('#editModal').on('show.bs.modal', function (e) {
-			var btn = $(e.relatedTarget);
-			
-			var note_id = btn.data("id");
-			$("#message-edit-form input[name=id]").val( note_id );
-			
-			var title = $("#note-" + note_id + " .title").text();
-			$("#message-edit-form input[name=title]").val( title );
-			
-			var author = $("#note-" + note_id + " .author").text();
-			$("#message-edit-form input[name=author_name]").val( author );
-			
-			var $text_message = $("#note-" + note_id + " .text-message");
-			
-			//change out-code-url 
-			var _copyHTML = $text_message.html();
-//console.log(_copyHTML);			
-			$text_message.children(".out-code-url").each(function(index, value){
-//console.log( index + ": " + value );
-//console.log( this );
-//console.log( $(this) );
-				var href = $(this).attr("href");
-				var text = $(this).text();
-				var code = "[url]" +href+" | "+text+ "[/url]";
-//console.log( code );
-				$(this)[0].outerHTML = code;
-			});
-
-			var text_message = $text_message.html();
-			//var text_message = $text_message.text();
-//console.log(text_message, text_message.length );
-
-//filter
-			text_message = text_message
-.replace(/<!-- \[br\] --><br>/g, "[br]")
-.replace(/<pre><!-- \[code\] -->/g, "[code]")
-.replace(/<!-- \[\/code\] --><\/pre>/g, "[/code]")
-.replace(/\&amp;/g, "&")
-.replace(/\&lt;/g, "<")
-.replace(/\&gt;/g, ">");
-			$("#message-edit-form textarea[name=text_message]").val( text_message.trim() );
-			
-			$text_message.html( _copyHTML );
-		});//end event
-		
-		$("#message-edit-form").on("submit", function(){
-			//var error = false;
-			// $("#message-edit-form .test").each(function(){
-				// if ( $.trim( $(this).val() ).length === 0) {
-					// error = true;
-					// $(this).addClass("alert-danger");
-				// }
-			// });
-
-			// if (!error){
-				// sendForm( formValues );
-				// $("#editModal").modal("hide");
-			// } else{
-				// //e.preventDefault();
-	// var msg = "<p>error in form..</p>";
-	// _log("<div class='alert alert-warning'>" + msg + "</div>");
-			// }	
-			if( _vars["supportPHP"] ){
-				checkForm({
-					"form" : this, 
-					"modalWindowId" : "#editModal",
-					"action" : "edit_note"
-				});
-			} else {
-				
-				if( _vars["supportASPX"] ){
-					if( _vars["supportMSSQL"] ){
-						checkForm({
-							"form" : this, 
-							"modalWindowId" : "#editModal",
-							"action" : "edit_note"
-						});
-					}
-				}
-
-			}
-			
-			return false;
-		});//end event
-		
-		
-		//UPLOAD
-		document.forms["form_import"].onsubmit = function(e) {
-			e.preventDefault();
-			if( _vars["supportPHP"] ){
-				_upload( document.forms["form_import"] );
-			} else {
-				//_error("errorPHP");
-			}
-			if( _vars["supportASPX"] ){
-				_upload( document.forms["form_import"] );
-			}
-		};//end event
-/*
-    $("form[name='form_import']").submit(function(e) {
-        var formData = new FormData($(this)[0]);
-
-        $.ajax({
-            url: _vars["requestUrl"],
-            type: "POST",
-            data: formData,
-            async: false,
-            success: function (msg) {
-                alert(msg);
-            },
-            error: function(msg) {
-                alert('Ошибка!');
-            },
-            cache: false,
-            contentType: false,
-            processData: false
-        });
-        e.preventDefault();
-    });
-*/
-		//DELETE NOTE
-		if( _vars.messagesList ){
-			_vars.messagesList.onclick = function(event){
-				event = event || window.event;
-				var target = event.target || event.srcElement;
+		_vars.appContainer.onclick = function(event){
+			event = event || window.event;
+			var target = event.target || event.srcElement;
 //console.log( event );
 // //console.log( this );//page-container
-// //console.log( target.tagName );
+//console.log( target.tagName );
 // //console.log( event.eventPhase );
 // //console.log( "preventDefault: " + event.preventDefault );
-				// //event.stopPropagation ? event.stopPropagation() : (event.cancelBubble=true);
-				// //event.preventDefault ? event.preventDefault() : (event.returnValue = false);				
-				
-				if( target.tagName === "A"){
-					if ( target.href.indexOf("#") !== -1){
-						
-						if (event.preventDefault) { 
-							event.preventDefault();
-						} else {
-							event.returnValue = false;				
-						}
-
-							var search = target.href.split("#"); 
-							var parseStr = search[1]; 
-//console.log( search, parseStr );
-							if( parseStr.length > 0 ){
-								if( parseStr.indexOf("delete_note") !== -1){
-										var p = parseStr.split("-");
-										serviceAction({
-											"action" : p[0],
-											"id": p[1]
-										}, 
-										function(){
-											loadNotes();
-										});
-								}
-							} else {
-		// console.log( "Warn! error parse url in " + target.href );
-							}
+			// //event.stopPropagation ? event.stopPropagation() : (event.cancelBubble=true);
+			// //event.preventDefault ? event.preventDefault() : (event.returnValue = false);				
+			
+			if( target.tagName === "A"){
+				//if ( target.href.indexOf("#") !== -1){
+					if (event.preventDefault) { 
+						event.preventDefault();
+					} else {
+						event.returnValue = false;				
 					}
-				}
-				
-			}//end event
-		}
-		
-		//CLEAR LOG
-		var btn_clear_log = getById("clear-log");
-		if( btn_clear_log ){
-			btn_clear_log.onclick = function(e){
-				var log = getById("log");
-				log.innerHTML = "";
-				return false;
-			}
-		}
-
-		//REMOVE ALL NOTES, REFRESH TABLES
-		if( _vars.controlPanel ){
-			_vars.controlPanel.onclick = function(event){
-				event = event || window.event;
-				var target = event.target || event.srcElement;
-//console.log( event );
-				if( target.tagName === "A"){
-					if ( target.href.indexOf("#") !== -1){
-						if (event.preventDefault) { 
-							event.preventDefault();
-						} else {
-							event.returnValue = false;				
-						}
-
-							var search = target.href.split("#"); 
-							var parseStr = search[1]; 
-//console.log( search, parseStr );
-							if( parseStr.length > 0 ){
-									var p = parseStr.split("-");
-//console.log( p );
-									serviceAction({
-										"action" : p[0],
-										"id": p[1]
-									}, 
-									function(){
-										loadNotes();
-									});
-									
-							} else {
-		// console.log( "Warn! error parse url in " + target.href );
-							}
-					}
-				}
-
-			}//end event
-		}
-		
-		//IMPORT
-		var btn_import = getById("btn-import");
-		if( btn_import ){
-			btn_import.onclick = function(event){
-				event = event || window.event;
-				var target = event.target || event.srcElement;
-//console.log( event );
-				if (event.preventDefault) { 
-					event.preventDefault();
-				} else {
-					event.returnValue = false;				
-				}
-				serviceAction({"action" : "import_notes"}, function(){
-					loadNotes();
-					$("#importModal").modal("hide");
-				});
-				
-			}//end event
-		}
-		
-		//EXPORT
-		var btn_export = getById("btn-export");
-		_vars["$btn_export"] = btn_export;//copy to module global vars 
-		
-		if( btn_export ){
-			btn_export.onclick = function(event){
-				event = event || window.event;
-				var target = event.target || event.srcElement;
-//console.log( event );
-				if (event.preventDefault) { 
-					event.preventDefault();
-				} else {
-					event.returnValue = false;				
-				}
-				
-				if( _vars["$num_notes"].innerHTML === "0"){
-					return;
-				}
-
-				if( _vars["supportPHP"]){
-					var url= _vars["exportUrl"];
-					window.location.assign(url);
-				}
-				
-				//if( _vars["supportASPX"] ){
-					if( _vars["supportMSSQL"] ){
-						var url= _vars["exportUrl"];
-						window.location.assign(url);
-					}
+					_vars["GET"] = parseGetParams( target.href ); 
+					_urlManager();
 				//}
-
-			}//end event
-		}
+			}
+			
+		}//end event
 		
 	}//end defineEvents()
-	
-	function _upload( form ){
-			if( window.FileList ){
-				
-				//var fileSelect = getById("file-select");
-				//if( fileSelect ){
-					//var formData = _getUploadFiles({
-						//"fileSelect" : fileSelect
-					//});
+
+
+	function _urlManager( target ){
+//console.log(target, _vars["GET"]);
+
+		switch( _vars["GET"]["q"] ) {
+
+			case "toggle-log":
+//console.log(webApp.vars["log"]..style.display);
+				if( _vars["log"].style.display==="none"){
+					_vars["log"].style.display="block";
+					_vars["btnToggle"].innerHTML="-";
+				} else {
+					_vars["log"].style.display="none";
+					_vars["btnToggle"].innerHTML="+";
+				}
+			break;
+		
+			case "clear-log":
+				_vars["log"].innerHTML="";
+			break;
+						
+			case "load-xml":
+				loadXml();
+			break;
+			
+			case "book-list"://output content hierarchy
+			
+				_vars["breadcrumbs"] = {"top":"book list"}//?q=book-list
+			
+				//form book list (parent_id=0)
+				var bookList = _getPageList({
+					"parent_id" : "0"
+				});
+//console.log(bookList);
+				var html = _formPageList({
+					"pages" : bookList,
+					"html": _vars["templates"]["tpl-booklist"]
+				});
+				_vars["contentList"].innerHTML = html;
+			break;
+
+			case "view-node"://output single content node with child pages links
+				var nodeObj = _getNode({
+					"id" : _vars["GET"]["id"]
+				});
+//console.log(nodeObj);
+				if( nodeObj ){
 					
-					//check file type
-					var files = form.upload_file.files;
-//console.log( files );
-					var file = files[0];
-					if ( file.type !== "text/xml") {
-var msg = "<p>Skip file, incorrect type! " + file.name +",  " +file.type +"</p>";
-_log("<div class='alert alert-warning'>" + msg + "</div>");
-						$("#importModal").modal("hide");
-						return false;
+					var html = _formNode({"node" : nodeObj});
+					_vars["contentList"].innerHTML = html;
+					
+				} else {
+_vars["logMsg"] = "Not find node, nid:" + _vars["GET"]["nid"];
+_alert(_vars["logMsg"], "error");
+console.log( _vars["logMsg"] );
+				}
+				
+			break;
+
+			case "send_rpc_request":
+				sendRPC({
+					"action" : "get_content_list",
+					"postFunc" : function(){
+console.log("-- end rpc_request");						
 					}
+				});
+			break;
+		
+			//case "delete-note":
+				//serviceAction({
+						//"action" : _vars["GET"]["q"],
+						//"id": _vars["GET"]["id"]
+					//},
+					//function(){
+						//loadNotes();
+					//});
+			//break;
+			
+			default:
+console.log("function _urlManager(),  GET query string: ", _vars["GET"]);			
+			break;
+		}//end switch
+		
+	}//end _urlManager()
+
+
+	function loadXml(){
+
+		_vars["contentList"].innerHTML = "";
+		
+		runAjax( {
+			"requestMethod" : "GET", 
+			"url" : _vars["requestUrl"], 
+			
+			"onProgress" : function( e ){
+				var percentComplete = 0;
+				if(e.lengthComputable) {
+					percentComplete = Math.ceil(e.loaded / e.total * 100);
+				}
+console.log( "Loaded " + e.loaded + " bytes of total " + e.total, e.lengthComputable, percentComplete+"%" );
+				var loadProgressBar = getById("load-progress-bar");
+				if( loadProgressBar ){
+					//loadProgress.value = percentComplete;
+					loadProgressBar.className = "progress-bar";
+					loadProgressBar.style.width = percentComplete+"%";
+					loadProgressBar.innerHTML = percentComplete+"%";
+				}
+			},//end callback function
+			
+			"onError" : function( xhr ){
+//console.log( "onError ", xhr);
+_vars["logMsg"] = "error, not load " + _vars["requestUrl"]
+_log("<div class='alert alert-danger'>" + _vars["logMsg"] + "</div>");
+console.log( _vars["logMsg"] );
+			},//end callback function
+			
+			"onLoadEnd" : function( headers ){
+//console.log( "onLoadEnd ", headers);
+				if( _vars["waitWindow"] ){
+					_vars["waitWindow"].style.display="none";
+				}
+			},//end callback function
+			
+			"callback": function( data, runtime ){
+//console.log(data.length, typeof data, data );
+_vars["logMsg"] = "load " + _vars["requestUrl"]  +", runtime: "+ runtime +" sec";
+_alert(_vars["logMsg"], "info");
+console.log( _vars["logMsg"] );
+// //console.log( "_postFunc(), " + typeof data );
+// //console.log( data );
+// //for( var key in data){
+// //console.log(key +" : "+data[key]);
+// //}
+
+				if( !data ){
+_vars["logMsg"] = "error, no XML data in " + _vars["requestUrl"] ;
+_alert(_vars["logMsg"], "error");
+console.log( _vars["logMsg"] );
+					return false;
+				}
 					
-					//var formData = new FormData();
-					var formData = new FormData( form );
-					//formData.append("upload_file", form.upload_file);
-					//if( formData ){
-						var p = {
-							"url" : _vars["requestUrl"],
-							"requestMethod" : form.getAttribute("method"),
-							"enctype" : form.getAttribute("enctype") ? form.getAttribute("enctype") : null,
-							"params" : { "action" : "upload" },
-							"formData" : formData,
-							"callback": _postUpload
-						};
-						runAjax( p );
-/*						
-//test
-var xhr = new XMLHttpRequest();
-xhr.open('POST', _vars["requestUrl"], true);
-// xhr.setRequestHeader("Cache-Control", "no-cache");
-// xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
-// xhr.setRequestHeader("Content-Type", "multipart/form-data");
-xhr.send(formData);
-//----------						
-*/
-					//}
-				//}
-				
-			} else {
-var msg = "<p>Your browser does not support File API</p>";
-_log("<div class='alert alert-warning'>" + msg + "</div>");
-			}
-			
-			
-		/*	
-		//http://blog.teamtreehouse.com/uploading-files-ajax
-		//https://developer.mozilla.org/en-US/docs/Web/API/FormData/get
-			function _getUploadFiles(opt){
-				var p = {
-					"fileSelect" : null
+				var xmlObj = _convertXmlToObj(data);
+				_vars["contentObj"] = {
+					"content" : xmlObj["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"],
+					"content_links" : xmlObj["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content_links"]
 				};
 				
-				//extend options object
-				for(var key in opt ){
-					p[key] = opt[key];
-				}	
-		//console.log( p );
-
-				if( !p["fileSelect"]){
-		var msg = "<p>No selected files</p>";
-		_log("<div class='alert alert-warning'>" + msg + "</div>");
-					return false;
-				}
-				// Get the selected files from the input.
-				var files = p["fileSelect"].files;
-		console.log( files );
-
-				// Create a new FormData object.
-				var formData = new FormData();
-				
-				// Loop through each of the selected files.
-				for (var n = 0; n < files.length; n++) {
-					var file = files[n];
-					
-					// Check the file type.
-					//if (!file.type.match('image.*')) {
-					if ( file.type !== "text/xml") {
-		//console.log("Skip file, incorrect type!", file.name, file.type);
-						//continue;
-					}
-
-					// Add the file to the request.
-					formData.append("upload_files[]", file, file.name);
+				//convert content_links array to objects array {content_id : parent_id}
+				var content_links = {};
+				for( var n = 0; n < _vars["contentObj"]["content_links"][0]["childNodes"]["item"].length; n++){
+					var item = _vars["contentObj"]["content_links"][0]["childNodes"]["item"][n]["attributes"];
+					var key = item["content_id"];
+					var value = item["parent_id"];
+					content_links[key] = value;
 				}//next
-		// for( var key in formData){
-		// console.log(key, formData[key]);
-		// }		
-
-		// // Display the key/value pairs
-		// for (var pair of formData.entries()) {
-			// console.log(pair[0]+ ', ' + pair[1]); 
-		// }
-
-		// Display the keys
-		// for (var key of formData.keys()) {
-		   // console.log(key); 
-		// }
-				var test = formData.getAll("upload_files[]");
-		//console.log( test.length ); 
-				if( test.length > 0 ){
-					//formData.append("action", "upload");
-					return formData;
-				} else {
-					return false;
-				}
+				_vars["contentObj"]["content_links"] = content_links;
 				
-			}//end _getUploadFiles()
-		*/
-		function _postUpload( data ){
-//console.log(arguments);
-			parseLog({
-				"jsonLog" : data 
-			});
-			$("#importModal").modal("hide");
-			loadNotes();
-		}//end _postUpload()
-			
-	}//end _upload()
-	
-	
-	function checkForm(opt){
-		var p = {
-			"form" : null,
-			"modalWindowId" : "", 
-			"action" : ""
-		};
-//console.log(form);
-	//for(var key in form){
-	//console.log(key, form[key]);
-	//}
-	//	for( var n = 0; n < form.elements.length; n++){
-	//console.log(form.elements[n]);
-	//	}//next
-	
-		//extend options object
-		for(var key in opt ){
-			p[key] = opt[key];
-		}	
-//console.log( p );
-
-		var form = p["form"];
-		var formValues = {
-			"action" : p["action"],
-			"requestMethod" : form.getAttribute("method"),
-			"enctype" : form.getAttribute("enctype") ? form.getAttribute("enctype") : null
-		};
-
-		var isValid = true;
-		var name = form.elements.author_name.value;
-	//console.log (name, name.length);
-		if(name.length === 0){
-			document.querySelector("#name-label").className="alert-danger";
-			form.elements.author_name.className = "form-control alert-danger";
-			isValid = false;
-		} else {
-			document.querySelector("#name-label").className="";
-			form.elements.author_name.className = "form-control";
-			formValues["authorName"] = name;
-		}
-		
-		var title = form.elements.title.value;
-		if( title.length > 0){
-			formValues["title"] = title;
-		}
-		
-		var text = form.elements.text_message.value;
-	//console.log (text, text.length);
-		if(text.length === 0){
-			document.querySelector("#text-message-label").className="alert-danger";
-			form.elements.text_message.className = "form-control alert-danger";
-			isValid = false;
-		} else {
-			document.querySelector("#text-message-label").className="";
-			form.elements.text_message.className = "form-control";
-//filter
-
-			text = text
-			//.replace(/'/g, "&#39;")
-			//.replace(/\n/g, "\\u000A")//replace end of line
-			//.replace(/\r/g, "\\r")//replace end of line (for correct JSON parsing)
-			//.replace(/\n/g, "\\n")//replace end of line (for correct JSON parsing)
-			
-			//remove old special symbols
-			.replace(/\&amp;/g, "&")
-			.replace(/\&lt;/g, "<")
-			.replace(/\&gt;/g, ">")
-			.replace(/\&quot;/g, "\"")
-			
-			//insert special symbols re-new
-			.replace(/&/g, "&amp;")
-			.replace(/"/g, "&quot;")
-			.replace(/\</g, "&lt;")
-			.replace(/\>/g, "&gt;");
-
-			formValues["textMessage"] = text;
-		}
-		
-		if( form.elements.id && form.elements.id.value.length > 0){
-			formValues["id"] = form.elements.id.value;
-		}
-		
-		if (isValid){
-			sendForm( formValues );
-			$( p["modalWindowId"] ).modal("hide");
-		} else{
-			//e.preventDefault();
-var msg = "<p>error in form..</p>";
-_log("<div class='alert alert-warning'>" + msg + "</div>");
-		}	
-		return false;
-		
-	}//end checkForm()	
-	
-	function sendForm( opt ){
-		var p = {
-			"id": null, 
-			"creation_date" : "",
-			"authorName" : "anonymous",
-			"title" : "no subject",
-			"textMessage" : "",
-			"action": "",
-			"url" : _vars["requestUrl"],
-			"requestMethod" : "GET",
-			"enctype" : null,
-			"callback": null
-		};
-			
-		//extend options object
-		for(var key in opt ){
-			p[key] = opt[key];
-		}
-//console.log( p );
-//return false;
-
-		//get creation date
-		var now = new Date();
-		var sYear = now.getFullYear();
-		var sMonth = now.getMonth();
-		var intMonth = parseInt( sMonth ) + 1;
-		var sDate = now.getDate();
-		var d = sYear + "-" + intMonth + "-" + sDate;
-		
-		var sHours = now.getHours();		
-		var sMin = now.getMinutes();		
-		var sSec = now.getSeconds();		
-		var tm = sHours + ":" + sMin + ":" + sSec;
-//console.log(d, tm);
-		
-		//var t = now.toTimeString();
-	//console.log(d, t);
-		p["creation_date"] = d +" "+ tm;
-		
-		//remove GMT (MSSQL error convert data)
-		//2017-9-5 10:27:47 GMT+0700
-		//var d = p["creation_date"].split("GMT");
-		//p["creation_date"] = d[0];
-		
-		var url = p["url"];
-		var params = {
-			"action" : p["action"],
-			"date" : p["creation_date"]
-		};
-		
-		// if(typeof FormData === "undefined"){
-// var msg = "<p>This browser not support object FormData! send (ajax) form data not possible... </p>";
-// _log("<div class='alert alert-error'>" + msg + "</div>");
-			// return false;
-		// }
-		var formData = {
-			"id" : p["id"],
-			"author_name" : p["authorName"],
-			"title" : p["title"],
-			"text_message" : p["textMessage"]
-		};
-// for(var key in form_message){
-// console.log( key, form_message[key]);	
-// }		
-//console.log( formData );	
-//return false;
-
-		runAjax( {
-			"requestMethod" : p["requestMethod"], 
-			"enctype" : p["enctype"],
-			"url" : url, 
-			"params" : params,
-			//"formData" : new FormData( form_message ),
-			"formData" : formData,
-			"callback": function( log ){
-				
-// var msg = "<p>"+log+"</p>";
-				// var _className = "alert-success";
-				// if( log.indexOf("error") !== -1){
-					// _className = "alert-danger";
-				// }
-// _log("<div class='alert " +_className+ "'>" + msg + "</div>");
-				// loadNotes();
-				parseLog({
-					"jsonLog" : log,
-					//"onSuccess" : function(){},
-					//"onError" : function( errorCode ){},
-					"callback" : function(){
-						loadNotes();		
-					}//end callback
-				});	
-				
-			}//end callback()
-		});
-
-	}//end sendForm
-
-
-	function loadNotes(){
-//console.log( _vars["templates"] );
-		_vars["messagesList"].innerHTML = "";
-//_log("<p>-- loadNotes(), clear #messagesList</p>");
-
-		//block overlay and wait window
-		// var overlay = getById("overlay");
-		// if( overlay ){
-			// overlay.className="modal-backdrop in";
-			// overlay.style.display="block";
-		// }
-		// var waitWindow = getById("wait-window");
-		// if( waitWindow ){
-			// waitWindow.className="modal-dialog";
-			// waitWindow.style.display="block";
-		// }
-		
-		var params = {
-			"action" : "get_notes"
-		};
-		runAjax( {
-			//"async" :  false,
-			"requestMethod" : "GET", 
-			"url" : _vars["requestUrl"], 
-			"params" : params,
-			"onError" : _onerror,
-			"callback": function( data ){
-//console.log(data.length, typeof data, data);				
-
-				// //hide block overlay and wait window
-				// if( overlay ){
-					// //overlay.className="";
-					// overlay.style.display="none";
-				// }
-				// if( waitWindow ){
-					// waitWindow.style.display="none";
-				// }
-				
-				if( data.length > 0){
-						try{
-							var jsonArr = JSON.parse( data, function(key, value) {
-//console.log( key, value );
-								return value;
-							});							
-//console.log( jsonArr, jsonArr.length, jsonArr[0]["error_code"] );
-							if( !jsonArr[0]["error_code"] ){
-								_drawNotes({
-									"data": jsonArr
-								});
-							} else {
-								parseLog({
-									"jsonLog" : data, 
-									"callback" : function(){
-//console.log( jsonArr, jsonArr.length, jsonArr[0]["error_code"] );
-										_vars["messagesList"].innerHTML = "<h2>no notes added....</h2>";
-										_vars["$num_notes"].innerHTML  = "0";//set number of notes
-										_vars["$btn_export"].className += " disabled";
-									}
-								});
-							}
-							
-						} catch(error) {
-var msg = "";
-msg += "<p>loadNotes(), error  JSON.parse server response data</p>";
-msg += "<p>" + error + "</p>";
-msg += "<p>data: " + data + "</p>";
-_log("<div class='alert alert-danger'>" + msg + "</div>");
-							//loadNotesXml();
-						}//end catch
-
-				} else {
-					_vars["messagesList"].innerHTML = "<h2>no notes added...</h2>";
-					_vars["$num_notes"].innerHTML  = "0";//set number of notes
-					_vars["$btn_export"].className += " disabled";
-				}
-				
-			}//end callback()
-		});
-
-		function _onerror( xhr ){
-			var all_headers = xhr.getAllResponseHeaders();
-console.log( all_headers );
-var msg = "";
-msg += "<p>error load notes, url: "+_vars["requestUrl"]+"</p>";
-_log("<div class='alert alert-danger'>" + msg + "</div>");
-			loadNotesXml();
-		}//end _onerror()
-		
-	}//end loadNotes()
-
-	function loadNotesXml(){
-		
-		//hide CONTROL PANEL
-		//$("#control-btn").children("div").hide();
-		//_vars["hideControlPanel"]=true;
-		
-		_vars["messagesList"].innerHTML = "";
-		runAjax( {
-			"requestMethod" : "GET", 
-			"url" : _vars["requestUrl"], 
-			"callback": function( data ){
-//console.log(data.length, typeof data, data);				
-				//xmlNotes = _parseXmlToObj(data);
-				xmlNodes = _convertXmlToObj(data);
-var _nodes=xmlNodes["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"][0]["childNodes"]["node"];				
-//console.log(_nodes);
-				if( _nodes.length > 0 ){
-					_drawNodes({ "data": _nodes });
-				} else {
-					_vars["messagesList"].innerHTML = "<h2>no notes added...</h2>";
-					_vars["$num_notes"].innerHTML  = "0";//set number of notes
-					_vars["$btn_export"].className += " disabled";
-				}
-				
-			},//end callback()
-			"onError" : _onerror
-		});
-		
-		function _onerror( xhr ){
-_vars["logMsg"] = "error, " +_vars["requestUrl"]+ " not found by server <b>" + window.location.host + "</b>";
-_alert( _vars["logMsg"], "error");
-		}//end _onerror()
-		
-	}//end loadNotesXml()
-
-	function _drawNodes( opt ){
-		var p = {
-			"templateID": "tpl-node-list",
-			"data" : null
-		};
-		//extend options object
-		for(var key in opt ){
-			p[key] = opt[key];
-		}
-//console.log(p);
-		
-		var templateID = p["templateID"];
-		
-		//set number of notes
-		_vars["$num_notes"].innerHTML  = p["data"].length;
-		_vars["$btn_export"].className = _vars["$btn_export"].className.replace(" disabled", "");
-//console.log( _vars["$btn_export"].className );
-		
-		var listHtml = "";
-		var itemHtml = "";
-		for( var n= 0; n < p["data"].length; n++){
-			
-			itemHtml = _vars["templates"][ templateID];
-
-			//convert xml object to js object
-			var items = {};
-			var xmlObj = p["data"][n];
-			for( var key in xmlObj["attributes"]){
-					items[key] = xmlObj["attributes"][key];
-			}//next
-			for( var key in xmlObj["childNodes"]){
-					items[key] = xmlObj["childNodes"][key][0]["text"];
+				//convert content xml object to js object
+				var content = {};
+				var num_nodes = 0;
+				for( var n = 0; n < _vars["contentObj"]["content"][0]["childNodes"]["node"].length; n++){
+					var xmlObj = _vars["contentObj"]["content"][0]["childNodes"]["node"][n];
 					
-					var items_attr = xmlObj["childNodes"][key][0]["attributes"];
-					for( var attr in items_attr){
-							items[attr] = items_attr[attr];
+					var nodeObj = {};
+					
+					for( var key in xmlObj["attributes"]){
+						nodeObj[key] = xmlObj["attributes"][key];
 					}//next
 					
-			}//next
-//console.log(items);
-
-			//filter
-			if( items["body_value"] ){
-				if( items["body_format"] === "plain_text"){
-					items["body_value"] = "<pre>"+items["body_value"]+"</pre>";
-				}
-			}
-
-			for( var key in items){
-//console.log(key, items[key]);
-				if( itemHtml.indexOf("{{"+key+"}}") !== -1 ){
-//console.log(key, items[key]);
-					var key2 = "{{"+key+"}}";
-					itemHtml = itemHtml.replace(new RegExp(key2, 'g'), items[key]);
-				}
-			}//next
-
-			listHtml += itemHtml;
-//console.log(listHtml);
-		}//next
-		
-		_vars["messages"].innerHTML = listHtml;
-
-		//hide EDIT, DELETE btn
-		if( _vars["hideControlPanel"] ){
-			$(".btn-delete-note, .btn-edit-note").hide();			
-		}
-		
-/*
-		function __filter(textMessage){
-//console.log(textMessage);
-			if( textMessage.length === 0){
-console.log("error in __filter()");
-				return false;
-			}
-			textMessage = textMessage
-//.replace(/&/g, "&amp;")
-//.replace(/"/g, "&quot;")
-.replace(/\</g, "&lt;")
-.replace(/\>/g, "&gt;")
-.replace(/\[code\]/g, "<pre><!-- [code] -->")
-.replace(/\[\/code\]/g, "<!-- [/code] --></pre>")
-.replace(/\[br\]/g, "<!-- [br] --><br>");
-
-			//var test = "[[http://www.google.com|Это ссылка на Google]]";
-			//var regexp = /\[\[(.*?)\]\]/g;
-			
-			//var textMessage = "[url]http://www.google.com|Это ссылка на Google[/url]";
-			var regexp = /\[url\](.*?)\[\/url\]/g;
-			
-			var links = [];
-			links["nowrap"] = [];
-			while( result = regexp.exec( textMessage )){
-			//console.log(result[1]);
-				links["nowrap"].push( result[1] );
-			}
-
-			if( links["nowrap"].length > 0){
-				links["html"] = [];
-				for(var n = 0; n < links["nowrap"].length; n++){
-					var link = links["nowrap"][n];
-					var _sp = link.split("|");
-			//console.log(link, _sp);
-					var _url = _sp[0];
-					var _text = _sp[1];
-					//links["html"].push("<a href='"+_url+"'>"+_text+"</a>");
-					links["html"].push("<a href='"+_url+"' class='out-code-url'>"+_text+"</a>");
+					for( var key in xmlObj["childNodes"]){
+						nodeObj[key] = xmlObj["childNodes"][key][0]["text"];
+							
+						var node_attr = xmlObj["childNodes"][key][0]["attributes"];
+						for( var attr in node_attr){
+							nodeObj[attr] = node_attr[attr];
+						}//next
+					}//next
+					
+					var id = nodeObj["id"];
+					content[id] = nodeObj;
+					
+					num_nodes++;
 				}//next
+				_vars["contentObj"]["content"] = content;
+delete data;
+delete xmlObj;
+				if( num_nodes > 0 ){//set number of notes
+					_vars["$num_notes"].innerHTML  = num_nodes;
+					
+					_vars["GET"] = parseGetParams("?q=book-list"); 
+					_urlManager();
+				} else {
+					_vars["logMsg"] = "Not find nodes";
+					_alert(_vars["logMsg"], "error");
+					console.log( _vars["logMsg"] );
+				}
+
 				
-				for(var n = 0; n < links["nowrap"].length; n++){
-					var linkText = links["nowrap"][n];
-					var linkHtml = links["html"][n];
-					//textMessage = textMessage.replace("[["+linkText+"]]", linkHtml);
-					textMessage = textMessage.replace("[url]"+linkText+"[/url]", linkHtml);
-				}//next
-			}
-//console.log(links);
-			
-			return textMessage.trim();
-		}//end __filter()
-*/		
-	}//end _drawNodes()
+			}//end callback()
+		});
 	
-	function serviceAction(opt, callback){
-		var p = {
-			"action" : ""//,
-			//"id" : null
-		};
-		
-		//extend parameters object
-		for(var key in opt ){
-			p[key] = opt[key];
-		}
+	}//end loadXml()
 
-		// if( p["action"] === "export_notes"){
-// console.log( window.location );
-			// window.location = window.location + "?action="+p["action"];
-			// return;
-		// }
-		if( _vars["supportPHP"] ){
-			runAjax( {
-				"requestMethod" : "GET", 
-				"url" : _vars["requestUrl"], 
-				"params" : p,
-				"callback": /*function( log ){
-	var msg = "<p>"+log+"</p>";
-	_log("<div class='alert alert-success'>" + msg + "</div>");
-					loadNotes();
-					if( typeof callback === "function"){
-						callback();
-					}
-				}//end callback()*/ _postFunc
-			});
-		} else {
-			//_error("errorPHP");
-		}
-		
-		if( _vars["supportASPX"] ){
-			runAjax( {
-				"requestMethod" : "GET", 
-				"url" : _vars["requestUrl"], 
-				"params" : p,
-				"callback": _postFunc
-			});
-		} else {
-			//_error("errorASPX");
-		}
-		
-		function _postFunc( data ){
-			parseLog({
-				"jsonLog" : data 
-			});
-			//loadNotes();
-			if( typeof callback === "function"){
-				callback();
-			}
-		}//end _postFunc()
-		
-	}//end seviceAction
-
-	function parseLog( opt ){
+	
+	function _getPageList( opt ){
 		var p = {
-			"jsonLog" : "",
-			"onError": null,
-			"onSuccess": null,
-			"callback" : null
+			"parent_id": null
 		};
 		
 		//extend options object
 		for(var key in opt ){
 			p[key] = opt[key];
-		}	
+		}
 //console.log( p );
-		
-		if( p["jsonLog"].length === 0){
-var msg = "Warning! empty log....";
-console.log(msg);
-			//p["jsonLog"] = "[{\"message\" : \""+msg+"\"}]";
-			if( typeof p["callback"] === "function"){
-				p["callback"]();
-			}
+
+		if( !p["parent_id"]){
 			return false;
 		}
 		
+		var nodes=_vars["contentObj"]["content"];
+		var content_links=_vars["contentObj"]["content_links"];
+		
+		var contentIdList = [];
+		for( var content_id in content_links){
+			var parent_id = content_links[content_id];
+			if ( parent_id === p["parent_id"] ){
+				contentIdList.push( content_id );
+			}
+		}//next
+//console.log( contentIdList );			
+		
+		var pageList = [];
+		for( var n = 0; n < contentIdList.length; n++){
+			var id = contentIdList[n];
+			var mainPage = nodes[id];
+			//mainPage["child_nodes"] = _getChildNodes( id );
+			pageList.push( mainPage );
+		}//next
+		
+		return pageList;
+	}//end _getPageList
+
+
+	function _getNode( opt ){
 		try{
-			var jsonArr = JSON.parse( p["jsonLog"], function(key, value) {
-	//console.log( key, value );
-				return value;
-			});							
-	//console.log( jsonArr, jsonArr.length);
-
-			// if( jsonArr.length === 1){
-				
-				// var jsonObj = jsonArr[0];
-	// //console.log( jsonObj, jsonObj["error_code"], jsonObj["error_code"].length);
-				// var msg = "<p>" +jsonObj["message"]+ "</p>";
-				
-				// if( jsonObj["error_code"] && jsonObj["error_code"].length > 0 ){
-					// msg += "<p>error code: " +jsonObj["error_code"]+ "</p>";
-					// _log("<div class='alert alert-danger'>" + msg + "</div>");
-				// } else {
-					// _log("<div class='alert alert-success'>" + msg + "</div>");
-					// loadNotes();		
-				// }
-				
-			// } else {
-	// console.log( jsonArr, jsonArr.length );
-			// }
-			
-			var errorCode = 0;
-			for( var n = 0; n < jsonArr.length; n++){
-				var jsonObj = jsonArr[n];
-//console.log( jsonObj );
-
-				var msg = "<p>" +jsonObj["message"]+ "</p>";
-				var _className = "alert-success";
-				
-				if( jsonObj["error_code"] && jsonObj["error_code"].length > 0 ){
-					if( jsonObj["error_code"] !== "0"){
-						msg += "<p>error code: " +jsonObj["error_code"]+ "</p>";
-						_className = "alert-danger";
-						//displayNotes = false;
-						errorCode = jsonObj["error_code"];
-					}
-				}
-				
-				_log("<div class='alert "+_className+" '>" + msg + "</div>");
-			}//next
-			
-//console.log(errorCode);			
-
-			if( errorCode !== 0){
-				if( typeof p["onError"] === "function"){
-					p["onError"]( errorCode );
-				}
-			} else {
-				if( typeof p["onSuccess"] === "function"){
-					p["onSuccess"]();
-				}
-			}
-			
-		} catch(error) {
-			var msg = "";
-			msg += "<p>error JSON.parse server response data</p>";
-			msg += "<p>" + error + "</p>";
-			msg += "<p>data: " + p["jsonLog"] + "</p>";
-console.log(msg);
-		//_log("<div class='alert alert-danger'>" + msg + "</div>");
-			if( typeof p["onError"] === "function"){
-				p["onError"]( "Unknown server error...." );
-			}
-		}//end catch
-
-		if( typeof p["callback"] === "function"){
-			p["callback"]();
+			var p = {
+				"id": null,
+				"nodes" : _vars["contentObj"]["content"],
+				"content_links" : _vars["contentObj"]["content_links"]
+			};
+		} catch(e){
+console.log(e);
+			_vars["logMsg"] = "error, _getNode()";
+			//_vars["logMsg"] .= ", " + e;
+			_alert(_vars["logMsg"], "error");
+			return false;
 		}
 		
-	}//end parseLog()
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+//console.log( p );
+
+		if( !p["id"]){
+_vars["logMsg"] = "error, empty node id, _getNode()";
+_alert(_vars["logMsg"], "error");
+			return false;
+		}
+		
+		var nodeObj = p.nodes[p.id];
+		nodeObj["child_nodes"] = _getChildNodes( p.id );
+		
+		return nodeObj;
+	}//end _getNode
 	
+	
+	function _getChildNodes( parent_id ){
+		//var childNodes = [];
+		var childNodes = _getPageList({
+			"parent_id" : parent_id,
+		});
+		return childNodes;
+	}//end _getChildNodes()
+
+
+	function _formPageList(opt){
+		var p = {
+			"pages": [],
+			"html": _vars["templates"]["tpl-page-list"],
+			"itemHtml": _vars["templates"]["tpl-page-list-item"]
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+//console.log( p );
+
+		if( p["pages"].length === 0){
+_vars["logMsg"] = "error, empty pages list, _drawPageList()";
+_alert(_vars["logMsg"], "error");
+			return false;
+		}
+		
+		var listHtml = "";
+		for( var n = 0; n < p["pages"].length; n++){
+			var itemHtml = p["itemHtml"];
+			var item = p["pages"][n];
+			for( var key in item ){
+				var key2 = "{{"+key+"}}";
+				if( itemHtml.indexOf( key2) !== -1 ){
+//console.log(key, item[key]);
+					itemHtml = itemHtml.replace(new RegExp(key2, 'g'), item[key]);
+				}
+			}//next
+			listHtml += itemHtml;
+		}//next
+
+		html = p["html"].replace("{{list}}", listHtml);
+		return html;
+	}//end _formPageList()
+
+
+	function _formNode(opt){
+		var p = {
+			"node": false
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+//console.log( p );
+
+		if( !p["node"]){
+_vars["logMsg"] = "error, _drawNode()";
+_alert(_vars["logMsg"], "error");
+			return false;
+		}
+		var node = p.node;
+		
+		//form HTML
+		var html =_vars["templates"]["tpl-node"];
+
+//---------------------------------- add linked page, form link				
+//delete node["child_nodes"];
+
+		if( node["child_nodes"] ){
+			if( node["child_nodes"].length > 0){
+				var linkedHtml = _formPageList({
+					"pages" : node["child_nodes"]
+				});
+				html = html.replace("{{child_nodes}}", linkedHtml);
+			}
+		}
+
+//-------------------------------- convert timestamp to string Data		
+		if( node["created"] ){
+			if( node["created"].length > 0){
+				var createdString = _timeStampToDateStr({
+					timestamp : node["created"],
+					format : "yyyy-mm-dd hh:min" 
+				});
+				html = html.replace("{{created}}", createdString);
+//console.log(createdString);
+			}
+		}
+		if( node["changed"] ){
+			if( node["changed"].length > 0){
+				var changedString = _timeStampToDateStr({
+					timestamp : node["changed"],
+					format : "yyyy-mm-dd hh:min" 
+				});
+				html = html.replace("{{changed}}", changedString);
+			}
+		}
+		
+//------------------------------- insert data into template
+		for( var key in node){
+//console.log(key, node[key]);
+			var key2 = "{{"+key+"}}";
+			if( html.indexOf(key2) !== -1 ){
+//console.log(key, node[key]);
+				if( node[key] ){
+					html = html.replace(new RegExp(key2, 'g'), node[key]);
+				} else {
+_vars["logMsg"] = "warning, undefined key "+key+", title: <b>"+node["title"]+"</b>,_drawNode()";
+_alert(_vars["logMsg"], "warning");
+					html = html.replace(new RegExp(key2, 'g'), "");
+				}
+			}
+		}//next
+		
+		
+//-------------------------------- form breadcrumbs
+		//add container link to breadcrumbs
+		_vars["breadcrumbs"][ "key_" + node.id ] = node["title"];
+//console.log("add breadcrumb item: ", node.id);
+		//form breadcrumbs line
+		var breadcrumbs = "";
+		var clear = false;
+		for( var item in _vars["breadcrumbs"] ){
+
+			if( item === "top"){
+				var itemTitle = _vars["breadcrumbs"][item];
+				breadcrumbs = "<a href='?q=book-list' class='btn'>" + itemTitle + "</a> > ";
+				continue;
+			}
+			
+			var itemID = item.replace("key_", "");
+			
+			if( clear ){//clear unuseful tail breadrumbs
+				delete _vars["breadcrumbs"][item];
+			} else {
+				var itemTitle = _vars["breadcrumbs"][item];
+				if( itemID !== node.id ){
+					breadcrumbs += "<a href='?q=view-node&id="+itemID+"' class=''>" + itemTitle + "</a> > ";
+				} else {
+					breadcrumbs += "<span class='active-item'>" + itemTitle + "</span>";
+				}
+			}
+//console.log( itemID, node.id, itemID === node.id );
+//console.log( typeof itemID, typeof node.id );
+			if( itemID === node.id ){//detect unuseful tail breadrumbs
+				clear = true;
+			}
+			
+		}//next
+//console.log( breadcrumbs );
+
+		html = html.replace("{{breadcrumbs}}", breadcrumbs);
+//console.log(html);
+		return html;
+	}//end _formNode()
+
+
+	function sendRPC( opt ){
+
+		var p = {
+			"action": "get_content_list",
+			"url" : _vars["serverUrl"],
+			"postFunc": null
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+//console.log( p );
+
+		//if( !p["parent_id"]){
+			//return false;
+		//}
+		var url = p.url + "?q=content/rpc_list";
+		
+		$.getJSON(  url, function(data){
+	console.log(arguments);
+
+			if( p.postFunc === "function"){
+				p.postFunc();
+			}
+		})
+		.done(function () {
+console.log("$.getJSON, Done...");
+		})
+		.fail(function (xhr, textStatus) {
+_vars["logMsg"] = "$.getJSON, Fail...";
+_alert( _vars["logMsg"], "error");
+console.log( _vars["logMsg"], arguments );
+
+			if( typeof p.postFunc === "function"){
+				p.postFunc();
+			}
+			
+		});
+
+	}//end sendRPC()
+
 	
 	// public interfaces
 	return{

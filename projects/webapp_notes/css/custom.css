@@ -9,13 +9,51 @@ border-radius: 5px;
 }
 
 
-#log .alert {
-margin-bottom: 0;
-padding: 10px;
+/* LOG panel */
+.log-panel {
+	margin-bottom: 0;
+	margin-top: 5px;
+	background-color: #b0c4de;
+	position: fixed;
+	bottom: 0;
+	right:0;
+	z-index: 999;
+	opacity: 0.9;
+	border-radius: 4px;
 }
+
+.log-panel .panel-body{
+	padding: 5px;
+}
+
+.log-panel span a{
+text-decoration:none;
+outline: none;
+}
+
+#log{
+/*	
+	height: 400px;
+	overflow-y: auto;	
+*/	
+}
+
+
 #log p{
 margin: 0;
 }
+
+.alert {
+	margin-bottom: 3px !important;
+	padding: 10px !important;
+}
+.alert-warning {
+	color: #000;
+	background-color: #ffb515;
+	/*border-color: #8a6d3b;*/
+	border-color: #ffb515;
+}
+
 
 
 #btn-scroll-to-top {
@@ -26,47 +64,32 @@ margin: 0;
 	left: 50%;
 	margin-left: -40px;	
 }
-/*
-@media screen and (max-width:359px){ 
-	#btn-scroll-to-top {
-		left: 39%;
-	}
-}*/
 
-#control-btn .btn {
-  margin-top: 5px;
-}
 
-#wait-window.modal-dialog {
-background-color: rgb(200, 200, 250);
-border-radius: 10px;
-left: 50%;
-margin-left: -290px;
-padding: 10px;
-position: fixed;
-top: 25% !important;
-z-index: 1042;
+.breadcrumb-custom {
+	/*background-color: #b1d0ef !important;*/
+	/*background-color: inherit;*/
 }
-#wait-window h1 {
-color: #000;
-/*font-size: 400%;*/
+.breadcrumb-custom .btn {
+	background-color: #fff;
+	border: 1px solid #337ab7;
+	margin: 5px;
+	padding: 5px;	
+	color: #000;
+}
+.breadcrumb-custom .btn:hover {
+	background-color: #337ab7;
+	color: #fff;
 }
 
-#wait-window .loader {
-border: 16px solid #f3f3f3; /* Light grey */
-border-top: 16px solid #3498db; /* Blue */
-border-radius: 50%;
-width: 120px;
-height: 120px;
-margin: auto;
-animation: spin 2s linear infinite;
-}
-#wait-window .loader2 {
-border-bottom: 16px solid #3498db;
-border-top: 16px solid #3498db;
+.breadcrumb-custom .active-item {
+	border-bottom: 1px solid #0000ff;
+	padding:5px;
+	font-weight:bold;
 }
 
-@keyframes spin {
-0% { transform: rotate(0deg); }
-100% { transform: rotate(360deg); }
+
+.bookpage pre {
+	background-color: #e6eef0;
+	padding:10px;
 }
