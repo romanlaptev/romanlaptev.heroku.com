@@ -12,14 +12,17 @@ var _app = function ( opt ){
 //console.log(arguments);	
 	var _vars = {
 		//"init_url" : "?q=load-xml",
-		"init_url" : "?q=send_rpc_request&action=get_content_list",
-		"requestUrl" : "data/export.xml",
-		//"requestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
-		//"serverUrl" : "/projects/romanlaptev.heroku.com/projects/db_admin/",
+		//"init_url" : "?q=send_rpc_request&action=get_content_list",
+		//"init_url" : "?q=send_rpc_request&action=get_booklist",
+		"init_url" : "?q=book-list",
+
+		"localRequestUrl" : "data/export.xml",
+		//"localRequestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
+		
+		"serverUrl" : "/projects/romanlaptev.heroku.com/projects/db_admin/",
 //		"serverUrl" : "https://romanlaptev-cors.herokuapp.com/\
 //https://romanlaptev.herokuapp.com/projects/db_admin/",
-
-		"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
+		//"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
 		
 		"templates" : {
 			"tpl-node" : _getTpl("tpl-node"),
@@ -39,9 +42,6 @@ var _app = function ( opt ){
 	var _init = function(){
 //console.log("init _notes");
 		defineEvents();
-		//_vars["requestUrl"] = "api/notes_mysql.php";
-		//_vars["exportUrl"] = "api/notes_mysql.php?action=export_notes";
-		//loadNotes();
 		
 		var parseUrl = window.location.search; 
 		if( parseUrl.length > 0 ){
@@ -51,7 +51,7 @@ var _app = function ( opt ){
 			if( _vars["init_url"] ){
 					//parseUrl = _vars["init_url"].substring(2);
 					parseUrl = _vars["init_url"];
-console.log(parseUrl);					
+//console.log(parseUrl);					
 			}
 			_vars["GET"] = parseGetParams( parseUrl ); 
 			_urlManager();
@@ -129,46 +129,85 @@ _alert(_vars["logMsg"], "error");
 			case "book-list"://output content hierarchy
 			
 				_vars["breadcrumbs"] = {"top":"book list"}//?q=book-list
-			
-				//form book list (parent_id=0)
-				var bookList = _getPageList({
-					"parent_id" : "0"
-				});
-//console.log(bookList);
-				var html = _formPageList({
-					"pages" : bookList,
-					"html": _vars["templates"]["tpl-booklist"]
-				});
-				_vars["contentList"].innerHTML = html;
-			break;
-
-			case "view-node"://output single content node with child pages links
-				var nodeObj = _getNode({
-					"id" : _vars["GET"]["id"]
-				});
-//console.log(nodeObj);
-				if( nodeObj ){
-					
-					var html = _formNode({"node" : nodeObj});
+				
+				//get book list from local contentObj
+				if( _vars["contentObj"] ){
+					//form book list (parent_id=0)
+					var bookList = _getPageList({
+							"parent_id" : "0"
+					});
+				//console.log(bookList);
+					var html = _formPageList({
+						"pages" : bookList,
+						"html": _vars["templates"]["tpl-booklist"]
+					});
 					_vars["contentList"].innerHTML = html;
-					
-				} else {
-_vars["logMsg"] = "Not find node, nid:" + _vars["GET"]["nid"];
-_alert(_vars["logMsg"], "error");
-console.log( _vars["logMsg"] );
+				}
+				 
+				//get book list from server
+				if( !_vars["contentObj"] ){
+				//if( _vars["serverUrl"] ){
+					rpc_action = "get_booklist";
+					sendRPC({
+						"action" : rpc_action,
+						"postFunc" : function( resp ){
+	console.log("-- end rpc_request", resp );
+							resp["action"] = rpc_action;
+							parseServerResponse(resp);
+						}
+					});
 				}
 				
 			break;
 
+			case "view-node"://output single content node with child pages links
+			
+				//get node from local contentObj
+				if( _vars["contentObj"] ){
+					var nodeObj = _getNode({
+						"id" : _vars["GET"]["id"]
+					});
+	//console.log(nodeObj);
+					if( nodeObj ){
+						
+						var html = _formNode({"node" : nodeObj});
+						_vars["contentList"].innerHTML = html;
+						
+					} else {
+	_vars["logMsg"] = "Not find node, id:" + _vars["GET"]["id"];
+	_alert(_vars["logMsg"], "error");
+	console.log( _vars["logMsg"] );
+					}
+				}
+
+				//get node from server
+				if( !_vars["contentObj"] ){
+					rpc_action = "get_content_item";
+					sendRPC({
+						"action" : rpc_action,
+						"id" : _vars["GET"]["id"],
+						"postFunc" : function( resp ){
+	console.log("-- end rpc_request", resp );
+							resp["action"] = rpc_action;
+							resp["id"] = _vars["GET"]["id"];
+							parseServerResponse(resp);
+						}
+					});
+				}
+				
+			break;
+/*
 			case "send_rpc_request":
 				sendRPC({
-					"action" : "get_content_list",
-					"postFunc" : function(){
-console.log("-- end rpc_request");						
+					"action" : _vars["GET"]["action"],//"get_content_list",
+					"postFunc" : function( resp ){
+console.log("-- end rpc_request", resp );
+						resp["action"] = _vars["GET"]["action"];
+						parseServerResponse(resp);
 					}
 				});
 			break;
-		
+*/		
 			//case "delete-note":
 				//serviceAction({
 						//"action" : _vars["GET"]["q"],
@@ -189,11 +228,14 @@ console.log("function _urlManager(),  GET query string: ", _vars["GET"]);
 
 	function loadXml(){
 
+//if(_vars["contentObj"]){
+	//return;
+//}
 		_vars["contentList"].innerHTML = "";
 		
 		runAjax( {
 			"requestMethod" : "GET", 
-			"url" : _vars["requestUrl"], 
+			"url" : _vars["localRequestUrl"], 
 			
 			"onProgress" : function( e ){
 				var percentComplete = 0;
@@ -212,7 +254,7 @@ console.log( "Loaded " + e.loaded + " bytes of total " + e.total, e.lengthComput
 			
 			"onError" : function( xhr ){
 //console.log( "onError ", xhr);
-_vars["logMsg"] = "error, not load " + _vars["requestUrl"]
+_vars["logMsg"] = "error, not load " + _vars["localRequestUrl"]
 _log("<div class='alert alert-danger'>" + _vars["logMsg"] + "</div>");
 console.log( _vars["logMsg"] );
 			},//end callback function
@@ -226,7 +268,7 @@ console.log( _vars["logMsg"] );
 			
 			"callback": function( data, runtime ){
 //console.log(data.length, typeof data, data );
-_vars["logMsg"] = "load " + _vars["requestUrl"]  +", runtime: "+ runtime +" sec";
+_vars["logMsg"] = "load " + _vars["localRequestUrl"]  +", runtime: "+ runtime +" sec";
 _alert(_vars["logMsg"], "info");
 console.log( _vars["logMsg"] );
 // //console.log( "_postFunc(), " + typeof data );
@@ -236,7 +278,7 @@ console.log( _vars["logMsg"] );
 // //}
 
 				if( !data ){
-_vars["logMsg"] = "error, no XML data in " + _vars["requestUrl"] ;
+_vars["logMsg"] = "error, no XML data in " + _vars["localRequestUrl"] ;
 _alert(_vars["logMsg"], "error");
 console.log( _vars["logMsg"] );
 					return false;
@@ -434,10 +476,10 @@ _alert(_vars["logMsg"], "error");
 		for(var key in opt ){
 			p[key] = opt[key];
 		}
-//console.log( p );
+console.log( p );
 
 		if( !p["node"]){
-_vars["logMsg"] = "error, _drawNode()";
+_vars["logMsg"] = "error, _formNode()";
 _alert(_vars["logMsg"], "error");
 			return false;
 		}
@@ -541,7 +583,7 @@ _alert(_vars["logMsg"], "warning");
 	function sendRPC( opt ){
 
 		var p = {
-			"action": "get_content_list",
+			"action": "",//"get_content_list",
 			"url" : _vars["serverUrl"],
 			"postFunc": null
 		};
@@ -555,30 +597,131 @@ _alert(_vars["logMsg"], "warning");
 		//if( !p["parent_id"]){
 			//return false;
 		//}
-		var url = p.url + "?q=content/rpc_list";
 		
-		$.getJSON(  url, function(data){
-	console.log(arguments);
-
-			if( p.postFunc === "function"){
-				p.postFunc();
+		var url = false;
+		switch( p.action ){
+			
+			case "get_content_list":
+				url = p.url + "?q=content/rpc_list";
+			break;
+			
+			case "get_booklist":
+				url = p.url + "?q=content/rpc_booklist";
+			break;
+			
+			case "get_content_item":
+				url = p.url + "?q=content/rpc_get_item&id="+p.id;
+			break;
+			
+			//default:
+			//break;
+		}//end switch
+		
+		if( !url ){
+_vars["logMsg"] = "error, sendRPC(), wrong RPC action: " + p.action;
+_alert(_vars["logMsg"], "error");
+console.log(_vars["logMsg"]);
+			return false;
+		}
+		
+		$.getJSON(  url, function( resp ){
+//console.log(resp);
+			if( typeof p.postFunc === "function"){
+				p.postFunc( resp );
 			}
 		})
 		.done(function () {
-console.log("$.getJSON, Done...");
+_vars["logMsg"] = "$.getJSON, done, url: " + url;
+_alert(_vars["logMsg"], "success");
+//console.log( arguments );
 		})
-		.fail(function (xhr, textStatus) {
-_vars["logMsg"] = "$.getJSON, Fail...";
+		.fail(function (xhr, textStatus, error) {
+_vars["logMsg"] = "$.getJSON, "+textStatus+", "+error+", url: " + url;
 _alert( _vars["logMsg"], "error");
-console.log( _vars["logMsg"], arguments );
-
+//console.log( _vars["logMsg"], arguments );
 			if( typeof p.postFunc === "function"){
-				p.postFunc();
+				var resp = {
+					"eventType": "error", 
+					"data": []
+				};
+				p.postFunc(resp);
 			}
 			
 		});
 
 	}//end sendRPC()
+
+
+	function parseServerResponse( opt ){
+		var p = {
+			"eventType": "error",
+			"data" : null,
+			"action" : false
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+//console.log( p );
+
+		_vars["logMsg"] = "end rpc_request, status: " + p["eventType"];
+		_alert(_vars["logMsg"], p["eventType"] );
+		
+		if( p["eventType"] === "error" ){
+console.log( p );
+_vars["logMsg"] = "server error, trying to load XML local file";
+_alert(_vars["logMsg"], "warning");
+			_vars["serverUrl"] = false;
+			_vars["init_url"] = "?q=load-xml";
+			_vars["GET"] = parseGetParams( _vars["init_url"] ); 
+			_urlManager();
+			return false;
+		}
+
+		if( !p["action"] ){
+console.log( p );
+_vars["logMsg"] = "error, undefined RPC action, parseServerResponse()";
+_alert(_vars["logMsg"], "error");
+			return false;
+		}
+
+		switch( p.action ){
+			
+			case "get_booklist":
+				if( p["data"] && p["data"].length > 0){
+					var html = _formPageList({
+						"pages" : p["data"],
+						"html": _vars["templates"]["tpl-booklist"]
+					});
+					_vars["contentList"].innerHTML = html;
+				}
+			break;
+
+			case "get_content_item":
+				if( p["data"] && p["data"].length > 0){
+	console.log( p );
+						
+						var html = _formNode({"node" : p["data"][0]});
+						_vars["contentList"].innerHTML = html;
+						
+				} else {
+	_vars["logMsg"] = "Not find node, id:" + p.id;
+	_alert(_vars["logMsg"], "error");
+	console.log( _vars["logMsg"] );
+				}
+			break;
+			
+			default:
+console.log( p );
+_vars["logMsg"] = "error, unknown RPC action: " + p.action +", parseServerResponse()";
+_alert(_vars["logMsg"], "error");
+				return false;
+			break;
+		}//end switch
+
+		
+	}//end parseServerResponse()
 
 	
 	// public interfaces

@@ -22,10 +22,10 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=2
-FILE_NAME_0=422;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Fnb.txt;0;4
-FILE_NAME_1=2596;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Findex.html;0;4
-FILE_NAME_2=616;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Fjs%2Fapp.js;0;2
+current_page=1
+FILE_NAME_0=555;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Fnb.txt;0;4
+FILE_NAME_1=2908;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Findex.html;0;4
+FILE_NAME_2=18447;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Fjs%2Fapp.js;0;2
 FILE_NAME_3=18630;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Fjs%2Ffunctions.js;0;2
 FILE_NAME_4=3182;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Ffiles%2Ftest_API.html;0;2
 FILE_NAME_5=0;XML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fwebapp_notes%2Fdata%2Fexport.xml;0;2

@@ -38,7 +38,7 @@ $_vars["display_log"] = true;
 $content = new Content();
 $content_links = new ContentLinks();
 $taxonomy = new Taxonomy();
-$app = new App();
+$_vars["app"] = new App();
 
 $_vars["views_params"] = array();
 $_vars["views_params"]["tpl_content_filename"] = "views/home.tpl.php";
@@ -46,7 +46,7 @@ $_vars["views_params"]["tpl_content_filename"] = "views/home.tpl.php";
 $_vars["log"][] = array("message" => $_REQUEST, "type" => "info");
 $_vars["request"] = $_REQUEST;
 
-$app->urlManager( $_vars["request"] );
+$_vars["app"]->urlManager( $_vars["request"] );
 
 
 if( !isset( $_SESSION['is_auth'] ) ){

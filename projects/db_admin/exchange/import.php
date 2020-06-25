@@ -52,7 +52,9 @@ if ( $_vars["runType"] == "console") {
 	$content = new Content();
 	$content_links = new ContentLinks();
 	$taxonomy = new Taxonomy();
-	$app = new App();
+	
+	//$app = new App();
+	$_vars["app"] = new App();
 
 	$_vars["db_schema"] = false;//do not check database tables
 	$_vars["display_log"] = false;
@@ -76,7 +78,7 @@ function importProcess(){
 	//global $content;
 	//global $content_links;
 	//global $taxonomy;
-	global $app;
+	//global $app;
 	
 	//--------------------------- check PHP-module SimpleXML
 	$loadedExt = get_loaded_extensions();
@@ -129,7 +131,7 @@ function importProcess(){
 				"xml" => $_vars["xml"]->xdata->$ch_item, 
 				"nodeName" => $ch_item 
 			);
-			$itemData = $app->getXMLcontent( $arg );
+			$itemData = $_vars["app"]->getXMLcontent( $arg );
 			if( !empty($itemData) ){
 				$_vars["xmlData"][$ch_item] = $itemData;
 			}
@@ -204,7 +206,7 @@ function importContent(){
 	global $content;
 	//global $content_links;
 	//global $taxonomy;
-	global $app;
+	//global $app;
 
 //------------------------------- get content_type (for import 'type_id')
 	$db = DB::getInstance();
@@ -337,7 +339,7 @@ function importContent(){
 			"dbNodes" => $_vars["dbData"]["content"]
 		);
 		
-		$response = $app->saveXMLnode( $arg );
+		$response = $_vars["app"]->saveXMLnode( $arg );
 		if( $response){
 			$_vars["import"]["total"]++;
 			//sleep(1);//timeout before next saving (for form unique filed 'created')
@@ -363,7 +365,7 @@ function importContentLinks(){
 	global $content;
 	//global $content_links;
 	//global $taxonomy;
-	global $app;
+	//global $app;
 	
 	//$_vars["import"]["numUpdated"] = 0;
 	//$_vars["import"]["numCreated"] = 0;
@@ -472,7 +474,7 @@ function importContentLinks(){
 			"xmlNode" => $node,
 			//"dbNodes" => $_vars["dbData"]["content"]
 		);
-		$response = $app->saveXMLcontent_link( $arg );
+		$response = $_vars["app"]->saveXMLcontent_link( $arg );
 		if( $response){
 			$_vars["import"]["total"]++;
 		} else {

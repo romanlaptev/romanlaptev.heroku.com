@@ -76,10 +76,16 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 				case "content/rpc_list":
 					$content->rpc_list();
 				break;
+				case "content/rpc_booklist":
+					$content->rpc_booklist();
+				break;
 
 				case "content/view":
 					$_vars["views_params"]["content_item"] = $content->getItem( $request );
 					$_vars["views_params"]["tpl_content_filename"] = "views/content/view.tpl.php";
+				break;
+				case "content/rpc_get_item":
+					$content->rpc_getItem( $request );
 				break;
 
 				case "content/edit":
@@ -246,10 +252,10 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		}
 
 
-		//Remote Procedure Call, process remote request
-		if( !empty( $request["rpc_request"] ) ){
-			$response = $this->rpc_request_handler( $request["rpc_request"] );
-		}
+		//Remote Procedure Call, process remote request, test form
+		//if( !empty( $request["rpc_request"] ) ){
+			//$response = $this->rpc_request_handler( $request["rpc_request"] );
+		//}
 
 	}//end urlManager()
 
@@ -631,8 +637,8 @@ Array
 
 	}//end saveXMLcontent_link()
 	
-	
-//---------------------------- RPC, Remote Procedure Call
+/*	
+//---------------------------- RPC, Remote Procedure Call, test form
 	public function rpc_request_handler( $rpc_request ){
 		global $_vars;
 //echo _logWrap( $rpc_request );
@@ -718,6 +724,121 @@ if( empty($request_arr["action"]) ){
 		return false;
 		
 	}//end rpc_request_handler()
+*/
+
+
+	public function sendResponse( $params ){
+		//global $_vars;
+		
+		$p = array(
+			"jsonObj" => null
+		);
+		
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+//echo _logWrap( $p );
+
+		if ( !$p["jsonObj"] ){
+			$msg = "server error, empty json object, jsonEncode()";
+			$eventType = "error";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}';
+			echo $jsonStr;
+		}	
+
+		if ( !function_exists("json_encode") ){//PHP 5 >= 5.2.0
+			$eventType = "error";
+			$message = "error, not support function <b>json_encode()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.2.0";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			echo $jsonStr;
+			exit();
+		}
+		
+		$json_string = json_encode( $p["jsonObj"] );
+		if ( !function_exists("json_last_error") ){ //PHP 5 >= 5.3.0
+			$eventType = "error";
+			//http://php.net/manual/ru/function.json-encode.php
+			$message = "<p>error, not support function <b>json_last_error()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.3.0</p>";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			echo $jsonStr;
+			exit();
+		}
+
+//https://www.php.net/manual/en/function.json-last-error.php
+		switch ( json_last_error() ) {
+			case JSON_ERROR_NONE:
+				$jsonStr = '{"eventType": "success", "data": '.$json_string.'}';
+				echo $jsonStr;
+				exit();
+			break;
+			
+			case JSON_ERROR_DEPTH:
+$eventType = "error";
+$message = "The maximum stack depth has been exceeded";
+			break;
+
+			case JSON_ERROR_STATE_MISMATCH:
+$eventType = "error";
+$message = "Invalid or malformed JSON";
+			break;
+
+			case JSON_ERROR_CTRL_CHAR:
+$eventType = "error";
+$message = "Control character error, possibly incorrectly encoded";
+			break;
+
+			case JSON_ERROR_SYNTAX:
+$eventType = "error";
+$message = "Syntax error";
+			break;
+			
+			case JSON_ERROR_UTF8:
+$eventType = "error";
+$message = "Malformed UTF-8 characters, possibly incorrectly encoded";
+			break;
+			
+			case JSON_ERROR_RECURSION:
+$eventType = "error";
+$message = "One or more recursive references in the value to be encoded";
+//PHP 5.5.0
+			break;
+
+			case JSON_ERROR_INF_OR_NAN:
+$eventType = "error";
+$message = "One or more NAN or INF values in the value to be encoded";
+//PHP 5.5.0
+			break;
+
+			case JSON_ERROR_UNSUPPORTED_TYPE:
+$eventType = "error";
+$message = "A value of a type that cannot be encoded was given";
+//PHP 5.5.0
+			break;
+
+			case JSON_ERROR_INVALID_PROPERTY_NAME:
+$eventType = "error";
+$message = "A property name that cannot be encoded was given";
+//PHP 7.0.0
+			break;
+
+			case JSON_ERROR_UTF16:
+$eventType = "error";
+$message = "Malformed UTF-16 characters, possibly incorrectly encoded";
+//PHP 7.0.0
+			break;
+			
+			default:
+$eventType = "error";
+$message = "json_last_error(), Unknown error";
+			break;
+		}//end switch
+		
+		$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+		echo $jsonStr;
+		
+		exit();
+	}//end sendResponse()
 	
 }//end class
 ?>

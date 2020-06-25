@@ -22,14 +22,14 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=1
+current_page=4
 FILE_NAME_0=1064;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fnb.txt;0;4
-FILE_NAME_1=48;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Findex.php;0;4
-FILE_NAME_2=2175;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fapp.php;0;4
-FILE_NAME_3=14078;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fdb.php;0;4
-FILE_NAME_4=9650;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent.php;0;4
-FILE_NAME_5=7605;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent_links.php;0;4
-FILE_NAME_6=881;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Ffunctions.php;0;4
+FILE_NAME_1=1289;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Findex.php;0;4
+FILE_NAME_2=2410;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fapp.php;0;4
+FILE_NAME_3=14299;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fdb.php;0;4
+FILE_NAME_4=11622;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent.php;0;4
+FILE_NAME_5=0;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Fcontent_links.php;0;4
+FILE_NAME_6=0;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Finc%2Ffunctions.php;0;4
 FILE_NAME_7=573;PHP;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fconfig.php;0;4
 FILE_NAME_8=5389;CSS;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku.com%2Fprojects%2Fdb_admin%2Fcss%2Fmain.css;0;4
 

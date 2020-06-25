@@ -335,103 +335,44 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 	}//end getList()
 
 	public function rpc_list(){
-		
-		if ( !function_exists("json_encode") ){//PHP 5 >= 5.2.0
-			$eventType = "error";
-			$message = "error, not support function <b>json_encode()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.2.0";
-			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
-			echo $jsonStr;
-			exit();
-		}
+		global $_vars;
 		
 		$contentArr = $this->getListWithType();
 //echo _logWrap($contentArr);
-
-		$json_string = json_encode( $contentArr );
-		if ( !function_exists("json_last_error") ){ //PHP 5 >= 5.3.0
-			$eventType = "error";
-			//http://php.net/manual/ru/function.json-encode.php
-			$message = "<p>error, not support function <b>json_last_error()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.3.0</p>";
-			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
-			echo $jsonStr;
-			exit();
-		}
-
-//https://www.php.net/manual/en/function.json-last-error.php
-		switch ( json_last_error() ) {
-			case JSON_ERROR_NONE:
-				$jsonStr = '{"eventType": "success", "data": '.$json_string.'}';
-				echo $jsonStr;
-				exit();
-			break;
-			
-			case JSON_ERROR_DEPTH:
-$eventType = "error";
-$message = "The maximum stack depth has been exceeded";
-			break;
-
-			case JSON_ERROR_STATE_MISMATCH:
-$eventType = "error";
-$message = "Invalid or malformed JSON";
-			break;
-
-			case JSON_ERROR_CTRL_CHAR:
-$eventType = "error";
-$message = "Control character error, possibly incorrectly encoded";
-			break;
-
-			case JSON_ERROR_SYNTAX:
-$eventType = "error";
-$message = "Syntax error";
-			break;
-			
-			case JSON_ERROR_UTF8:
-$eventType = "error";
-$message = "Malformed UTF-8 characters, possibly incorrectly encoded";
-			break;
-			
-			case JSON_ERROR_RECURSION:
-$eventType = "error";
-$message = "One or more recursive references in the value to be encoded";
-//PHP 5.5.0
-			break;
-
-			case JSON_ERROR_INF_OR_NAN:
-$eventType = "error";
-$message = "One or more NAN or INF values in the value to be encoded";
-//PHP 5.5.0
-			break;
-
-			case JSON_ERROR_UNSUPPORTED_TYPE:
-$eventType = "error";
-$message = "A value of a type that cannot be encoded was given";
-//PHP 5.5.0
-			break;
-
-			case JSON_ERROR_INVALID_PROPERTY_NAME:
-$eventType = "error";
-$message = "A property name that cannot be encoded was given";
-//PHP 7.0.0
-			break;
-
-			case JSON_ERROR_UTF16:
-$eventType = "error";
-$message = "Malformed UTF-16 characters, possibly incorrectly encoded";
-//PHP 7.0.0
-			break;
-			
-			default:
-$eventType = "error";
-$message = "json_last_error(), Unknown error";
-			break;
-		}//end switch
-		
-		$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
-		echo $jsonStr;
-		
+		$arg = array(
+			"jsonObj" => $contentArr
+		);
+		$_vars["app"]->sendResponse($arg);
 		exit();
 	}//end rpc_list()
 
+
+	public function rpc_booklist(){
+		global $_vars;
+		
+		$arg = array(
+			//"tableName" => "content",
+			"tableName" => "content, content_links",
+			"fields" => array(
+				"content.id", 
+				"content.title", 
+				"content.created",
+				"content.changed"
+			),
+//"query_condition" => "LEFT JOIN content_links ON content_links.content_id=content.id WHERE content_links.parent_id=0"
+"query_condition" => "WHERE content_links.content_id=content.id AND content_links.parent_id=0"
+		);
+		
+		$contentArr = $this->getList($arg);
+//echo _logWrap($contentArr);
+//exit();
+		$arg = array(
+			"jsonObj" => $contentArr
+		);
+		$_vars["app"]->sendResponse($arg);
+		exit();
+	}//end rpc_booklist()
+	
 	
 	public function getItem($params){
 		global $_vars;
@@ -492,6 +433,36 @@ $message = "json_last_error(), Unknown error";
 		
 	}//end getItem()
 
+	public function rpc_getItem($params){
+		global $_vars;
+
+		$p = array(
+			"id" => false
+		);
+		
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+//echo _logWrap($p);
+
+		if( !$p["id"] ){
+			$eventType = "error";
+			$msg = "error, invalid content item id...";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			echo $jsonStr;
+			exit();
+		}
+
+		$contentArr = $this->getItem( $p );
+//echo _logWrap($contentArr);
+		$arg = array(
+			"jsonObj" => $contentArr
+		);
+		$_vars["app"]->sendResponse($arg);
+		exit();
+		
+	}//end rpc_getItem()
 
 
 	public function removeItem( $params ){
