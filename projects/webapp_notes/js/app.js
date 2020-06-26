@@ -187,7 +187,7 @@ _alert(_vars["logMsg"], "error");
 						"action" : rpc_action,
 						"id" : _vars["GET"]["id"],
 						"postFunc" : function( resp ){
-	console.log("-- end rpc_request", resp );
+//console.log("-- end rpc_request", resp );
 							resp["action"] = rpc_action;
 							resp["id"] = _vars["GET"]["id"];
 							parseServerResponse(resp);
@@ -476,7 +476,7 @@ _alert(_vars["logMsg"], "error");
 		for(var key in opt ){
 			p[key] = opt[key];
 		}
-console.log( p );
+//console.log( p );
 
 		if( !p["node"]){
 _vars["logMsg"] = "error, _formNode()";
@@ -536,7 +536,6 @@ _alert(_vars["logMsg"], "warning");
 				}
 			}
 		}//next
-		
 		
 //-------------------------------- form breadcrumbs
 		//add container link to breadcrumbs
@@ -665,13 +664,18 @@ _alert( _vars["logMsg"], "error");
 		}
 //console.log( p );
 
-		_vars["logMsg"] = "end rpc_request, status: " + p["eventType"];
-		_alert(_vars["logMsg"], p["eventType"] );
+		//_vars["logMsg"] = "end rpc_request, status: " + p["eventType"];
+		//_alert(_vars["logMsg"], p["eventType"] );
 		
 		if( p["eventType"] === "error" ){
 console.log( p );
+
+_vars["logMsg"] = "end rpc_request, status: " + p["eventType"];
+_alert(_vars["logMsg"], p["eventType"] );
+
 _vars["logMsg"] = "server error, trying to load XML local file";
 _alert(_vars["logMsg"], "warning");
+
 			_vars["serverUrl"] = false;
 			_vars["init_url"] = "?q=load-xml";
 			_vars["GET"] = parseGetParams( _vars["init_url"] ); 
@@ -699,16 +703,30 @@ _alert(_vars["logMsg"], "error");
 			break;
 
 			case "get_content_item":
-				if( p["data"] && p["data"].length > 0){
-	console.log( p );
+				if( p["data"]){
 						
-						var html = _formNode({"node" : p["data"][0]});
-						_vars["contentList"].innerHTML = html;
+					//convert child nodes key content_id -> id
+					if( p["data"]["child_nodes"] && 
+							p["data"]["child_nodes"].length > 0
+						){
+						var child_nodes = p["data"]["child_nodes"];
+						for( var n = 0; n < child_nodes.length; n++){
+							child_nodes[n]["id"] = child_nodes[n]["content_id"];
+							delete child_nodes[n]["content_id"];
+							delete child_nodes[n]["parent_id"];
+						}//next
+					} else {
+						p["data"]["child_nodes"] = [];
+					}
+					
+					var html = _formNode({"node" : p["data"]});
+					_vars["contentList"].innerHTML = html;
 						
 				} else {
-	_vars["logMsg"] = "Not find node, id:" + p.id;
-	_alert(_vars["logMsg"], "error");
-	console.log( _vars["logMsg"] );
+console.log( p );
+_vars["logMsg"] = "Not find node, id:" + p.id;
+_alert(_vars["logMsg"], "error");
+console.log( _vars["logMsg"] );
 				}
 			break;
 			

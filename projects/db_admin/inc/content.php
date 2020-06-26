@@ -449,12 +449,30 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		if( !$p["id"] ){
 			$eventType = "error";
 			$msg = "error, invalid content item id...";
-			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}';
 			echo $jsonStr;
 			exit();
 		}
 
-		$contentArr = $this->getItem( $p );
+		$arr = $this->getItem( $p );
+		
+		$contentArr = $arr[0];//id is unique values!!! must be always one element return
+		
+		//get child pages
+		$content_links = new ContentLinks();
+		if( $content_links ){
+			$arg = array(
+				"content_id" => $contentArr["id"] 
+			);
+			$res = $content_links->getHierarchyList($arg);
+//echo _logWrap($res);
+			if( isset($res) ){
+				if( !empty($res["children"]) ){
+					$contentArr["child_nodes"] = $res["children"];
+				}
+			}
+		}
+		
 //echo _logWrap($contentArr);
 		$arg = array(
 			"jsonObj" => $contentArr

@@ -1,12 +1,12 @@
-- изменить порядок работы app.js
-если нет доступа к romanlaptev.heroku.com/projects/db_admin/,
+*- изменить порядок работы app.js
++если нет доступа к romanlaptev.heroku.com/projects/db_admin/,
+если возникает ошибка загрузки RPC url,
 то загружать локальный XML
 
 - сделать получение/запись данных через запросы 
 к удаленной БД (romanlaptev.heroku.com/projects/db_admin/)
-
-- исправить окно ожидания при аякс-запросах
-- get_content_item(), исправить формат данных: тип ноды, список дочерних страниц .....
+	*- get_content_item(), исправить формат данных: тип ноды, список дочерних страниц .....
+	- исправить окно ожидания при аякс-запросах
 
 - сделать использование 
 	*таксономии, 
@@ -20,7 +20,7 @@
 через удаленный запрос к 
 romanlaptev.heroku.com/projects/db_admin/index.php?q=content/rpc_save
 
-- изменить разметку, использовать Bootstrap 4
+*- изменить разметку, использовать Bootstrap 4
 https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.css
 https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css
 <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
