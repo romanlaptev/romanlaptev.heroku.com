@@ -30,22 +30,40 @@ var _app = function ( opt ){
 			"tpl-page-list-item" : _getTpl("tpl-page-list-item"),
 			"tpl-booklist" : "<h3>Book list</h3><ul>{{list}}</ul>"
 		},
-		"appContainer" : getById("App"),
-		"contentList" : getById("content-list"),
-		"log" :  getById("log"),
-		"btnToggle" : getById("btn-toggle-log"),
-		"$num_notes" : getById("num-notes"),
-		"breadcrumbs": {}
+		"appContainer" : func.getById("App"),
+		"contentList" : func.getById("content-list"),
+		"log" :  func.getById("log"),
+		"btnToggle" : func.getById("btn-toggle-log"),
+		"$num_notes" : func.getById("num-notes"),
+		
+		"breadcrumbs": {},
+		
+		"waitWindow" : func.getById("win1"),
+		"waitWindowLoad" : func.getById("win-load"),
+		
+		"loadProgress" : func.getById("load-progress")	,
+		"loadProgressBar" : func.getById("load-progress-bar"),
+		
+		"numTotalLoad" : func.getById("num-total-load"),
+		"percentComplete" : func.getById("percent-complete")//,
+		
+		//"totalBytes" : func.getById("total"),
+		//"totalMBytes" : func.getById("total-mb"),
+		//"loaded" : func.getById("loaded"),
+		//"loadInfo" : func.getById("load-info")
+		
 	};
 
 
 	var _init = function(){
 //console.log("init _notes");
+
 		defineEvents();
 		
+					
 		var parseUrl = window.location.search; 
 		if( parseUrl.length > 0 ){
-			_vars["GET"] = parseGetParams(); 
+			_vars["GET"] = func.parseGetParams(); 
 			_urlManager();
 		} else {
 			if( _vars["init_url"] ){
@@ -53,14 +71,15 @@ var _app = function ( opt ){
 					parseUrl = _vars["init_url"];
 //console.log(parseUrl);					
 			}
-			_vars["GET"] = parseGetParams( parseUrl ); 
+			_vars["GET"] = func.parseGetParams( parseUrl ); 
 			_urlManager();
 		}
 		
 	};//end _init()
 
+
 	function _getTpl( id ){
-		var tpl = getById(id);
+		var tpl = func.getById(id);
 		var html = tpl.innerHTML;
 		return html;
 	}//end _getTpl()
@@ -70,7 +89,7 @@ var _app = function ( opt ){
 //console.log( _vars.contentList );
 		if( !_vars.appContainer ){
 _vars["logMsg"] = "error, 'appContainer' undefined, _defineEvents()";
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 			return false;
 		}
 
@@ -92,7 +111,7 @@ _alert(_vars["logMsg"], "error");
 					} else {
 						event.returnValue = false;				
 					}
-					_vars["GET"] = parseGetParams( target.href ); 
+					_vars["GET"] = func.parseGetParams( target.href ); 
 					_urlManager();
 				//}
 			}
@@ -146,6 +165,7 @@ _alert(_vars["logMsg"], "error");
 				 
 				//get book list from server
 				if( !_vars["contentObj"] ){
+					
 				//if( _vars["serverUrl"] ){
 					rpc_action = "get_booklist";
 					sendRPC({
@@ -175,7 +195,7 @@ _alert(_vars["logMsg"], "error");
 						
 					} else {
 	_vars["logMsg"] = "Not find node, id:" + _vars["GET"]["id"];
-	_alert(_vars["logMsg"], "error");
+	func.logAlert(_vars["logMsg"], "error");
 	console.log( _vars["logMsg"] );
 					}
 				}
@@ -232,8 +252,13 @@ console.log("function _urlManager(),  GET query string: ", _vars["GET"]);
 	//return;
 //}
 		_vars["contentList"].innerHTML = "";
-		
-		runAjax( {
+
+		//start block window
+		if( _vars["waitWindowLoad"] ){
+			_vars["waitWindowLoad"].style.display="block";
+		}
+
+		func.runAjax( {
 			"requestMethod" : "GET", 
 			"url" : _vars["localRequestUrl"], 
 			
@@ -243,33 +268,40 @@ console.log("function _urlManager(),  GET query string: ", _vars["GET"]);
 					percentComplete = Math.ceil(e.loaded / e.total * 100);
 				}
 console.log( "Loaded " + e.loaded + " bytes of total " + e.total, e.lengthComputable, percentComplete+"%" );
-				var loadProgressBar = getById("load-progress-bar");
-				if( loadProgressBar ){
-					//loadProgress.value = percentComplete;
-					loadProgressBar.className = "progress-bar";
-					loadProgressBar.style.width = percentComplete+"%";
-					loadProgressBar.innerHTML = percentComplete+"%";
+
+				_vars["totalBytes"] = e.total;
+				_vars["totalMBytes"] = (( e.total / 1024) / 1024).toFixed(2);
+				_vars["loaded"] = e.loaded;
+
+				if( _vars["loadProgressBar"] ){
+					////loadProgress.value = percentComplete;
+					_vars["loadProgressBar"].className = "progress-bar";
+					_vars["loadProgressBar"].style.width = percentComplete+"%";
+					_vars["loadProgressBar"].innerHTML = percentComplete+"%";
 				}
 			},//end callback function
 			
 			"onError" : function( xhr ){
 //console.log( "onError ", xhr);
 _vars["logMsg"] = "error, not load " + _vars["localRequestUrl"]
-_log("<div class='alert alert-danger'>" + _vars["logMsg"] + "</div>");
+func.logAlert(_vars["logMsg"], "error");
 console.log( _vars["logMsg"] );
 			},//end callback function
 			
 			"onLoadEnd" : function( headers ){
 //console.log( "onLoadEnd ", headers);
-				if( _vars["waitWindow"] ){
-					_vars["waitWindow"].style.display="none";
-				}
+_vars["logMsg"] = "load bytes: " + _vars["totalBytes"]+", Mbytes: " + _vars["totalMBytes"];
+func.logAlert(_vars["logMsg"], "info");
+
+_vars["logMsg"] = "e.loaded: " + _vars["loaded"];
+console.log(_vars["logMsg"]);
+
 			},//end callback function
 			
 			"callback": function( data, runtime ){
 //console.log(data.length, typeof data, data );
 _vars["logMsg"] = "load " + _vars["localRequestUrl"]  +", runtime: "+ runtime +" sec";
-_alert(_vars["logMsg"], "info");
+func.logAlert(_vars["logMsg"], "info");
 console.log( _vars["logMsg"] );
 // //console.log( "_postFunc(), " + typeof data );
 // //console.log( data );
@@ -279,12 +311,12 @@ console.log( _vars["logMsg"] );
 
 				if( !data ){
 _vars["logMsg"] = "error, no XML data in " + _vars["localRequestUrl"] ;
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 console.log( _vars["logMsg"] );
 					return false;
 				}
 					
-				var xmlObj = _convertXmlToObj(data);
+				var xmlObj = func.convertXmlToObj(data);
 				_vars["contentObj"] = {
 					"content" : xmlObj["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content"],
 					"content_links" : xmlObj["xroot"]["childNodes"]["xdata"][0]["childNodes"]["content_links"]
@@ -329,14 +361,22 @@ console.log( _vars["logMsg"] );
 				_vars["contentObj"]["content"] = content;
 delete data;
 delete xmlObj;
+
+				//clear block window
+//setTimeout(function(){
+				if( webApp["vars"]["waitWindowLoad"] ){
+					webApp["vars"]["waitWindowLoad"].style.display="none";
+				}		
+//}, 1000*3);
+
 				if( num_nodes > 0 ){//set number of notes
 					_vars["$num_notes"].innerHTML  = num_nodes;
 					
-					_vars["GET"] = parseGetParams("?q=book-list"); 
+					_vars["GET"] = func.parseGetParams("?q=book-list"); 
 					_urlManager();
 				} else {
 					_vars["logMsg"] = "Not find nodes";
-					_alert(_vars["logMsg"], "error");
+					func.logAlert(_vars["logMsg"], "error");
 					console.log( _vars["logMsg"] );
 				}
 
@@ -397,7 +437,7 @@ delete xmlObj;
 console.log(e);
 			_vars["logMsg"] = "error, _getNode()";
 			//_vars["logMsg"] .= ", " + e;
-			_alert(_vars["logMsg"], "error");
+			func.logAlert(_vars["logMsg"], "error");
 			return false;
 		}
 		
@@ -409,7 +449,7 @@ console.log(e);
 
 		if( !p["id"]){
 _vars["logMsg"] = "error, empty node id, _getNode()";
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 			return false;
 		}
 		
@@ -444,7 +484,7 @@ _alert(_vars["logMsg"], "error");
 
 		if( p["pages"].length === 0){
 _vars["logMsg"] = "error, empty pages list, _drawPageList()";
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 			return false;
 		}
 		
@@ -480,7 +520,7 @@ _alert(_vars["logMsg"], "error");
 
 		if( !p["node"]){
 _vars["logMsg"] = "error, _formNode()";
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 			return false;
 		}
 		var node = p.node;
@@ -503,7 +543,7 @@ _alert(_vars["logMsg"], "error");
 //-------------------------------- convert timestamp to string Data		
 		if( node["created"] ){
 			if( node["created"].length > 0){
-				var createdString = _timeStampToDateStr({
+				var createdString = func.timeStampToDateStr({
 					timestamp : node["created"],
 					format : "yyyy-mm-dd hh:min" 
 				});
@@ -513,7 +553,7 @@ _alert(_vars["logMsg"], "error");
 		}
 		if( node["changed"] ){
 			if( node["changed"].length > 0){
-				var changedString = _timeStampToDateStr({
+				var changedString = func.timeStampToDateStr({
 					timestamp : node["changed"],
 					format : "yyyy-mm-dd hh:min" 
 				});
@@ -531,7 +571,7 @@ _alert(_vars["logMsg"], "error");
 					html = html.replace(new RegExp(key2, 'g'), node[key]);
 				} else {
 _vars["logMsg"] = "warning, undefined key "+key+", title: <b>"+node["title"]+"</b>,_drawNode()";
-_alert(_vars["logMsg"], "warning");
+func.logAlert(_vars["logMsg"], "warning");
 					html = html.replace(new RegExp(key2, 'g'), "");
 				}
 			}
@@ -618,11 +658,16 @@ _alert(_vars["logMsg"], "warning");
 		
 		if( !url ){
 _vars["logMsg"] = "error, sendRPC(), wrong RPC action: " + p.action;
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 console.log(_vars["logMsg"]);
 			return false;
 		}
 		
+		//start block window
+		if( webApp["vars"]["waitWindow"] ){
+			webApp["vars"]["waitWindow"].style.display="block";
+		}
+
 		$.getJSON(  url, function( resp ){
 //console.log(resp);
 			if( typeof p.postFunc === "function"){
@@ -631,12 +676,12 @@ console.log(_vars["logMsg"]);
 		})
 		.done(function () {
 _vars["logMsg"] = "$.getJSON, done, url: " + url;
-_alert(_vars["logMsg"], "success");
+func.logAlert(_vars["logMsg"], "success");
 //console.log( arguments );
 		})
 		.fail(function (xhr, textStatus, error) {
 _vars["logMsg"] = "$.getJSON, "+textStatus+", "+error+", url: " + url;
-_alert( _vars["logMsg"], "error");
+func.logAlert( _vars["logMsg"], "error");
 //console.log( _vars["logMsg"], arguments );
 			if( typeof p.postFunc === "function"){
 				var resp = {
@@ -665,20 +710,27 @@ _alert( _vars["logMsg"], "error");
 //console.log( p );
 
 		//_vars["logMsg"] = "end rpc_request, status: " + p["eventType"];
-		//_alert(_vars["logMsg"], p["eventType"] );
+		//func.logAlert(_vars["logMsg"], p["eventType"] );
+
+		//clear block window
+//setTimeout(function(){
+		if( webApp["vars"]["waitWindow"] ){
+			webApp["vars"]["waitWindow"].style.display="none";
+		}		
+//}, 1000*3);
 		
 		if( p["eventType"] === "error" ){
 console.log( p );
 
 _vars["logMsg"] = "end rpc_request, status: " + p["eventType"];
-_alert(_vars["logMsg"], p["eventType"] );
+func.logAlert(_vars["logMsg"], p["eventType"] );
 
 _vars["logMsg"] = "server error, trying to load XML local file";
-_alert(_vars["logMsg"], "warning");
+func.logAlert(_vars["logMsg"], "warning");
 
 			_vars["serverUrl"] = false;
 			_vars["init_url"] = "?q=load-xml";
-			_vars["GET"] = parseGetParams( _vars["init_url"] ); 
+			_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
 			_urlManager();
 			return false;
 		}
@@ -686,9 +738,10 @@ _alert(_vars["logMsg"], "warning");
 		if( !p["action"] ){
 console.log( p );
 _vars["logMsg"] = "error, undefined RPC action, parseServerResponse()";
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 			return false;
 		}
+
 
 		switch( p.action ){
 			
@@ -725,7 +778,7 @@ _alert(_vars["logMsg"], "error");
 				} else {
 console.log( p );
 _vars["logMsg"] = "Not find node, id:" + p.id;
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 console.log( _vars["logMsg"] );
 				}
 			break;
@@ -733,7 +786,7 @@ console.log( _vars["logMsg"] );
 			default:
 console.log( p );
 _vars["logMsg"] = "error, unknown RPC action: " + p.action +", parseServerResponse()";
-_alert(_vars["logMsg"], "error");
+func.logAlert(_vars["logMsg"], "error");
 				return false;
 			break;
 		}//end switch
