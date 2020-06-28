@@ -193,6 +193,13 @@ func.logAlert(_vars["logMsg"], "error");
 						var html = _formNode({"node" : nodeObj});
 						_vars["contentList"].innerHTML = html;
 						
+						//hide service buttons
+						var btnDelete = func.getById("btn-delete-node");
+						btnDelete.style.display="none";
+						
+						var btnEdit = func.getById("btn-edit-node");
+						btnEdit.style.display="none";
+						
 					} else {
 	_vars["logMsg"] = "Not find node, id:" + _vars["GET"]["id"];
 	func.logAlert(_vars["logMsg"], "error");
@@ -228,15 +235,19 @@ console.log("-- end rpc_request", resp );
 				});
 			break;
 */		
-			//case "delete-note":
-				//serviceAction({
-						//"action" : _vars["GET"]["q"],
-						//"id": _vars["GET"]["id"]
-					//},
-					//function(){
-						//loadNotes();
-					//});
-			//break;
+			case "delete-node":
+				rpc_action = "remove_content_item";
+				sendRPC({
+					"action" : rpc_action,
+					"id" : _vars["GET"]["id"],
+					"postFunc" : function( resp ){
+//console.log("-- end rpc_request", resp );
+						resp["action"] = rpc_action;
+						resp["id"] = _vars["GET"]["id"];
+						parseServerResponse(resp);
+					}
+				});
+			break;
 			
 			default:
 console.log("function _urlManager(),  GET query string: ", _vars["GET"]);			
@@ -652,6 +663,10 @@ func.logAlert(_vars["logMsg"], "warning");
 				url = p.url + "?q=content/rpc_get_item&id="+p.id;
 			break;
 			
+			case "remove_content_item":
+				url = p.url + "?q=content/rpc_remove&id="+p.id;
+			break;
+			
 			//default:
 			//break;
 		}//end switch
@@ -781,6 +796,15 @@ _vars["logMsg"] = "Not find node, id:" + p.id;
 func.logAlert(_vars["logMsg"], "error");
 console.log( _vars["logMsg"] );
 				}
+			break;
+
+			case "remove_content_item":
+				_vars["logMsg"] = p["message"];
+				func.logAlert(_vars["logMsg"], p["eventType"] );
+				
+				_vars["init_url"] = "?q=book-list";
+				_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
+				_urlManager();
 			break;
 			
 			default:

@@ -166,3 +166,9 @@ border-top: 16px solid #1c5a83;
 0% { transform: rotate(0deg); }
 100% { transform: rotate(360deg); }
 }
+
+
+
+.navbar-expand-sm {
+	justify-content: space-between;
+}

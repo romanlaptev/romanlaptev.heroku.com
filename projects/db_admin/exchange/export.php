@@ -77,9 +77,9 @@ if ( $_vars["runType"] == "console") {
 	require_once "../inc/content_links.php";
 	require_once "../inc/taxonomy.php";
 	
-	$content = new Content();
-	$content_links = new ContentLinks();
-	$taxonomy = new Taxonomy();
+	$_vars["content"] = new Content();
+	$_vars["content_links"] = new ContentLinks();
+	$_vars["taxonomy"] = new Taxonomy();
 
 	$res = exportProcess( $_vars["config"]["export"] );
 //echo _logWrap($_vars["xml"]);
@@ -127,9 +127,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 //====================
 function exportProcess( $params = array() ){
 	global $_vars;
-	global $content;
-	global $content_links;
-	global $taxonomy;
+	//global $content;
+	//global $content_links;
+	//global $taxonomy;
 	
 	$p = array(
 		"type_export_content" => false,
@@ -183,7 +183,7 @@ AND content.type_id=content_type.id AND filter_format.id=content.body_format
 ORDER BY content.title;";
 	}
 	
-	$_vars["dbData"]["content"] = $content->getListWithType($arg);
+	$_vars["dbData"]["content"] = $_vars["content"]->getListWithType($arg);
 //echo _logWrap( $_vars["dbData"]["content"] == false );
 //echo _logWrap( empty($_vars["dbData"]["content"]) );
 //echo _logWrap( count($_vars["dbData"]["content"]) );
@@ -224,12 +224,12 @@ ORDER BY content.title;";
 		"fields" => array("content_id", "parent_id"),
 		"query_condition" => null
 	);
-	$_vars["dbData"]["content_links"] = $content_links->getList($arg);
+	$_vars["dbData"]["content_links"] = $_vars["content_links"]->getList($arg);
 
 //--------------------------
-	$_vars["dbData"]["tag_groups"] = $taxonomy->getGroupList();
-	$_vars["dbData"]["tag_list"] = $taxonomy->getTagList();
-	$_vars["dbData"]["tag_links"] = $taxonomy->getTagLinks();
+	$_vars["dbData"]["tag_groups"] = $_vars["taxonomy"]->getGroupList();
+	$_vars["dbData"]["tag_list"] = $_vars["taxonomy"]->getTagList();
+	$_vars["dbData"]["tag_links"] = $_vars["taxonomy"]->getTagLinks();
 
 	$_vars["xml"] = formXML( $_vars["dbData"] );
 	if ( !empty($_vars["xml"]) ) {

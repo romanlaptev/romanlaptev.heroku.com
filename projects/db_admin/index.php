@@ -35,9 +35,9 @@ $_vars["display_log"] = true;
 
 //echo _logWrap($_vars);
 //exit();
-$content = new Content();
-$content_links = new ContentLinks();
-$taxonomy = new Taxonomy();
+$_vars["content"] = new Content();
+$_vars["content_links"] = new ContentLinks();
+$_vars["taxonomy"] = new Taxonomy();
 $_vars["app"] = new App();
 
 $_vars["views_params"] = array();

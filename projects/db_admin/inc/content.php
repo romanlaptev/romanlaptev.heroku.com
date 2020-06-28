@@ -50,7 +50,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$this->defaultValues["created"] = time();
 		$this->defaultValues["changed"] = time();//microtime(true),//uniqid()
 	}
-	
+/*	
 	public static function getInstance() {
 		global $_vars;
 $msg = "get instance ".__CLASS__;
@@ -60,7 +60,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		}
 		return self::$instance;
 	}
-
+*/
 	public function save( $params ){
 		global $_vars;
 
@@ -163,8 +163,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 		if( !empty($p["parent_id"]) ){
 			$msg2 = "error, not save content links info.";
 			$msg2_type = "error";
-			$content_links = new ContentLinks();
-			if( $content_links ){
+			//$_vars["content_links"] = new ContentLinks();
+			if( $_vars["content_links"] ){
 				$arg = array(
 					"content_id" => $p["id"], 
 					"parent_id" => $p["parent_id"]
@@ -174,7 +174,7 @@ if( $p["parent_id"] == "top"){
 	$arg["parent_id"] = 0;
 }
 //---------------------					
-				$save_res = $content_links->save( $arg );
+				$save_res = $_vars["content_links"]->save( $arg );
 				if( $save_res["status"] ){
 					$msg2 = "save content links info.";
 					$msg2_type = "success";
@@ -197,12 +197,12 @@ if( $p["parent_id"] == "top"){
 		if( isset($p["parent_id"]) &&
 			empty($p["parent_id"]) )
 		{
-			$content_links = new ContentLinks();
-			if( $content_links ){
+			//$_vars["content_links"] = new ContentLinks();
+			if( $_vars["content_links"] ){
 				$arg = array(
 					"content_id" => $p["id"] 
 				);
-				$_res = $content_links->remove( $arg );
+				$_res = $_vars["content_links"]->remove( $arg );
 				if( $_res ){
 $msg2 = "remove content links info.";
 $msg2_type = "warning";
@@ -410,13 +410,13 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		if( !empty($res) ){
 			
 			//try to get parent category
-			$content_links = new ContentLinks();
-			if( $content_links ){
+			//$_vars["content_links"] = new ContentLinks();
+			if( $_vars["content_links"] ){
 				$arg = array(
 					"fields" => array("parent_id"),
 					"query_condition" => "WHERE content_id=".$p["id"]
 				);
-				$arr = $content_links->get( $arg );
+				$arr = $_vars["content_links"]->get( $arg );
 				if( $arr ){
 					$res[0]["parent_id"] = $arr[0]["parent_id"];
 				}
@@ -459,12 +459,12 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		$contentArr = $arr[0];//id is unique values!!! must be always one element return
 		
 		//get child pages
-		$content_links = new ContentLinks();
-		if( $content_links ){
+		//$_vars["content_links"] = new ContentLinks();
+		if( $_vars["content_links"] ){
 			$arg = array(
 				"content_id" => $contentArr["id"] 
 			);
-			$res = $content_links->getHierarchyList($arg);
+			$res = $_vars["content_links"]->getHierarchyList($arg);
 //echo _logWrap($res);
 			if( isset($res) ){
 				if( !empty($res["children"]) ){
@@ -484,8 +484,8 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 
 
 	public function removeItem( $params ){
-		//global $_vars;
-		global $content_links;
+		global $_vars;
+		//global $_vars["content_links"];
 		
 		$p = array(
 			"id" => false
@@ -512,13 +512,13 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		if( $response ){
 			
 			//remove content links info
-			if( $content_links ){
+			if( $_vars["content_links"] ){
 				$arg = array(
 					"content_id" => $p["id"] 
 				);
 				$msg2 = "error, not remove content links info.";
 				$msg2_type = "error";
-				$res = $content_links->remove( $arg );
+				$res = $_vars["content_links"]->remove( $arg );
 				if( $res ){
 					$msg2 = "remove content links info.";
 					$msg2_type = "success";
@@ -528,7 +528,7 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		}
 		return $response;
 	}//end removeItem()
-
+/*
 	public function rpc_remove( $request_data ){
 		$jsonStr = "";
 		
@@ -554,6 +554,45 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		echo $jsonStr;
 		exit();
 	}//end rpc_remove()
+*/
+
+	public function rpc_removeItem($params){
+		global $_vars;
+
+		$p = array(
+			"id" => false
+		);
+		
+		//extend options object $p
+		foreach( $params as $key=>$item ){
+			$p[ $key ] = $item;
+		}//next
+//echo _logWrap($p);
+
+		if( !$p["id"] ){
+			$eventType = "error";
+			$msg = "error, invalid content item id...";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}';
+			echo $jsonStr;
+			exit();
+		}
+
+		$eventType = "error";
+		$msg = "content item ID: ".$p["id"]." NOT removed...";
+		
+		$response = $this->removeItem( $p );
+		if($response){
+			$eventType = "success";
+			$msg = "content item ID: ".$p["id"]." was removed...";
+		}
+		
+		$arg = array(
+			"jsonStr" => '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}'
+		);
+		$_vars["app"]->sendResponse($arg);
+		exit();
+		
+	}//end rpc_removeItem()
 
 
 	public function editItem($params){

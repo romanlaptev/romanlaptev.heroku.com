@@ -49,9 +49,9 @@ if ( $_vars["runType"] == "console") {
 	require_once "../inc/taxonomy.php";
 	require_once "../inc/app.php";
 	
-	$content = new Content();
-	$content_links = new ContentLinks();
-	$taxonomy = new Taxonomy();
+	$_vars["content"] = new Content();
+	$_vars["content_links"] = new ContentLinks();
+	$_vars["taxonomy"] = new Taxonomy();
 	
 	//$app = new App();
 	$_vars["app"] = new App();
@@ -203,7 +203,7 @@ unset($_vars["xml"]);
 //-------------------------------
 function importContent(){
 	global $_vars;
-	global $content;
+	//global $content;
 	//global $content_links;
 	//global $taxonomy;
 	//global $app;
@@ -255,7 +255,7 @@ function importContent(){
 		)
 	);
 	
-	$_vars["dbData"]["content"] = $content->getListWithType($arg);
+	$_vars["dbData"]["content"] = $_vars["content"]->getListWithType($arg);
 //echo _logWrap( $_vars["dbData"] );
 //return false;
 	if( $_vars["dbData"]["content"] ){
@@ -362,7 +362,7 @@ function importContent(){
 //-------------------------------
 function importContentLinks(){
 	global $_vars;
-	global $content;
+	//global $content;
 	//global $content_links;
 	//global $taxonomy;
 	//global $app;
@@ -379,7 +379,7 @@ function importContentLinks(){
 			"content.created" 
 		)
 	);
-	$_vars["dbData"]["content"] = $content->getListWithType($arg);
+	$_vars["dbData"]["content"] = $_vars["content"]->getListWithType($arg);
 	if( empty($_vars["dbData"]["content"]) ){
 		$msg = "import error, database nodes not found";
 		$_vars["log"][] = array("message" => $msg, "type" => "warning");
@@ -491,7 +491,7 @@ function importContentLinks(){
 //-------------------------------
 function importTagGroups(){
 	global $_vars;
-	global $taxonomy;
+	//global $taxonomy;
 	//global $app;
 	
 	
@@ -508,7 +508,7 @@ function importTagGroups(){
 	$replacement_table = &$_vars["import"]["replacement_table"];
 	
 //------------------------------- get exists DB nodes
-	$dbData = $taxonomy->getTagGroup();
+	$dbData = $_vars["taxonomy"]->getTagGroup();
 //echo _logWrap( count($dbData) );
 //echo _logWrap( !empty($dbData) );
 //echo _logWrap( $dbData );
@@ -545,7 +545,7 @@ function importTagGroups(){
 			$_vars["import"]["numCreated"]++;
 		}
 
-		$response = $taxonomy->saveTermGroup( $node );
+		$response = $_vars["taxonomy"]->saveTermGroup( $node );
 		if( $response["status"] ){
 			
 			//----- build replacement table IDs
@@ -571,7 +571,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 
 function importTagList(){
 	global $_vars;
-	global $taxonomy;
+	//global $taxonomy;
 	//global $app;
 	
 	$_vars["import"]["numUpdated"] = 0;
@@ -584,7 +584,7 @@ function importTagList(){
 
 
 //------------------------------- get exists DB nodes
-	$dbData = $taxonomy->getTagList();
+	$dbData = $_vars["taxonomy"]->getTagList();
 //echo _logWrap( count($dbData) );
 //echo _logWrap( !empty($dbData) );
 //echo _logWrap( $dbData );
@@ -628,7 +628,7 @@ function importTagList(){
 		$term_group_id_new = $replacement_table["taxonomy_groups"][$term_group_id_old];
 		$node["term_group_id"] = $term_group_id_new;
 		
-		$response = $taxonomy->saveTerm( $node );
+		$response = $_vars["taxonomy"]->saveTerm( $node );
 //echo _logWrap($response);
 		if( $response["status"] ){
 			
@@ -667,7 +667,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "error");
 			"id" => $xmlData[$n1]["new_id"],
 			"parent_id" => $parent_id_new
 		);
-		$response = $taxonomy->saveTerm( $node );
+		$response = $_vars["taxonomy"]->saveTerm( $node );
 		if( !$response["status"] ){
 $msg = "import error: update taxonomy_term_data IDs";
 $_vars["log"][] = array("message" => $msg, "type" => "error");

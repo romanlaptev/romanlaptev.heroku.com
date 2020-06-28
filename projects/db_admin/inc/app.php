@@ -7,6 +7,7 @@ class App {
 $msg = "Object of class ".__CLASS__." was created.";
 $_vars["log"][] = array("message" => $msg, "type" => "info");
 	}
+/*	
 	public static function getInstance() {
 		global $_vars;
 $msg = "get instance ".__CLASS__;
@@ -16,14 +17,14 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		}
 		return self::$instance;
 	}
-
+*/
 
 	public function urlManager( $request = array() ){
 		global $_vars;
 		
-		$content = Content::getInstance();
-		$content_links = ContentLinks::getInstance();
-		$taxonomy = Taxonomy::getInstance();
+		//$content = Content::getInstance();
+		//$content_links = ContentLinks::getInstance();
+		//$taxonomy = Taxonomy::getInstance();
 		
 		if( !empty( $request["q"] ) ){
 			switch ( $request["q"] ) {
@@ -57,53 +58,53 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 					$arg = array(
 						"tpl_content_path" => "views/content/add.tpl.php"
 					);
-					$_vars["views_params"]["content"] = $content->addItem($arg);
+					$_vars["views_params"]["content"] = $_vars["content"]->addItem($arg);
 				break;
 				
 				case "content/save":
-					$content->save( $request );
+					$_vars["content"]->save( $request );
 					//header("Location:".$_SERVER["SCRIPT_NAME"]);
 				break;
 				
 				case "content/rpc_save":
-					$content->rpc_save( $request["request_data"] );
+					$_vars["content"]->rpc_save( $request["request_data"] );
 				break;
 				
 				case "content/list":
-					$_vars["views_params"]["content_list"] = $content->getListWithType();
+					$_vars["views_params"]["content_list"] = $_vars["content"]->getListWithType();
 					$_vars["views_params"]["tpl_content_filename"] = "views/content/list.tpl.php";
 				break;
 				case "content/rpc_list":
-					$content->rpc_list();
+					$_vars["content"]->rpc_list();
 				break;
 				case "content/rpc_booklist":
-					$content->rpc_booklist();
+					$_vars["content"]->rpc_booklist();
 				break;
 
 				case "content/view":
-					$_vars["views_params"]["content_item"] = $content->getItem( $request );
+					$_vars["views_params"]["content_item"] = $_vars["content"]->getItem( $request );
 					$_vars["views_params"]["tpl_content_filename"] = "views/content/view.tpl.php";
 				break;
 				case "content/rpc_get_item":
-					$content->rpc_getItem( $request );
+					$_vars["content"]->rpc_getItem( $request );
 				break;
 
 				case "content/edit":
-					//$_vars["views_params"]["content_item"] = $content->getItem($request);
+					//$_vars["views_params"]["content_item"] = $_vars["content"]->getItem($request);
 					////$_vars["views_params"]["tpl_content_filename"] = "views/content/edit.tpl.php";
 					//$_vars["views_params"]["tpl_content"] = file_get_contents("views/content/edit.tpl.php");
 		////echo _logWrap($_vars["views_params"]["content_item"]);
 		//$_vars["log"][] = array("message" => $_vars["views_params"]["content_item"], "type" => "info");
 					$arg = $request;
 					$arg["tpl_content_path"] = "views/content/edit.tpl.php";
-					$_vars["views_params"]["content"] = $content->editItem($arg);
+					$_vars["views_params"]["content"] = $_vars["content"]->editItem($arg);
 				break;
 
 				case "content/remove":
 					$msg =  "error removing content item, id: ".$request["id"];
 					$msg_type = "warning";
 						
-					$response = $content->removeItem( $request );
+					$response = $_vars["content"]->removeItem( $request );
 					if( $response ){
 						$msg =  "content item id: ".$request["id"]." was removed...";
 						$msg_type = "success";
@@ -112,29 +113,30 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 					$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 				break;
 				case "content/rpc_remove":
-					$content->rpc_remove( $request["request_data"] );
+					//$_vars["content"]->rpc_remove( $request["request_data"] );
+					$_vars["content"]->rpc_removeItem( $request );
 				break;
 
 				case "content/clear":
-					$content->clear();
+					$_vars["content"]->clear();
 				break;
 
 				case "content/set_values":
-					//$content->setContentTypes();
-					$content->setFilterFormats();
+					//$_vars["content"]->setContentTypes();
+					$_vars["content"]->setFilterFormats();
 				break;
 				
 		//============================= CONTENT LINKS
 				case "content-links/list":
-					$_vars["views_params"]["content_links"] = $content_links->getList();
-					$_vars["views_params"]["hierarchy_list"] = $content_links->getHierarchyList($request);
+					$_vars["views_params"]["content_links"] = $_vars["content_links"]->getList();
+					$_vars["views_params"]["hierarchy_list"] = $_vars["content_links"]->getHierarchyList($request);
 					$_vars["views_params"]["tpl_content_filename"] = "views/content_links/list.tpl.php";
 				break;
 				
 				case "content-links/remove":
 					$msg =  "error remove content links info, content_id: ".$request["content_id"];
 					$msg_type = "error";
-					$response = $content_links->remove( $request );
+					$response = $_vars["content_links"]->remove( $request );
 					if( $response ){
 						$msg = "remove content links info.";
 						$msg_type = "success";
@@ -143,13 +145,13 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 				break;
 
 				case "content-links/clear":
-					$content_links->clear();
+					$_vars["content_links"]->clear();
 				break;
 				
 		//============================= TAXONOMY
 				case "taxonomy/list":
-					$_vars["views_params"]["tag_groups"] = $taxonomy->getTagGroup();
-					$_vars["views_params"]["tag_list"] = $taxonomy->getTagList();
+					$_vars["views_params"]["tag_groups"] = $_vars["taxonomy"]->getTagGroup();
+					$_vars["views_params"]["tag_list"] = $_vars["taxonomy"]->getTagList();
 					$_vars["views_params"]["tpl_content_filename"] = "views/taxonomy/list.tpl.php";
 				break;
 				
@@ -158,7 +160,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 				break;
 				
 				case "tag-group/save":
-					$response = $taxonomy->saveTermGroup( $request );
+					$response = $_vars["taxonomy"]->saveTermGroup( $request );
 					if( !$response ){
 		$msg = "error,  could not save term group.";
 		$_vars["log"][] = array("message" => $msg, "type" => "error");
@@ -169,12 +171,12 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 				break;
 
 				case "tag-group/list":
-					$_vars["views_params"]["term_group"] = $taxonomy->getTagGroup( $request );
+					$_vars["views_params"]["term_group"] = $_vars["taxonomy"]->getTagGroup( $request );
 					$_vars["views_params"]["tpl_content_filename"] = "views/taxonomy/term_group_list.tpl.php";
 				break;
 
 				case "tag-group/edit":
-					$_vars["views_params"]["term_group"] = $taxonomy->getTagGroup( $request );
+					$_vars["views_params"]["term_group"] = $_vars["taxonomy"]->getTagGroup( $request );
 					$_vars["views_params"]["tpl_content_filename"] = "views/taxonomy/term_group_edit.tpl.php";
 				break;
 				
@@ -182,7 +184,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 					$msg =  "error removing term group, id: ".$request["id"];
 					$msg_type = "warning";
 						
-					$response = $taxonomy->removeTermGroup( $request );
+					$response = $_vars["taxonomy"]->removeTermGroup( $request );
 					if( $response ){
 						$msg =  "term group.id ".$request["id"]." was removed...";
 						$msg_type = "success";
@@ -195,12 +197,12 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 				break;
 				
 				case "taxonomy/term-edit":
-					$_vars["views_params"]["term"] = $taxonomy->getTerm( $request );
+					$_vars["views_params"]["term"] = $_vars["taxonomy"]->getTerm( $request );
 					$_vars["views_params"]["tpl_content_filename"] = "views/taxonomy/term_edit.tpl.php";
 				break;
 
 				case "taxonomy/term-save":
-					$response = $taxonomy->saveTerm( $request );
+					$response = $_vars["taxonomy"]->saveTerm( $request );
 					if( !$response ){
 		$msg = "error,  could not save term ".$request["term"];
 		$_vars["log"][] = array("message" => $msg, "type" => "error");
@@ -214,7 +216,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 					$msg =  "error removing tag, id: ".$request["id"];
 					$msg_type = "warning";
 						
-					$response = $taxonomy->removeTerm( $request );
+					$response = $_vars["taxonomy"]->removeTerm( $request );
 					if( $response ){
 						$msg =  "ok, term.id: ".$request["id"]." was removed...";
 						$msg_type = "success";
@@ -474,7 +476,7 @@ echo _logWrap( $p );
 
 	public function saveXMLnode( $params ){
 		global $_vars;
-		global $content;
+		//global $content;
 		
 		$p = array(
 			"xmlNode" => null,
@@ -584,7 +586,7 @@ if( empty($p["xmlNode"]["created"]) ){
 			$_vars["import"]["numCreated"]++;
 		}
 		
-		$response = $content->save( $p["xmlNode"] );
+		$response = $_vars["content"]->save( $p["xmlNode"] );
 		if( !$response ){
 $msg = "import: error, not save content item ".$p["xmlNode"]["title"].", created: ".$p["xmlNode"]["created"];
 $_vars["log"][] = array("message" => $msg, "type" => "error");
@@ -600,7 +602,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "success");
 
 	public function saveXMLcontent_link( $params ){
 		global $_vars;
-		global $content_links;
+		//global $content_links;
 		
 		$p = array(
 			"xmlNode" => null,
@@ -624,7 +626,7 @@ Array
 */
 	
 	//------------------ Update exists db node or create new db node
-		$response = $content_links->save( $p["xmlNode"] );
+		$response = $_vars["content_links"]->save( $p["xmlNode"] );
 		if( !$response["status"] ){
 			$msg = "import: error, could not save content_link item ".$p["xmlNode"]["content_id"];
 			$_vars["log"][] = array("message" => $msg, "type" => "error");
@@ -731,7 +733,8 @@ if( empty($request_arr["action"]) ){
 		//global $_vars;
 		
 		$p = array(
-			"jsonObj" => null
+			"jsonObj" => null,
+			"jsonStr" => null
 		);
 		
 		//extend options object $p
@@ -740,11 +743,17 @@ if( empty($request_arr["action"]) ){
 		}//next
 //echo _logWrap( $p );
 
+		if ( $p["jsonStr"] ){
+			echo $p["jsonStr"];
+			exit();
+		}	
+		
 		if ( !$p["jsonObj"] ){
 			$msg = "server error, empty json object, jsonEncode()";
 			$eventType = "error";
 			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}';
 			echo $jsonStr;
+			exit();
 		}	
 
 		if ( !function_exists("json_encode") ){//PHP 5 >= 5.2.0

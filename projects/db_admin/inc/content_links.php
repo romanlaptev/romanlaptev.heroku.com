@@ -22,6 +22,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		
 		$this->tableName = "content_links";
 	}
+/*	
 	public static function getInstance() {
 		global $_vars;
 $msg = "get instance ".__CLASS__;
@@ -31,7 +32,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		}
 		return self::$instance;
 	}
-
+*/
 
 	public function getList( $params=array() ){
 		global $_vars;

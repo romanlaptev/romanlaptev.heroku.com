@@ -262,7 +262,7 @@ function widget_status( $status_id=0 ){
 
 function widget_content_links( $params=null ){
 	global $_vars;
-	global $content_links;
+	//global $content_links;
 
 	$p = array(
 		"item_parent_id" => false
@@ -286,7 +286,7 @@ function widget_content_links( $params=null ){
 	//}
 	
 	$html = "";
-	$_vars["content_links_list"] = $content_links->getList();
+	$_vars["content_links_list"] = $_vars["content_links"]->getList();
 //echo _logWrap($_vars["content_links_list"]);
 
 	if( !$_vars["content_links_list"] ){
@@ -296,8 +296,8 @@ function widget_content_links( $params=null ){
 		return $html;
 	}
 	
-	$tpl_input = $content_links->templates["content_links_input"];
-	$tpl_input_checked = $content_links->templates["content_links_checked"];
+	$tpl_input = $_vars["content_links"]->templates["content_links_input"];
+	$tpl_input_checked = $_vars["content_links"]->templates["content_links_checked"];
 /*	
 	for( $n = 0; $n < count($content_links_list); $n++ ){
 		$html_input = $tpl_option;
@@ -335,10 +335,10 @@ function widget_content_links( $params=null ){
 
 function get_children_items( $contentID, $level, $item_parent_id ){
 	global $_vars;
-	global $content_links;
+	//global $content_links;
 	
-	$tpl_input = $content_links->templates["content_links_input"];
-	$tpl_input_checked = $content_links->templates["content_links_checked"];
+	$tpl_input = $_vars["content_links"]->templates["content_links_input"];
+	$tpl_input_checked = $_vars["content_links"]->templates["content_links_checked"];
 	
 	$html = "";
 	//$html = $level."";

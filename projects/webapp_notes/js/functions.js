@@ -19,7 +19,10 @@ use module:
 		function _getById(id){
 			
 			if( document.querySelector ){
-				var obj = document.querySelector("#"+id);
+				if(id.indexOf("#") === -1){
+					id = "#" + id;
+				}
+				var obj = document.querySelector(id);
 				return obj;
 			}
 			
@@ -40,6 +43,35 @@ use module:
 			
 			return false;
 		}//end _getById()
+
+
+		//USAGE: var groupBtnDelete = func.getByClass("child-nodes li");
+		function _getByClass(className){
+
+			if( typeof window.jQuery === "function"){
+				if(className.indexOf(".") === -1){
+					className = "." + className;
+				}
+				var group = $(className);
+				return group;
+			}
+
+			if( document.querySelector ){
+				if(className.indexOf(".") === -1){
+					className = "." + className;
+				}
+				var group = document.querySelectorAll(className);
+				return group;
+			}
+		
+//document.getElementsByTagName('head')
+			if( typeof document.getElementsByClassName === "function" ){
+				var group = document.getElementsByClassName(className);
+				return group;
+			}
+
+			return false;
+		}//end _getByClass()
 
 		
 		function _log( msg, id){
@@ -777,6 +809,7 @@ console.log(e);
 		// public interfaces
 		return{
 			getById: _getById,
+			getByClass: _getByClass,
 			log:	_log,
 			logAlert: _alert,
 			runAjax: _runAjax,

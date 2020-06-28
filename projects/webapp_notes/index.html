@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>notes app</title>
+	<title>notes webapp</title>
 	<link rel="icon" href="img/icons/favicon.ico" type="image/x-icon">
 	<link rel="shortcut icon" href="img/icons/favicon.ico">
 	<meta charset="utf-8">
@@ -44,8 +44,10 @@
 	</a>
 </li>
 			</ul>
-			<h1 class="text-right" id="app-title">notes, comments...</h1>
-			<h6 class="text-right">elements: <span id="num-notes">0</span></h6>
+			<div class="">
+				<h1 class="" id="app-title">notes, comments...</h1>
+				<h6 class="text-right">elements: <span id="num-notes">0</span></h6>
+			</div>
 		</div>
 	</div>
 
@@ -55,9 +57,9 @@
 	<a data-toggle="collapse" href="#collapse-panel-service" aria-expanded="true" class="close" title="close panel">&times;</a>
 
 
-<a href="#" id="btn-new" class="btn btn-success" data-toggle="modal" data-target="#newModal">add new note</a>
-<a href="#" id="btn-export" class="btn btn-info">export content</a>
-<a href="#" id="btn-import" class="btn btn-warning">import content</a>
+<a href="?q=add-node" class="btn btn-success" data-toggle="modal" data-target="#newModal">add new note</a>
+<a href="?q=export" class="btn btn-info">export content</a>
+<a href="?q=import" class="btn btn-warning">import content</a>
 <!--
 <a href="#clear_notes" class="btn btn-sm btn-danger">remove all notes</a>
 <a href="#remove_table" class="btn btn-sm btn-danger">refresh table</a>
@@ -142,6 +144,68 @@ of total <span id="total">...</span>( <span id="total-mb"></span> Mb)
 </div>
 <!--  end progress bar -->	
 
+<!-- ********************** MODAL ************************** -->	
+<div class="modal fade" id="newModal">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h4 class="modal-title">add new note</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+<!--
+<form name="form_new" id="form-new" action="" method="POST" enctype="application/x-www-form-urlencoded">
+-->
+      <div class="modal-body">
+<form name="form_new" id="form-new" action="" method="POST">
+		  
+	<div class="form-group">
+		<label id="title-label">*title: </label>
+		<input type="text" class="form-control" name="title" value="new content item">
+	</div>
+
+<div class="form-inline">
+	<div class="">
+		<label>content type: </label>
+<select id="content-type-select" name="type_id" class="form-control">
+	<option value="1" selected="selected">page</option>
+	<option value="2">article</option>
+	<option value="3">note</option>
+	<option value="4">book</option>
+	<option value="5">video</option>
+	<option value="6">music</option>
+</select>
+	</div>
+	
+	<div class="">
+		<label>body format: </label>
+		<select name="body_format" class="form-control">
+			<option value="1" selected="selected">plain text</option>
+			<option value="2">Filtered HTML</option>
+			<option value="3">Full HTML</option>
+			<option value="4">PHP code</option>
+		</select>
+	</div>
+</div>
+	
+	<div class="form-group">
+		<label id="body-value-label">*body value: </label>
+		<textarea id="body-value" name="body_value" class="form-control" rows="10"></textarea>
+	</div>
+        
+</form>
+      </div><!-- end modal-body -->
+
+      <div class="modal-footer">
+		<button type="reset" class="btn btn-large btn-warning">reset form</button>
+		<button type="submit" class="btn btn-large btn-primary">save</button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- end newModal  -->
+
 <!-- ********************** TEMPLATES ************************** -->	
 
 <script id="tpl-node" type="text/template">
@@ -156,8 +220,8 @@ of total <span id="total">...</span>( <span id="total-mb"></span> Mb)
 	created:<b>{{created}}</b>, changed:<b>{{changed}}</b>
 </small>
 <div class="float-right">
-	<button class="btn btn-light btn-sm btn-edit-note" data-toggle="modal" data-target="#editModal" data-id="{{id}}">edit note</button>
-	<a href="#delete_note-{{id}}" class="btn btn-sm btn-danger btn-delete-note">delete note</a>
+	<button id="btn-edit-node" class="btn btn-light btn-sm btn-edit-node" data-toggle="modal" data-target="#editModal" data-id="{{id}}">edit</button>
+	<a id="btn-delete-node" href="?q=delete-node&id={{id}}" class="btn btn-sm btn-danger">delete</a>
 </div>
 <!--
 <b>body_format: </b>{{body_format}}
