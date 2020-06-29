@@ -19,7 +19,7 @@ var _app = function ( opt ){
 		"localRequestUrl" : "data/export.xml",
 		//"localRequestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
 		
-		"serverUrl" : "/projects/romanlaptev.heroku.com/projects/db_admin/",
+		"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
 //		"serverUrl" : "https://romanlaptev-cors.herokuapp.com/\
 //https://romanlaptev.herokuapp.com/projects/db_admin/",
 		//"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
@@ -32,6 +32,8 @@ var _app = function ( opt ){
 		},
 		"appContainer" : func.getById("App"),
 		"contentList" : func.getById("content-list"),
+		"panelService" : func.getById("collapse-panel-service"),
+
 		"log" :  func.getById("log"),
 		"btnToggle" : func.getById("btn-toggle-log"),
 		"$num_notes" : func.getById("num-notes"),
@@ -45,13 +47,16 @@ var _app = function ( opt ){
 		"loadProgressBar" : func.getById("load-progress-bar"),
 		
 		"numTotalLoad" : func.getById("num-total-load"),
-		"percentComplete" : func.getById("percent-complete")//,
+		"percentComplete" : func.getById("percent-complete"),
 		
 		//"totalBytes" : func.getById("total"),
 		//"totalMBytes" : func.getById("total-mb"),
 		//"loaded" : func.getById("loaded"),
 		//"loadInfo" : func.getById("load-info")
-		
+
+		"nodeModal" : $("#node-modal"),
+		"addNodeTitle": "add new node",
+		"editNodeTitle": "edit node, id: "//,
 	};
 
 
@@ -87,20 +92,79 @@ var _app = function ( opt ){
 
 	function defineEvents(){
 //console.log( _vars.contentList );
-		if( !_vars.appContainer ){
-_vars["logMsg"] = "error, 'appContainer' undefined, _defineEvents()";
-func.logAlert(_vars["logMsg"], "error");
+
+		setClickHandler({
+			"containerName":"panelService"
+		});
+
+		setClickHandler({
+			"containerName":"appContainer"
+		});
+
+		
+		//ADD NEW NODE (NOTE)
+		document.forms["form_node"].onsubmit = function(event){
+
+			event = event || window.event;
+			var target = event.target || event.srcElement;
+			
+			if (event.preventDefault) { 
+				event.preventDefault();
+			} else {
+				event.returnValue = false;
+			}
+			
+			
+			_vars["nodeModal"].modal("hide");
+			
+console.log("Submit form", event, this);
+			var form = document.forms["form_node"]
+//console.log(form);
+//console.log(form.elements, form.elements.length);
+//console.log(form.elements["number"]);
+
+			//form.action = "?q=save-node";
+console.log(form.action);
+/*
+				checkForm({
+					"form" : this, 
+					"modalWindowId" : "#newModal",
+					"action" : "save_note"
+				});
+*/				
+			return false;
+		};//end event
+				
+	}//end defineEvents()
+
+
+	function setClickHandler(opt){
+		var p = {
+			"containerName" : null
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+//console.log( p );
+
+		var clickContainerName = p["containerName"];
+
+		if( !_vars[clickContainerName] ){
+_vars["logMsg"] = "warning, container '"+clickContainerName+"' undefined, setClickHandler()";
+func.logAlert(_vars["logMsg"], "warning");
 			return false;
 		}
 
-		_vars.appContainer.onclick = function(event){
+		_vars[clickContainerName].onclick = function(event){
 			event = event || window.event;
 			var target = event.target || event.srcElement;
 //console.log( event );
-// //console.log( this );//page-container
-//console.log( target.tagName );
-// //console.log( event.eventPhase );
-// //console.log( "preventDefault: " + event.preventDefault );
+	// //console.log( this );//page-container
+	//console.log( target.tagName );
+	// //console.log( event.eventPhase );
+	// //console.log( "preventDefault: " + event.preventDefault );
 			// //event.stopPropagation ? event.stopPropagation() : (event.cancelBubble=true);
 			// //event.preventDefault ? event.preventDefault() : (event.returnValue = false);				
 			
@@ -117,8 +181,8 @@ func.logAlert(_vars["logMsg"], "error");
 			}
 			
 		}//end event
-		
-	}//end defineEvents()
+
+	}//end setClickHandler()
 
 
 	function _urlManager( target ){
@@ -248,6 +312,22 @@ console.log("-- end rpc_request", resp );
 					}
 				});
 			break;
+
+
+			case "form-add-node":
+				var title = _vars["addNodeTitle"];
+				_vars["nodeModal"].find(".modal-title").text( title );
+			break;
+			
+			case "form-edit-node":
+//console.log("-- form-edit-node");
+				var title = _vars["editNodeTitle"] + _vars["GET"]["id"];
+				_vars["nodeModal"].find(".modal-title").text( title );
+			break;
+			
+			//case "save-node":
+			//break;
+
 			
 			default:
 console.log("function _urlManager(),  GET query string: ", _vars["GET"]);			
