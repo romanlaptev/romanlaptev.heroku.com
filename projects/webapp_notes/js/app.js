@@ -114,76 +114,45 @@ var _app = function ( opt ){
 				event.returnValue = false;
 			}
 			
-			
-			_vars["nodeModal"].modal("hide");
-			
-console.log("Submit form", event, this);
-			var form = document.forms["form_node"]
+//console.log("Submit form", event, this);
+			var form = document.forms["form_node"];
 //console.log(form);
 //console.log(form.elements, form.elements.length);
 //console.log(form.elements["number"]);
+//form.action = "?q=save-node";
+//console.log(form.action);
+			var isValid = checkForm({
+					"form" : form
+			});
+			
+			if( isValid ){
+				_vars["nodeModal"].modal("hide");
+console.log( $(form).serialize() );
 
-			//form.action = "?q=save-node";
-console.log(form.action);
-/*
-				checkForm({
-					"form" : this, 
-					"modalWindowId" : "#newModal",
-					"action" : "save_note"
-				});
-*/				
+var formData = new FormData( form );
+
+// Display the key/value pairs
+for (var pair of formData.entries()) {
+console.log(pair[0]+ ', ' + pair[1]);
+}
+
+
+//var formValues = {
+//"action" : p["action"],
+//"requestMethod" : form.getAttribute("method"),
+//"enctype" : form.getAttribute("enctype") ? form.getAttribute("enctype") : null
+//};
+//sendForm( formValues );
+
+			} else {
+_vars["logMsg"] = "form validation error";
+func.logAlert(_vars["logMsg"], "error");
+			}
+				
 			return false;
 		};//end event
 				
 	}//end defineEvents()
-
-
-	function setClickHandler(opt){
-		var p = {
-			"containerName" : null
-		};
-		
-		//extend options object
-		for(var key in opt ){
-			p[key] = opt[key];
-		}
-//console.log( p );
-
-		var clickContainerName = p["containerName"];
-
-		if( !_vars[clickContainerName] ){
-_vars["logMsg"] = "warning, container '"+clickContainerName+"' undefined, setClickHandler()";
-func.logAlert(_vars["logMsg"], "warning");
-			return false;
-		}
-
-		_vars[clickContainerName].onclick = function(event){
-			event = event || window.event;
-			var target = event.target || event.srcElement;
-//console.log( event );
-	// //console.log( this );//page-container
-	//console.log( target.tagName );
-	// //console.log( event.eventPhase );
-	// //console.log( "preventDefault: " + event.preventDefault );
-			// //event.stopPropagation ? event.stopPropagation() : (event.cancelBubble=true);
-			// //event.preventDefault ? event.preventDefault() : (event.returnValue = false);				
-			
-			if( target.tagName === "A"){
-				//if ( target.href.indexOf("#") !== -1){
-					if (event.preventDefault) { 
-						event.preventDefault();
-					} else {
-						event.returnValue = false;				
-					}
-					_vars["GET"] = func.parseGetParams( target.href ); 
-					_urlManager();
-				//}
-			}
-			
-		}//end event
-
-	}//end setClickHandler()
-
 
 	function _urlManager( target ){
 //console.log(target, _vars["GET"]);
@@ -335,6 +304,104 @@ console.log("function _urlManager(),  GET query string: ", _vars["GET"]);
 		}//end switch
 		
 	}//end _urlManager()
+
+
+	function setClickHandler(opt){
+		var p = {
+			"containerName" : null
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+//console.log( p );
+
+		var clickContainerName = p["containerName"];
+
+		if( !_vars[clickContainerName] ){
+_vars["logMsg"] = "warning, container '"+clickContainerName+"' undefined, setClickHandler()";
+func.logAlert(_vars["logMsg"], "warning");
+			return false;
+		}
+
+		_vars[clickContainerName].onclick = function(event){
+			event = event || window.event;
+			var target = event.target || event.srcElement;
+//console.log( event );
+	// //console.log( this );//page-container
+	//console.log( target.tagName );
+	// //console.log( event.eventPhase );
+	// //console.log( "preventDefault: " + event.preventDefault );
+			// //event.stopPropagation ? event.stopPropagation() : (event.cancelBubble=true);
+			// //event.preventDefault ? event.preventDefault() : (event.returnValue = false);				
+			
+			if( target.tagName === "A"){
+				//if ( target.href.indexOf("#") !== -1){
+					if (event.preventDefault) { 
+						event.preventDefault();
+					} else {
+						event.returnValue = false;				
+					}
+					_vars["GET"] = func.parseGetParams( target.href ); 
+					_urlManager();
+				//}
+			}
+			
+		}//end event
+
+	}//end setClickHandler()
+
+
+	function checkForm(opt){
+		var p = {
+			"form" : null
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+console.log( p );
+
+		if( !p["form"] ){
+_vars["logMsg"] = "error, checkForm()";
+func.logAlert(_vars["logMsg"], "error");
+			return false;
+		}
+
+		var form = p["form"];
+
+		var res = true;
+		for( var n = 0; n < form.elements.length; n++){
+			var _element = form.elements[n];
+				
+			if( _element.classList.contains("invalid-field") ){
+				_element.classList.remove("invalid-field");
+			}	
+			//if( _element.type === "text" ){
+				//if( _element.className.indexOf("require-form-element") !== -1 ){
+				if( _element.classList.contains("require-form-element") ){
+//console.log( _element.value );
+					//_element.className.replace("invalid-field", "").trim();
+					if( _element.value.length === 0 ){
+						res = false;
+_vars["logMsg"] = "error, empty required input field <b>'" + _element.name +"'</b>";
+func.logAlert( _vars["logMsg"], "error");
+						//_element.className += " invalid-field";
+						_element.classList.add("invalid-field")
+//console.log( _element.className );
+//console.log( _element.classList );
+						//break;
+					}
+				}
+			//}
+				
+		}//next
+		
+		return res;
+	}//end checkForm()
+
 
 
 	function loadXml(){

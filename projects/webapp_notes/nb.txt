@@ -8,6 +8,12 @@
 	*- get_content_item(), исправить формат данных: тип ноды, список дочерних страниц .....
 	* - исправить окно ожидания при аякс-запросах
 
+-----------------
+https://developer.mozilla.org/en-US/docs/Web/API/FormData
+https://developer.mozilla.org/ru/docs/Web/API/FormData
+https://developer.mozilla.org/ru/docs/Web/API/FormData/Using_FormData_Objects
+
+-----------------
 - сделать использование 
 	*таксономии, 
 	тегов,

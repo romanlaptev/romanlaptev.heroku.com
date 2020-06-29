@@ -17,7 +17,7 @@ border-radius: 5px;
 	position: fixed;
 	bottom: 0;
 	right:0;
-	z-index: 999;
+	z-index: 9999;
 	opacity: 0.9;
 	border-radius: 4px;
 }
@@ -171,4 +171,9 @@ border-top: 16px solid #1c5a83;
 
 .navbar-expand-sm {
 	justify-content: space-between;
+}
+
+
+.invalid-field {
+	border: 1px solid red;
 }
