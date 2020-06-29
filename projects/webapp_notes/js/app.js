@@ -19,10 +19,10 @@ var _app = function ( opt ){
 		"localRequestUrl" : "data/export.xml",
 		//"localRequestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
 		
-		"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
+		//"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
 //		"serverUrl" : "https://romanlaptev-cors.herokuapp.com/\
 //https://romanlaptev.herokuapp.com/projects/db_admin/",
-		//"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
+		"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
 		
 		"templates" : {
 			"tpl-node" : _getTpl("tpl-node"),
