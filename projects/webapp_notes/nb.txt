@@ -1,6 +1,11 @@
+--------------------------------------
+- добавить начальный тест поддержки браузером функций
+
+--------------------------------------
 - ИСПРАВИТЬ, невозможно добавить новую ноду в существующую
 т.е. не сохраняется parent_id
 
+--------------------------------------
 - в сервисную панель добавить поле ввода для адреса запроса к серверу
 и кнопку перезагрузки
 
@@ -9,12 +14,19 @@
 
 		"localRequestUrl" : "data/export.xml",
 		//"localRequestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
+data source selector:
+1) local file (set webapp variable localRequestUrl)
+2) server RPC requests (set webapp variable serverUrl)
+3) browser local storage
+reload app button
 
+--------------------------------------
 *- изменить порядок работы app.js
 +если нет доступа к romanlaptev.heroku.com/projects/db_admin/,
 если возникает ошибка загрузки RPC url,
 то загружать локальный XML
 
+--------------------------------------
 - сделать получение/запись данных через запросы 
 к удаленной БД (romanlaptev.heroku.com/projects/db_admin/)
 	*- get_content_item(), исправить формат данных: тип ноды, список дочерних страниц .....
