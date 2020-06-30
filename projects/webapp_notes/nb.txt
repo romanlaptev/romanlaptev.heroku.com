@@ -1,3 +1,15 @@
+- ИСПРАВИТЬ, невозможно добавить новую ноду в существующую
+т.е. не сохраняется parent_id
+
+- в сервисную панель добавить поле ввода для адреса запроса к серверу
+и кнопку перезагрузки
+
+		"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
+		"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
+
+		"localRequestUrl" : "data/export.xml",
+		//"localRequestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
+
 *- изменить порядок работы app.js
 +если нет доступа к romanlaptev.heroku.com/projects/db_admin/,
 если возникает ошибка загрузки RPC url,

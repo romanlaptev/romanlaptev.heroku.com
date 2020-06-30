@@ -19,10 +19,10 @@ var _app = function ( opt ){
 		"localRequestUrl" : "data/export.xml",
 		//"localRequestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
 		
-		//"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
+		"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
 //		"serverUrl" : "https://romanlaptev-cors.herokuapp.com/\
 //https://romanlaptev.herokuapp.com/projects/db_admin/",
-		"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
+		//"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
 		
 		"templates" : {
 			"tpl-node" : _getTpl("tpl-node"),
@@ -115,44 +115,32 @@ var _app = function ( opt ){
 			}
 			
 //console.log("Submit form", event, this);
-			var form = document.forms["form_node"];
+			var _form = document.forms["form_node"];
 //console.log(form);
 //console.log(form.elements, form.elements.length);
 //console.log(form.elements["number"]);
 //form.action = "?q=save-node";
 //console.log(form.action);
 			var isValid = checkForm({
-					"form" : form
+					"form" : _form
 			});
 			
-			if( isValid ){
-				_vars["nodeModal"].modal("hide");
-console.log( $(form).serialize() );
-
-var formData = new FormData( form );
-
-// Display the key/value pairs
-for (var pair of formData.entries()) {
-console.log(pair[0]+ ', ' + pair[1]);
-}
-
-
-//var formValues = {
-//"action" : p["action"],
-//"requestMethod" : form.getAttribute("method"),
-//"enctype" : form.getAttribute("enctype") ? form.getAttribute("enctype") : null
-//};
-//sendForm( formValues );
-
-			} else {
+			if( !isValid ){
 _vars["logMsg"] = "form validation error";
 func.logAlert(_vars["logMsg"], "error");
+				return false;
 			}
+			_vars["nodeModal"].modal("hide");
+			
+			_vars["init_url"] = "?q=save-node";
+			_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
+			_urlManager();
 				
 			return false;
 		};//end event
 				
 	}//end defineEvents()
+
 
 	function _urlManager( target ){
 //console.log(target, _vars["GET"]);
@@ -269,34 +257,67 @@ console.log("-- end rpc_request", resp );
 			break;
 */		
 			case "delete-node":
-				rpc_action = "remove_content_item";
-				sendRPC({
-					"action" : rpc_action,
-					"id" : _vars["GET"]["id"],
-					"postFunc" : function( resp ){
-//console.log("-- end rpc_request", resp );
-						resp["action"] = rpc_action;
-						resp["id"] = _vars["GET"]["id"];
-						parseServerResponse(resp);
-					}
-				});
+				if( !_vars["contentObj"] ){
+					rpc_action = "remove_content_item";
+					sendRPC({
+						"action" : rpc_action,
+						"id" : _vars["GET"]["id"],
+						"postFunc" : function( resp ){
+	//console.log("-- end rpc_request", resp );
+							resp["action"] = rpc_action;
+							resp["id"] = _vars["GET"]["id"];
+							parseServerResponse(resp);
+						}
+					});
+				}
 			break;
 
 
 			case "form-add-node":
 				var title = _vars["addNodeTitle"];
 				_vars["nodeModal"].find(".modal-title").text( title );
+				if( _vars["GET"]["parent_id"] ){
+					var form = document.forms["form_node"];
+					
+					//add input parent_id
+					var inpParentID = document.createElement("input");
+					inpParentID.setAttribute("name","parent_id");
+					inpParentID.setAttribute("type","text");
+					inpParentID.setAttribute("value", _vars["GET"]["parent_id"]);
+					form.appendChild( inpParentID );
+//console.log(form);
+//console.log(form.elements, form.elements.length);
+				}
 			break;
 			
 			case "form-edit-node":
 //console.log("-- form-edit-node");
 				var title = _vars["editNodeTitle"] + _vars["GET"]["id"];
 				_vars["nodeModal"].find(".modal-title").text( title );
+				
+				//remove input parent_id
+				var form = document.forms["form_node"];
+				if( form.elements["parent_id"] ){
+					var inpParentID = form.elements["parent_id"];
+					form.removeChild( inpParentID );
+//console.log(form.elements, form.elements.length);
+				}
+				
 			break;
 			
-			//case "save-node":
-			//break;
-
+			case "save-node":
+				if( !_vars["contentObj"] ){
+					rpc_action = "save_content_item";
+					sendRPC({
+						"action" : rpc_action,
+						"postFunc" : function( resp ){
+	console.log("-- end rpc_request", resp );
+							resp["action"] = rpc_action;
+							parseServerResponse(resp);
+						}
+					});
+				}
+			break;
 			
 			default:
 console.log("function _urlManager(),  GET query string: ", _vars["GET"]);			
@@ -362,7 +383,7 @@ func.logAlert(_vars["logMsg"], "warning");
 		for(var key in opt ){
 			p[key] = opt[key];
 		}
-console.log( p );
+//console.log( p );
 
 		if( !p["form"] ){
 _vars["logMsg"] = "error, checkForm()";
@@ -402,6 +423,48 @@ func.logAlert( _vars["logMsg"], "error");
 		return res;
 	}//end checkForm()
 
+
+	function sendForm( opt ){
+		var p = {
+			"form": null,
+			"url" : _vars["serverUrl"],
+			"postFunc": null
+		};
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+console.log( p );
+		
+		if( !p["form"] ){
+_vars["logMsg"] = "error, sendForm()";
+func.logAlert(_vars["logMsg"], "error");
+			return false;
+		}
+
+		//var formData = new FormData( form );
+		//for (var pair of formData.entries()) {
+//console.log(pair[0]+ ', ' + pair[1]);
+		//}
+
+		var formValues = $(p.form).serialize();
+console.log( formValues );
+
+//https://api.jquery.com/jquery.post/
+		var dataType = "json";//xml, json, script, text, html
+		$.post(	
+				p.url, 
+				formValues, 
+				function(data, textStatus, jqXHR){
+console.log(arguments);
+					if( typeof p.postFunc === "function"){
+						p.postFunc(data);
+					}
+				},
+				dataType
+		);
+			
+	}//end sendForm()
 
 
 	function loadXml(){
@@ -814,6 +877,23 @@ func.logAlert(_vars["logMsg"], "warning");
 				url = p.url + "?q=content/rpc_remove&id="+p.id;
 			break;
 			
+			case "save_content_item":
+				//url = p.url + "?q=content/rpc_remove&id="+p.id;
+				sendForm({
+					"form": document.forms["form_node"],
+					"url" : p.url + "?q=content/rpc_save",
+					"postFunc": function(_resp){
+//_vars["logMsg"] = "send form to server: " + _vars["serverUrl"];
+//func.logAlert(_vars["logMsg"], "info");
+console.log(_resp);
+						if( typeof p.postFunc === "function"){
+							p.postFunc( _resp );
+						}
+					} 
+				});
+				return;
+			break;
+			
 			//default:
 			//break;
 		}//end switch
@@ -953,6 +1033,12 @@ console.log( _vars["logMsg"] );
 				_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
 				_urlManager();
 			break;
+
+			case "save_content_item":
+				_vars["logMsg"] = p["message"];
+				func.logAlert(_vars["logMsg"], p["eventType"] );
+			break;
+
 			
 			default:
 console.log( p );

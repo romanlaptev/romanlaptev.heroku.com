@@ -58,7 +58,9 @@
 	<a data-toggle="collapse" href="#collapse-panel-service" aria-expanded="true" class="close" title="close panel">&times;</a>
 
 
+<!--
 <a href="?q=form-add-node" class="btn btn-success" data-toggle="modal" data-target="#node-modal">add new node</a>
+-->
 <a href="?q=export" class="btn btn-info">export content</a>
 <a href="?q=import" class="btn btn-warning">import content</a>
 <!--
@@ -164,7 +166,7 @@ method="POST"
       <div class="modal-body">
 		  
 	<div class="form-group">
-		<label id="title-label">*title: </label>
+		<label>*title: </label>
 <input type="text" class="form-control require-form-element" name="title" 
 value="new content item" autocomplete="off" required>
 	</div>
@@ -172,29 +174,29 @@ value="new content item" autocomplete="off" required>
 <div class="form-inline">
 	<div class="">
 		<label>content type: </label>
-<select id="content-type-select" name="type_id" class="form-control">
-	<option value="1" selected="selected">page</option>
-	<option value="2">article</option>
-	<option value="3">note</option>
-	<option value="4">book</option>
-	<option value="5">video</option>
-	<option value="6">music</option>
+<select name="content_type" class="form-control">
+	<option value="page">page</option>
+	<option value="article">article</option>
+	<option value="note" selected="selected">note</option>
+	<option value="book">book</option>
+	<option value="video">video</option>
+	<option value="music">music</option>
 </select>
 	</div>
 	
 	<div class="">
 		<label>body format: </label>
 		<select name="body_format" class="form-control">
-			<option value="1" selected="selected">plain text</option>
-			<option value="2">Filtered HTML</option>
-			<option value="3">Full HTML</option>
-			<option value="4">PHP code</option>
+			<option value="plain_text">plain text</option>
+			<option value="filtered_html">Filtered HTML</option>
+			<option value="full_html" selected="selected">Full HTML</option>
+			<option value="php_code">PHP code</option>
 		</select>
 	</div>
 </div>
 	
 	<div class="form-group">
-		<label id="body-value-label">*body value: </label>
+		<label>*body value: </label>
 <textarea id="body-value" name="body_value" class="form-control require-form-element" 
 rows="10" required></textarea>
 	</div>
@@ -225,8 +227,9 @@ rows="10" required></textarea>
 	created:<b>{{created}}</b>, changed:<b>{{changed}}</b>
 </small>
 <div class="float-right">
-	<a href="?q=form-edit-node&id={{id}}" class="btn btn-light btn-sm" data-toggle="modal" data-target="#node-modal">edit</a>
-	<a href="?q=delete-node&id={{id}}" class="btn btn-sm btn-danger">delete</a>
+	<a href="?q=form-edit-node&id={{id}}" class="btn btn-light" data-toggle="modal" data-target="#node-modal">edit</a>
+	<a href="?q=delete-node&id={{id}}" class="btn btn-danger">delete</a>
+	<a href="?q=form-add-node&parent_id={{id}}" class="btn btn-orange btn-sm" data-toggle="modal" data-target="#node-modal">add new child node</a>
 </div>
 <!--
 <b>body_format: </b>{{body_format}}

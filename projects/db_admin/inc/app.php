@@ -67,7 +67,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 				break;
 				
 				case "content/rpc_save":
-					$_vars["content"]->rpc_save( $request["request_data"] );
+					//$_vars["content"]->rpc_save( $request["request_data"] );
+					$_vars["content"]->rpc_save( $request );
 				break;
 				
 				case "content/list":

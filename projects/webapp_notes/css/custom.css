@@ -65,6 +65,102 @@ margin: 0;
 	margin-left: -40px;	
 }
 
+/* BUTTONS */
+
+.btn-blue {
+	background-color: #007bff;
+	color: #fff;
+	-webkit-box-shadow: inset 0 36px 38px -38px #fff;
+	-moz-box-shadow: inset 0 36px 38px -38px #fff;
+	box-shadow: inset 0 36px 38px -38px #fff;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.btn-blue:hover {
+	background-color: #ff8c00 !important;
+	color: #000 !important;
+}
+
+.btn-blue:focus {
+	color: #fff !important;
+	outline: 0;
+}
+
+.btn-blue:active:focus {
+	color: #000 !important;
+}
+.btn-blue:active {
+}
+.btn-blue:visited {
+}
+
+
+.btn-darkblue {
+	background-color: #004586;
+	-webkit-box-shadow: inset 0 36px 38px -38px #fff;
+	-moz-box-shadow: inset 0 36px 38px -38px #fff;
+	box-shadow: inset 0 36px 38px -38px #fff;
+	border-color: #3f9cca;
+	color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.btn-darkblue:hover {
+	background-color: #ff8c00;
+	border-color: #ff8c00;
+	color: #000 !important;
+}
+
+.btn-darkblue:focus {
+	color: #fff !important;
+}
+
+
+
+.btn-orange {
+  border-color: #925c23;
+  color: #694219;
+background-color:#f5c489;
+background:-webkit-gradient(linear, left top, left bottom, from(#FED99A), to(#ECAE78));
+background:-moz-linear-gradient(top, #FED99A, #ECAE78);
+background:-o-linear-gradient(top, #FED99A, #ECAE78);
+background:linear-gradient(top, #FED99A, #ECAE78);
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#FED99A', endColorstr='#ECAE78');
+}
+
+.btn-orange:hover, 
+.btn-orange:focus 
+{
+
+background-color:#f3b871;
+background:-webkit-gradient(linear, left top, left bottom, from(#fed081), to(#e9a162));
+background:-moz-linear-gradient(top, #fed081, #e9a162);
+background:-o-linear-gradient(top, #fed081, #e9a162);
+background:linear-gradient(top, #fed081, #e9a162);
+filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fed081', endColorstr='#e9a162');
+    border-color: #925c23;
+    box-shadow: 0 1px 2px #777;
+    color: #694219;
+}
+
+
+.btn-orange-m {
+	background: -webkit-linear-gradient(#ffd862, #ffc30b);
+	background: -o-linear-gradient(#ffd862, #ffc30b);
+	background: -moz-linear-gradient(#ffd862, #ffc30b);
+	background: linear-gradient(#ffb644, #ff9e07);
+	border-color: #ffb644;
+	color:#000;
+}
+
+.btn-orange-m:focus:not(:disabled):not(.disabled){
+	border-color: #B36C00;
+}
+
+
+
 
 .breadcrumb-custom {
 	/*background-color: #b1d0ef !important;*/

@@ -218,7 +218,7 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 		
 	}//end save()
 
-
+/*
 	public function rpc_save( $request_data ){
 		$jsonStr = "";
 		for($n = 0; $n < count($request_data); $n++){
@@ -249,6 +249,71 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 		$jsonStr = "[".$jsonStr."]";
 		echo $jsonStr;
 		exit();
+	}//end rpc_save()
+*/
+	public function rpc_save( $params ){
+		global $_vars;
+
+		$p = array(
+			"title" => null,
+			"content_type" => "page",//default content type "page"
+			"body_value" => null,
+			"body_format" => "plain text",//default filter type "plain text"
+			"parent_id" => null
+		);
+		
+		//check parameters object (only from array $p[key] )
+		foreach( $p as $key=>$value ){
+			if( !empty($params[ $key ]) ){
+				$p[ $key ] = $params[ $key ];
+			}
+		}//next
+//echo _logWrap($p);
+
+		if( !$p["title"] ){
+			$eventType = "error";
+			$msg = "error, empty required field 'title'...";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}';
+			echo $jsonStr;
+			exit();
+		}
+		if( !$p["body_value"] ){
+			$eventType = "error";
+			$msg = "error, empty required field 'body_value'...";
+			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}';
+			echo $jsonStr;
+			exit();
+		}
+
+		$jsonStr = "";
+
+		$arg = array(
+			"name" => $p["content_type"]
+		);
+		
+		$p["type_id"] = $this->getContentTypeID($arg);
+		//unset( $p["content_type"] );
+		
+		$arg = array(
+			"format" => $p["body_format"]
+		);
+		$p["body_format"] = $this->getFilterFormatID($arg);
+			
+		$eventType = "error";
+		$msg = "content item ".$p["title"]." NOT saved...";
+			
+		$response = $this->save( $p );
+		if($response){
+			$eventType = "success";
+			$msg = "content item '".$p["title"]."' was saved...";
+		}
+		
+		$arg = array(
+			"jsonStr" => '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}'
+		);
+		$_vars["app"]->sendResponse($arg);
+		exit();
+		
 	}//end rpc_save()
 
 
@@ -567,6 +632,7 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		foreach( $params as $key=>$item ){
 			$p[ $key ] = $item;
 		}//next
+		
 //echo _logWrap($p);
 
 		if( !$p["id"] ){
