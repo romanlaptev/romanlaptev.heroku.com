@@ -54,13 +54,10 @@
 
 	<div id="collapse-panel-service" class="panel-collapse collapse" aria-expanded="false">
 		<div class="card">
+			
 			<div class="card-body">
-	<a data-toggle="collapse" href="#collapse-panel-service" aria-expanded="true" class="close" title="close panel">&times;</a>
-
-
-<!--
-<a href="?q=form-add-node" class="btn btn-success" data-toggle="modal" data-target="#node-modal">add new node</a>
--->
+				<a data-toggle="collapse" href="#collapse-panel-service" aria-expanded="true" class="close" title="close panel">&times;</a>
+<a href="?q=form-add-node" class="btn btn-success" data-toggle="modal" data-target="#node-modal">add new content node</a>
 <a href="?q=export" class="btn btn-info">export content</a>
 <a href="?q=import" class="btn btn-warning">import content</a>
 <!--
@@ -68,19 +65,47 @@
 <a href="#remove_table" class="btn btn-sm btn-danger">refresh table</a>
 <a href="phppgadmin/" class="btn btn-sm btn-success">phpPgAdmin 5.6</a>
 -->
-
+			</div>
+			
+			<div class="card-body panel">
 				<ul class="list-unstyled">
 					<li><a href="v1/">previous version</a></li>
 					<li><a href="files/test_API.html" target="_blank">test API</a></li>
 				</ul>
-<pre>
-data source:
-1) local file (set webapp variable localRequestUrl)
-2) server RPC requests (set webapp variable serverUrl)
-3) browser local storage
-</pre>
 			</div>
-		</div>
+
+			<div class="card-body panel">
+<form name="form_system" id="form-system" action="">
+	<h6>select data source</h6>
+	<div class="panel bg-light">
+<input type="radio" name="data_source_type" checked="checked" value="use-rpc-requests"> use server RPC requests<br>
+<i>serverUrl: </i><input type="text" id="inp-server-url" name="server_url" value="" class="w100">
+<pre>
+https://romanlaptev.herokuapp.com/projects/db_admin/
+https://romanlaptev-cors.herokuapp.com/https://romanlaptev.herokuapp.com/projects/db_admin/
+</pre>
+	</div>
+	
+	<div class="panel bg-light">
+<input type="radio" name="data_source_type" value="load-local-file"> load local data file (XML)<br>
+<i>localRequestPath: </i><input type="text" id="inp-local-path" name="local_path" value="" class="w100">
+<pre>
+/mnt/d2/temp/export_mydb_allnodes.xml
+</pre>
+	</div>
+	
+	<div class="panel bg-dark">
+<input type="radio" name="data_source_type" value="use-local-storage" disabled> use browser local storage (indexedDB)<br>
+	</div>
+
+    <div class="panel">
+		<button type="reset" class="btn btn-large btn-warning">reset form</button>
+		<button type="submit" class="btn btn-large btn-primary">reload app</button>
+    </div>
+</form>
+			</div>
+			
+		</div><!-- end card -->
 	</div><!-- end collapse-panel-service -->
 		
 	<div id="App">

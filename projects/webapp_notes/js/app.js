@@ -11,18 +11,20 @@ console.log( webApp );
 var _app = function ( opt ){
 //console.log(arguments);	
 	var _vars = {
-		//"init_url" : "?q=load-xml",
+		//"init_url" : "?q=load-local-file",
 		//"init_url" : "?q=send_rpc_request&action=get_content_list",
 		//"init_url" : "?q=send_rpc_request&action=get_booklist",
 		"init_url" : "?q=book-list",
-
-		"localRequestUrl" : "data/export.xml",
-		//"localRequestUrl" : "/mnt/d2/temp/export_mydb_allnodes.xml",
 		
-		//"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
+		"dataSourceType" : "use-rpc-requests", //use-rpc-requests, load-local-file, use-local-storage
+
+		"localRequestPath" : "data/export.xml",
+		//"localRequestPath" : "/mnt/d2/temp/export_mydb_allnodes.xml",
+
+		"serverUrl" : "/projects/romanlaptev.heroku/projects/db_admin/",
 //		"serverUrl" : "https://romanlaptev-cors.herokuapp.com/\
 //https://romanlaptev.herokuapp.com/projects/db_admin/",
-		"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
+		//"serverUrl" : "https://romanlaptev.herokuapp.com/projects/db_admin/",
 		
 		"templates" : {
 			"tpl-node" : _getTpl("tpl-node"),
@@ -54,6 +56,9 @@ var _app = function ( opt ){
 		//"loaded" : func.getById("loaded"),
 		//"loadInfo" : func.getById("load-info")
 
+		"inputServerUrl" : func.getById("inp-server-url"),
+		"inputLocalPath" : func.getById("inp-local-path"),
+
 		"nodeModal" : $("#node-modal"),
 		"addNodeTitle": "add new node",
 		"editNodeTitle": "edit node, id: "//,
@@ -63,9 +68,23 @@ var _app = function ( opt ){
 	var _init = function(){
 //console.log("init _notes");
 
-		defineEvents();
+
+//-------------------		
+		if( window.location.host === "romanlaptev.herokuapp.com"){
+			_vars["serverUrl"] ="https://romanlaptev.herokuapp.com/projects/db_admin/";
+		}
+
+//-------------------		
+		_vars["inputServerUrl"].value = _vars["serverUrl"];
+		_vars["inputLocalPath"].value = _vars["localRequestPath"];
 		
-					
+//-------------------		
+		defineEvents();
+		_runApp();
+	};//end _init()
+
+
+	function _runApp(){
 		var parseUrl = window.location.search; 
 		if( parseUrl.length > 0 ){
 			_vars["GET"] = func.parseGetParams(); 
@@ -79,8 +98,7 @@ var _app = function ( opt ){
 			_vars["GET"] = func.parseGetParams( parseUrl ); 
 			_urlManager();
 		}
-		
-	};//end _init()
+	}//end _runApp()
 
 
 	function _getTpl( id ){
@@ -138,6 +156,47 @@ func.logAlert(_vars["logMsg"], "error");
 				
 			return false;
 		};//end event
+
+
+		//CHANGED SYSTEM variables and reload app
+		document.forms["form_system"].onsubmit = function(event){
+			event = event || window.event;
+			var target = event.target || event.srcElement;
+			
+			if (event.preventDefault) { 
+				event.preventDefault();
+			} else {
+				event.returnValue = false;
+			}
+//console.log("Submit form", event, this);
+			var form = document.forms["form_system"];
+//console.log(form);
+			for( var n = 0; n < form.elements.length; n++){
+				var _element = form.elements[n];
+        if(_element.name === "data_source_type" && _element.checked ){
+//console.log( _element.value, _element.checked );
+//elmnt.checked = false;
+					_vars["dataSourceType"] = _element.value;
+					
+					if(_element.value === "use-rpc-requests" ){
+						_vars["serverUrl"] = form.elements["server_url"].value;
+					}
+					if(_element.value === "load-local-file" ){
+						_vars["localRequestPath"] = form.elements["local_path"].value;
+					}
+					
+        }
+			}//next
+			
+			//reload app
+			//_runApp();
+			_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
+			_urlManager();
+			
+			$("#collapse-panel-service").collapse("hide");
+			
+			return false;
+		};//end event
 				
 	}//end defineEvents()
 
@@ -146,6 +205,13 @@ func.logAlert(_vars["logMsg"], "error");
 //console.log(target, _vars["GET"]);
 
 		switch( _vars["GET"]["q"] ) {
+
+			//case "reload-app":
+				//_vars["serverUrl"] = _vars["inputServerUrl"].value;
+				//_vars["localRequestPath"] = _vars["inputLocalPath"].value;
+				//_vars["dataSourceType"] = 
+				//_runApp();
+			//break;
 
 			case "toggle-log":
 //console.log(webApp.vars["log"]..style.display);
@@ -162,7 +228,7 @@ func.logAlert(_vars["logMsg"], "error");
 				_vars["log"].innerHTML="";
 			break;
 						
-			case "load-xml":
+			case "load-local-file":
 				loadXml();
 			break;
 			
@@ -171,23 +237,28 @@ func.logAlert(_vars["logMsg"], "error");
 				_vars["breadcrumbs"] = {"top":"book list"}//?q=book-list
 				
 				//get book list from local contentObj
-				if( _vars["contentObj"] ){
-					//form book list (parent_id=0)
-					var bookList = _getPageList({
-							"parent_id" : "0"
-					});
-				//console.log(bookList);
-					var html = _formPageList({
-						"pages" : bookList,
-						"html": _vars["templates"]["tpl-booklist"]
-					});
-					_vars["contentList"].innerHTML = html;
+				if( _vars["dataSourceType"] === "load-local-file"){
+					if( _vars["contentObj"] ){
+					
+						//form book list (parent_id=0)
+						var bookList = _getPageList({
+								"parent_id" : "0"
+						});
+					//console.log(bookList);
+						var html = _formPageList({
+							"pages" : bookList,
+							"html": _vars["templates"]["tpl-booklist"]
+						});
+						_vars["contentList"].innerHTML = html;
+					} else {
+_vars["logMsg"] = "Load local data file " + _vars["localRequestPath"];
+func.logAlert(_vars["logMsg"], "info");
+						loadXml();
+					}
 				}
 				 
 				//get book list from server
-				if( !_vars["contentObj"] ){
-					
-				//if( _vars["serverUrl"] ){
+				if( _vars["dataSourceType"] === "use-rpc-requests" ){
 					rpc_action = "get_booklist";
 					sendRPC({
 						"action" : rpc_action,
@@ -199,37 +270,42 @@ func.logAlert(_vars["logMsg"], "error");
 					});
 				}
 				
+				//if( _vars["dataSourceType"] === "use-local-storage" ){
+				//}
+				
 			break;
 
 			case "view-node"://output single content node with child pages links
 			
 				//get node from local contentObj
-				if( _vars["contentObj"] ){
-					var nodeObj = _getNode({
-						"id" : _vars["GET"]["id"]
-					});
-	//console.log(nodeObj);
-					if( nodeObj ){
-						
-						var html = _formNode({"node" : nodeObj});
-						_vars["contentList"].innerHTML = html;
-						
-						//hide service buttons
-						var btnDelete = func.getById("btn-delete-node");
-						btnDelete.style.display="none";
-						
-						var btnEdit = func.getById("btn-edit-node");
-						btnEdit.style.display="none";
-						
-					} else {
-	_vars["logMsg"] = "Not find node, id:" + _vars["GET"]["id"];
-	func.logAlert(_vars["logMsg"], "error");
-	console.log( _vars["logMsg"] );
+				if( _vars["dataSourceType"] === "load-local-file"){
+					if( _vars["contentObj"] ){
+						var nodeObj = _getNode({
+							"id" : _vars["GET"]["id"]
+						});
+		//console.log(nodeObj);
+						if( nodeObj ){
+							
+							var html = _formNode({"node" : nodeObj});
+							_vars["contentList"].innerHTML = html;
+							
+							//hide service buttons
+							//var btnDelete = func.getById("btn-delete-node");
+							//btnDelete.style.display="none";
+							
+							//var btnEdit = func.getById("btn-edit-node");
+							//btnEdit.style.display="none";
+							
+						} else {
+		_vars["logMsg"] = "Not find node, id:" + _vars["GET"]["id"];
+		func.logAlert(_vars["logMsg"], "error");
+		console.log( _vars["logMsg"] );
+						}
 					}
 				}
 
 				//get node from server
-				if( !_vars["contentObj"] ){
+				if( _vars["dataSourceType"] === "use-rpc-requests" ){
 					rpc_action = "get_content_item";
 					sendRPC({
 						"action" : rpc_action,
@@ -257,7 +333,7 @@ console.log("-- end rpc_request", resp );
 			break;
 */		
 			case "delete-node":
-				if( !_vars["contentObj"] ){
+				if( _vars["dataSourceType"] === "use-rpc-requests" ){
 					rpc_action = "remove_content_item";
 					sendRPC({
 						"action" : rpc_action,
@@ -274,39 +350,51 @@ console.log("-- end rpc_request", resp );
 
 
 			case "form-add-node":
-				var title = _vars["addNodeTitle"];
-				_vars["nodeModal"].find(".modal-title").text( title );
-				if( _vars["GET"]["parent_id"] ){
+				if( _vars["dataSourceType"] === "use-rpc-requests" ){
+					var title = _vars["addNodeTitle"];
+					_vars["nodeModal"].find(".modal-title").text( title );
+
 					var form = document.forms["form_node"];
-					
-					//add input parent_id
-					var inpParentID = document.createElement("input");
-					inpParentID.setAttribute("name","parent_id");
-					inpParentID.setAttribute("type","text");
-					inpParentID.setAttribute("value", _vars["GET"]["parent_id"]);
-					form.appendChild( inpParentID );
-//console.log(form);
-//console.log(form.elements, form.elements.length);
+					if( _vars["GET"]["parent_id"] ){
+						//add input parent_id
+						var inpParentID = document.createElement("input");
+						inpParentID.setAttribute("name","parent_id");
+						inpParentID.setAttribute("type","text");
+						inpParentID.setAttribute("value", _vars["GET"]["parent_id"]);
+						form.appendChild( inpParentID );
+	//console.log(form);
+	//console.log(form.elements, form.elements.length);
+					} else {
+						
+						if( form.elements["parent_id"] ){
+							var inpParentID = form.elements["parent_id"];
+							form.removeChild( inpParentID );
+		//console.log(form.elements, form.elements.length);
+						}
+						
+					}
 				}
+				
 			break;
 			
 			case "form-edit-node":
 //console.log("-- form-edit-node");
-				var title = _vars["editNodeTitle"] + _vars["GET"]["id"];
-				_vars["nodeModal"].find(".modal-title").text( title );
-				
-				//remove input parent_id
-				var form = document.forms["form_node"];
-				if( form.elements["parent_id"] ){
-					var inpParentID = form.elements["parent_id"];
-					form.removeChild( inpParentID );
-//console.log(form.elements, form.elements.length);
+				if( _vars["dataSourceType"] === "use-rpc-requests" ){
+					var title = _vars["editNodeTitle"] + _vars["GET"]["id"];
+					_vars["nodeModal"].find(".modal-title").text( title );
+					
+					//remove input parent_id
+					var form = document.forms["form_node"];
+					if( form.elements["parent_id"] ){
+						var inpParentID = form.elements["parent_id"];
+						form.removeChild( inpParentID );
+	//console.log(form.elements, form.elements.length);
+					}
 				}
-				
 			break;
 			
 			case "save-node":
-				if( !_vars["contentObj"] ){
+				if( _vars["dataSourceType"] === "use-rpc-requests" ){
 					rpc_action = "save_content_item";
 					sendRPC({
 						"action" : rpc_action,
@@ -481,7 +569,7 @@ console.log(arguments);
 
 		func.runAjax( {
 			"requestMethod" : "GET", 
-			"url" : _vars["localRequestUrl"], 
+			"url" : _vars["localRequestPath"], 
 			
 			"onProgress" : function( e ){
 				var percentComplete = 0;
@@ -504,7 +592,7 @@ console.log( "Loaded " + e.loaded + " bytes of total " + e.total, e.lengthComput
 			
 			"onError" : function( xhr ){
 //console.log( "onError ", xhr);
-_vars["logMsg"] = "error, not load " + _vars["localRequestUrl"]
+_vars["logMsg"] = "error, not load " + _vars["localRequestPath"]
 func.logAlert(_vars["logMsg"], "error");
 console.log( _vars["logMsg"] );
 			},//end callback function
@@ -521,7 +609,7 @@ console.log(_vars["logMsg"]);
 			
 			"callback": function( data, runtime ){
 //console.log(data.length, typeof data, data );
-_vars["logMsg"] = "load " + _vars["localRequestUrl"]  +", runtime: "+ runtime +" sec";
+_vars["logMsg"] = "load " + _vars["localRequestPath"]  +", runtime: "+ runtime +" sec";
 func.logAlert(_vars["logMsg"], "info");
 console.log( _vars["logMsg"] );
 // //console.log( "_postFunc(), " + typeof data );
@@ -531,7 +619,7 @@ console.log( _vars["logMsg"] );
 // //}
 
 				if( !data ){
-_vars["logMsg"] = "error, no XML data in " + _vars["localRequestUrl"] ;
+_vars["logMsg"] = "error, no XML data in " + _vars["localRequestPath"] ;
 func.logAlert(_vars["logMsg"], "error");
 console.log( _vars["logMsg"] );
 					return false;
@@ -971,7 +1059,7 @@ _vars["logMsg"] = "server error, trying to load XML local file";
 func.logAlert(_vars["logMsg"], "warning");
 
 			_vars["serverUrl"] = false;
-			_vars["init_url"] = "?q=load-xml";
+			_vars["init_url"] = "?q=load-local-file";
 			_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
 			_urlManager();
 			return false;
