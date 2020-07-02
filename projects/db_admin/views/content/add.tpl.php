@@ -59,7 +59,7 @@
 	<fieldset>
 		<legend><b>content hierarchy, select parent content item</b></legend>
 		<div>
-<input name="parent_id" type="radio" value="top">set item as new content group (top level)<br/>
+<input name="parent_id" type="radio" value="0">set item as new content group (book)<br/>
 {{content_links}}
 		</div>
 	</fieldset>

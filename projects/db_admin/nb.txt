@@ -534,14 +534,6 @@ APACHE, htaccess 	19 					19 					remove link
 		$sql_query .= "WHERE parent_id=".$p["content_id"].";";
 
 
-
---------------------------------------------
-- ИСПРАВИТЬ: при создании ноды не добавляется информация о связях в таблицу content_links
-т.к. не существует content_id для новой ноды и подставляется пустое значение
-
-query2. error, query: REPLACE INTO `content_links` (`content_id`,`parent_id`) VALUES ('','69'); 
-query1. run query: REPLACE INTO `content` (`type_id`,`title`,`body_value`,`created`,`changed`) VALUES ('2','note33','t1','1589342980','1589342980'); 
-
 ------------------------
 *- СДЕЛАТЬ ссылку для вставки записей в content_type
 
@@ -561,7 +553,7 @@ INSERT INTO content_type(name) VALUES('music');
 на страницу просмотра ноды добавить кнопку ADD NEW CHILD CONTENT
 нажатие вызывает форму добавления новой ноды с заполненным parent_id
 
---------------------------
+*--------------------------
 ИСПРАВИТЬ: при создании ноды не выполняется дополнительный запрос
 к content_links и невозможно при создании определить место в иерархии контента
 
@@ -570,3 +562,9 @@ INSERT INTO content_type(name) VALUES('music');
 пустое значение content_id
 
 error, query: REPLACE INTO `content_links` (`content_id`,`parent_id`) VALUES ('','0'); 
+
+- ИСПРАВИТЬ: при создании ноды не добавляется информация о связях в таблицу content_links
+т.к. не существует content_id для новой ноды и подставляется пустое значение
+
+query2. error, query: REPLACE INTO `content_links` (`content_id`,`parent_id`) VALUES ('','69'); 
+query1. run query: REPLACE INTO `content` (`type_id`,`title`,`body_value`,`created`,`changed`) VALUES ('2','note33','t1','1589342980','1589342980'); 

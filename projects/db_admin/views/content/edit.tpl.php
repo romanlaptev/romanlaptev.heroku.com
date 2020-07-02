@@ -93,8 +93,8 @@ clear any values from field - remove content link (NULL, no value)
 -->
 
 <div>
-	<input name="parent_id" type="radio" value="0">remove link<br/>
-	<input name="parent_id" type="radio" value="top">set item as new content group (top level)<br/>
+	<input name="parent_id" type="radio" value="remove_link">remove link<br/>
+	<input name="parent_id" type="radio" value="0">set item as new content group (book)<br/>
 {{content_links}}
 </div>
 

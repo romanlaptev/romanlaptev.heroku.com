@@ -805,6 +805,14 @@ console.log(e);
 			
 		}//end _runAjax()
 
+
+		function _addEvent( element, eventName, func ) {
+			if ( element.addEventListener ) {
+				return element.addEventListener(eventName, func, false);
+			} else if ( element.attachEvent ) {
+				return element.attachEvent("on" + eventName, func);
+			}
+		};//end _addEvent()
 		
 		// public interfaces
 		return{
@@ -815,7 +823,8 @@ console.log(e);
 			runAjax: _runAjax,
 			timeStampToDateStr: _timeStampToDateStr,
 			convertXmlToObj: _convertXmlToObj,
-			parseGetParams: _parseGetParams
+			parseGetParams: _parseGetParams,
+			addEvent: _addEvent
 		};
 		
 	};//end sharedFunc

@@ -156,10 +156,12 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 
 		//check input parameters object (only from array $p[key] )
 		foreach( $p as $key=>$value ){
-			if( !empty($params[ $key ]) ){
+			//if( !empty($params[ $key ]) ){
+			if( isset($params[ $key ]) ){
 				$p[ $key ] = $params[ $key ];
 			}
 		}//next
+//echo _logWrap($p);
 		
 		//remove not requred id (no need, when add category info)
 		//if( !$p["content_id"] ){

@@ -75,10 +75,12 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		
 		//check parameters object (only from array $p[key] )
 		foreach( $p as $key=>$value ){
-			if( !empty($params[ $key ]) ){
+			//if( !empty($params[ $key ]) ){
+			if( isset($params[ $key ]) ){
 				$p[ $key ] = $params[ $key ];
 			}
 		}//next
+//echo _logWrap($p);
 
 		//remove not requred id (no need, when add note)
 		//if( !$p["id"] ){
@@ -153,50 +155,32 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 		$res = $db->saveRecord($arg);
 
 		if( !$res["status"] ){
-			$msg = "error, not save content item";
+			$msg = "error, not save content item ".$p["title"];
 			$msg_type = "error";
 			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 			return false;
 		}
+		$msg = "save content item ".$p["title"];
+		$msg_type = "success";
+		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
+
 		
 //------------------------------ set content link, parent
-		if( !empty($p["parent_id"]) ){
-			$msg2 = "error, not save content links info.";
-			$msg2_type = "error";
-			//$_vars["content_links"] = new ContentLinks();
-			if( $_vars["content_links"] ){
-				$arg = array(
-					"content_id" => $p["id"], 
-					"parent_id" => $p["parent_id"]
-				);
-//---------------------
-if( $p["parent_id"] == "top"){
-	$arg["parent_id"] = 0;
-}
-//---------------------					
-				$save_res = $_vars["content_links"]->save( $arg );
-				if( $save_res["status"] ){
-					$msg2 = "save content links info.";
-					$msg2_type = "success";
-					$_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
-				}
-			}
-		} 
-			
-//$_vars["log"][] = array("message" => "parent_id:".$p["parent_id"] , "type" => "info");
-//----------------------------- remove node content link
+//echo _logWrap( "parent_id: ".$p["parent_id"] );
+//echo _logWrap( "Type parent_id: ".gettype($p["parent_id"]) );
 
-		if( !$p["id"] ){//skip, if new node
-			$msg = "save content item ".$p["title"];
-			$msg_type = "success";
-			$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
-			return $res["status"];
+		//if( empty($p["parent_id"]) ){
+//echo _logWrap( "empty(not set) parent_id, return...");
+			//return $res["status"];
+		//}
+
+//--------------------- get content_id after create new node
+		if( !empty( $res["last_insert_id"] ) ) {
+			$p["id"] = $res["last_insert_id"];
 		}
 
-			
-		if( isset($p["parent_id"]) &&
-			empty($p["parent_id"]) )
-		{
+//----------------------------- remove node content link
+		if( $p["parent_id"] == "remove_link" ){
 			//$_vars["content_links"] = new ContentLinks();
 			if( $_vars["content_links"] ){
 				$arg = array(
@@ -209,14 +193,35 @@ $msg2_type = "warning";
 $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 				}
 			}
+			return $res["status"];
 		}
-			
-		$msg = "save content item ".$p["title"];
-		$msg_type = "success";
-		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
-		return $res["status"];
 		
+		//---------------------
+		//if( !empty($p["parent_id"]) ){
+		//if( isset($p["parent_id"]) ){
+//echo _logWrap( "is set parent_id");
+			$msg2 = "error, not save content links info.";
+			$msg2_type = "error";
+			//$_vars["content_links"] = new ContentLinks();
+			if( $_vars["content_links"] ){
+				
+				$arg = array(
+					"content_id" => $p["id"], 
+					"parent_id" => $p["parent_id"]
+				);
+				$save_res = $_vars["content_links"]->save( $arg );
+				if( $save_res["status"] ){
+					$msg2 = "save content links info.";
+					$msg2_type = "success";
+					$_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
+				}
+			}
+		//} 
+			
+//$_vars["log"][] = array("message" => "parent_id:".$p["parent_id"] , "type" => "info");
+		return $res["status"];
 	}//end save()
+
 
 /*
 	public function rpc_save( $request_data ){

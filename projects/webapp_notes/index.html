@@ -40,7 +40,11 @@
 </li>
 
 <li class="nav-item">
-	<a class="nav-link" data-toggle="collapse" href="#collapse-panel-service" aria-expanded="false" title="service panel">
+	<a id="btn-service-panel" class="nav-link" 
+href="#collapse-panel-service" 
+data-toggle="collapse" 
+aria-expanded="false" 
+title="service panel">
 		<i class="fas fa-tools"></i>
 	</a>
 </li>
@@ -57,7 +61,7 @@
 			
 			<div class="card-body">
 				<a data-toggle="collapse" href="#collapse-panel-service" aria-expanded="true" class="close" title="close panel">&times;</a>
-<a href="?q=form-add-node" class="btn btn-success" data-toggle="modal" data-target="#node-modal">add new content node</a>
+<a href="?q=form-add-node&parent_id=0" class="btn btn-success" data-toggle="modal" data-target="#node-modal">add new book (content group)</a>
 <a href="?q=export" class="btn btn-info">export content</a>
 <a href="?q=import" class="btn btn-warning">import content</a>
 <!--
@@ -202,7 +206,7 @@ value="new content item" autocomplete="off" required>
 	</div>
 
 <div class="form-inline">
-	<div class="">
+	<div class="margin-small">
 		<label>content type: </label>
 <select name="content_type" class="form-control">
 	<option value="page">page</option>
@@ -214,7 +218,7 @@ value="new content item" autocomplete="off" required>
 </select>
 	</div>
 	
-	<div class="">
+	<div class="margin-small">
 		<label>body format: </label>
 		<select name="body_format" class="form-control">
 			<option value="plain_text">plain text</option>
@@ -223,6 +227,17 @@ value="new content item" autocomplete="off" required>
 			<option value="php_code">PHP code</option>
 		</select>
 	</div>
+
+	<div class="margin-small">
+		<label>id</label>
+		<input type="text" name="id" size="3" readonly />
+	</div>
+	
+	<div class="margin-small">
+		<label>parent id</label>
+		<input type="text" name="parent_id" value="0" size="3" readonly />
+	</div>
+	
 </div>
 	
 	<div class="form-group">
@@ -257,7 +272,7 @@ rows="10" required></textarea>
 	created:<b>{{created}}</b>, changed:<b>{{changed}}</b>
 </small>
 <div class="float-right">
-	<a href="?q=form-edit-node&id={{id}}" class="btn btn-light" data-toggle="modal" data-target="#node-modal">edit</a>
+	<a href="?q=form-edit-node&id={{id}}&parent_id={{parent_id}}" class="btn btn-light" data-toggle="modal" data-target="#node-modal">edit</a>
 	<a href="?q=delete-node&id={{id}}" class="btn btn-danger">delete</a>
 	<a href="?q=form-add-node&parent_id={{id}}" class="btn btn-orange btn-sm" data-toggle="modal" data-target="#node-modal">add new child node</a>
 </div>

@@ -748,14 +748,6 @@ if( empty($request_arr["action"]) ){
 			echo $p["jsonStr"];
 			exit();
 		}	
-		
-		if ( !$p["jsonObj"] ){
-			$msg = "server error, empty json object, jsonEncode()";
-			$eventType = "error";
-			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$msg.'"}';
-			echo $jsonStr;
-			exit();
-		}	
 
 		if ( !function_exists("json_encode") ){//PHP 5 >= 5.2.0
 			$eventType = "error";
@@ -765,12 +757,27 @@ if( empty($request_arr["action"]) ){
 			exit();
 		}
 		
+		if ( !$p["jsonObj"] ){
+			$response = array(
+				"msg" => "data not found",
+				"eventType" => "error",
+				"errorCode" => "data_not_found"
+			);
+			$jsonStr = json_encode( $response );
+			echo $jsonStr;
+			exit();
+		}	
+
+		
 		$json_string = json_encode( $p["jsonObj"] );
 		if ( !function_exists("json_last_error") ){ //PHP 5 >= 5.3.0
-			$eventType = "error";
 			//http://php.net/manual/ru/function.json-encode.php
-			$message = "<p>error, not support function <b>json_last_error()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.3.0</p>";
-			$jsonStr = '{"eventType": "'.$eventType.'", "message": "'.$message.'"}';
+			$response = array(
+"msg" => "<p>error, not support function <b>json_last_error()</b>. wrong PHP version - ".phpversion().", need PHP >= 5.3.0</p>",
+"eventType" => "error",
+"errorCode" => "error_encode"
+			);
+			$jsonStr = json_encode( $response );
 			echo $jsonStr;
 			exit();
 		}
