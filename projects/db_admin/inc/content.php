@@ -260,6 +260,7 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 		global $_vars;
 
 		$p = array(
+			"id" => null,
 			"title" => null,
 			"content_type" => "page",//default content type "page"
 			"body_value" => null,

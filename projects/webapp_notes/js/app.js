@@ -61,6 +61,7 @@ var _app = function ( opt ){
 
 		"nodeModal" : $("#node-modal"),
 		"addNodeTitle": "add new content node",
+		"addChildNodeTitle": "add new child node",
 		"addBookTitle": "add new book",
 		"editNodeTitle": "edit content node"//,
 	};
@@ -277,7 +278,7 @@ func.logAlert(_vars["logMsg"], "info");
 					sendRPC({
 						"action" : rpc_action,
 						"postFunc" : function( resp ){
-	console.log("-- end rpc_request", resp );
+	//console.log("-- end rpc_request", resp );
 							resp["action"] = rpc_action;
 							parseServerResponse(resp);
 						}
@@ -326,7 +327,7 @@ func.logAlert(_vars["logMsg"], "info");
 						"id" : _vars["GET"]["id"],
 						"postFunc" : function( resp ){
 //console.log("-- end rpc_request", resp );
-							resp["action"] = rpc_action;
+							resp["action"] = "draw_content_item";
 							resp["id"] = _vars["GET"]["id"];
 							parseServerResponse(resp);
 						}
@@ -370,19 +371,17 @@ console.log("-- end rpc_request", resp );
 					//if(_vars["GET"]["parent_id"] === "0"){
 						//title = _vars["addBookTitle"];
 					//}
-					_vars["nodeModal"].find(".modal-title").text( title );
+					setWindowTitle( title );
+					updateFormNode();//init form
+					
 					//add or update input parent_id
-
-					var form = document.forms["form_node"];
-					if( _vars["GET"]["parent_id"] ){
+					if( _vars["GET"]["parent_id"] > 0){
 //console.log(form.elements["parent_id"]);
 							form.elements["parent_id"].setAttribute("value", _vars["GET"]["parent_id"]);
 //console.log(form);
 //console.log(form.elements, form.elements.length);
-					}
-	
-					if( !_vars["GET"]["parent_id"] ){
-							form.elements["parent_id"].setAttribute("value", "0");
+							var title = _vars["addChildNodeTitle"];
+							setWindowTitle( title );
 					}
 					
 				}
@@ -391,16 +390,17 @@ console.log("-- end rpc_request", resp );
 			case "form-edit-node":
 //console.log("-- form-edit-node");
 				if( _vars["dataSourceType"] === "use-rpc-requests" ){
-					var title = _vars["editNodeTitle"];
-					_vars["nodeModal"].find(".modal-title").text( title );
-
-					var form = document.forms["form_node"];
-					form.elements["id"].setAttribute("value", _vars["GET"]["id"]);
-					
-					if( _vars["GET"]["parent_id"] ){
-						form.elements["parent_id"].setAttribute("value", _vars["GET"]["parent_id"]);
-					}
-					
+					rpc_action = "get_content_item";
+					sendRPC({
+						"action" : rpc_action,
+						"id" : _vars["GET"]["id"],
+						"postFunc" : function( resp ){
+console.log("-- end rpc_request", resp );
+							resp["action"] = "set_form_node";
+							resp["id"] = _vars["GET"]["id"];
+							parseServerResponse(resp);
+						}
+					});
 				}
 			break;
 			
@@ -410,9 +410,18 @@ console.log("-- end rpc_request", resp );
 					sendRPC({
 						"action" : rpc_action,
 						"postFunc" : function( resp ){
-	console.log("-- end rpc_request", resp );
+	console.log("-- end rpc_request", resp);
 							resp["action"] = rpc_action;
 							parseServerResponse(resp);
+
+//------------------ redraw saved node
+//console.log( document.forms["form_node"].elements.id.value );
+if( document.forms["form_node"].elements.id ){
+	var id = document.forms["form_node"].elements.id.value;
+	_vars["GET"] = func.parseGetParams( "?q=view-node&id="+id ); 
+	_urlManager();
+}
+							
 						}
 					});
 				}
@@ -1108,14 +1117,16 @@ func.logAlert(_vars["logMsg"], "error");
 				}
 			break;
 
-			case "get_content_item":
+			case "draw_content_item":
 				if( p["data"]){
-						
-					//convert child nodes key content_id -> id
+
+//---------------------
+					//convert child nodes key content_id -> id????????????????
 					if( p["data"]["child_nodes"] && 
 							p["data"]["child_nodes"].length > 0
 						){
 						var child_nodes = p["data"]["child_nodes"];
+//console.log( "test.....",child_nodes );
 						for( var n = 0; n < child_nodes.length; n++){
 							child_nodes[n]["id"] = child_nodes[n]["content_id"];
 							delete child_nodes[n]["content_id"];
@@ -1124,10 +1135,27 @@ func.logAlert(_vars["logMsg"], "error");
 					} else {
 						p["data"]["child_nodes"] = [];
 					}
-					
+//---------------------
+
 					var html = _formNode({"node" : p["data"]});
 					_vars["contentList"].innerHTML = html;
 						
+				} else {
+console.log( p );
+_vars["logMsg"] = "Not find node, id:" + p.id;
+func.logAlert(_vars["logMsg"], "error");
+console.log( _vars["logMsg"] );
+				}
+			break;
+
+
+			case "set_form_node":
+				var title = _vars["editNodeTitle"];
+				setWindowTitle( title );
+				
+				if( p["data"]){
+					updateFormNode( p["data"] );
+					_vars["nodeModal"].modal("show");
 				} else {
 console.log( p );
 _vars["logMsg"] = "Not find node, id:" + p.id;
@@ -1185,6 +1213,59 @@ func.logAlert(_vars["logMsg"], "error");
 		}//next
 		
 	}//end updateFormSystem()
+
+
+	function setWindowTitle( title ){
+		if(!title){
+			return false;
+		}
+		_vars["nodeModal"].find(".modal-title").text( title );
+	}//end					
+
+	function updateFormNode( opt ){
+		var p = {
+			"id": null,
+			"parent_id": "0",
+			"title": "new content item",
+			"body_value" : "",
+			"content_type" : 3,
+			"body_format" : 3
+		};
+		
+		//extend options object
+		for(var key in opt ){
+			p[key] = opt[key];
+		}
+		
+		if( p["type_id"] && p["type_id"].length > 0){
+			p["content_type"] = parseInt( p["type_id"] );
+		}		
+		if( typeof p["content_type"] === "string"){
+			p["content_type"] = parseInt( p["content_type"] );
+		}		
+		if( typeof p["body_format"] === "string"){
+			p["body_format"] = parseInt( p["body_format"] );
+		}		
+//console.log( p );
+
+		var form = document.forms["form_node"];
+		
+		form.elements["id"].removeAttribute("value");
+		if( p.id ){
+			form.elements["id"].setAttribute("value", p.id);
+		}
+		
+		form.elements["parent_id"].setAttribute("value", p.parent_id);
+		form.elements["title"].setAttribute("value", p.title);
+		form.elements["body_value"].value = p.body_value;
+		form.elements["content_type"].selectedIndex = p.content_type-1;
+		form.elements["body_format"].selectedIndex = p.body_format-1;
+//console.log(form.elements["body_format"].selectedIndex);
+
+	}//end updateFormNode()
+	
+
+
 	
 	// public interfaces
 	return{

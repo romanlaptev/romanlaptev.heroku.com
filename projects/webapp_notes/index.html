@@ -235,7 +235,7 @@ value="new content item" autocomplete="off" required>
 	
 	<div class="margin-small">
 		<label>parent id</label>
-		<input type="text" name="parent_id" value="0" size="3" readonly />
+		<input type="text" name="parent_id" value="0" size="3" autocomplete="off"/>
 	</div>
 	
 </div>
@@ -243,7 +243,7 @@ value="new content item" autocomplete="off" required>
 	<div class="form-group">
 		<label>*body value: </label>
 <textarea id="body-value" name="body_value" class="form-control require-form-element" 
-rows="10" required></textarea>
+rows="10" autocomplete="off" required></textarea>
 	</div>
         
       </div><!-- end modal-body -->
@@ -272,7 +272,7 @@ rows="10" required></textarea>
 	created:<b>{{created}}</b>, changed:<b>{{changed}}</b>
 </small>
 <div class="float-right">
-	<a href="?q=form-edit-node&id={{id}}&parent_id={{parent_id}}" class="btn btn-light" data-toggle="modal" data-target="#node-modal">edit</a>
+	<a href="?q=form-edit-node&id={{id}}&parent_id={{parent_id}}" class="btn btn-light">edit</a>
 	<a href="?q=delete-node&id={{id}}" class="btn btn-danger">delete</a>
 	<a href="?q=form-add-node&parent_id={{id}}" class="btn btn-orange btn-sm" data-toggle="modal" data-target="#node-modal">add new child node</a>
 </div>
