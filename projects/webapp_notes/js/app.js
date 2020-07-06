@@ -418,7 +418,11 @@ console.log("-- end rpc_request", resp );
 //console.log( document.forms["form_node"].elements.id.value );
 if( document.forms["form_node"].elements.id ){
 	var id = document.forms["form_node"].elements.id.value;
-	_vars["GET"] = func.parseGetParams( "?q=view-node&id="+id ); 
+	if( id.length > 0){
+		_vars["GET"] = func.parseGetParams( "?q=view-node&id="+id ); 
+	} else {
+		_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
+	}
 	_urlManager();
 }
 							
@@ -1223,13 +1227,17 @@ func.logAlert(_vars["logMsg"], "error");
 	}//end					
 
 	function updateFormNode( opt ){
+		
+		var d = Math.round( new Date().getTime() / 1000 );
 		var p = {
 			"id": null,
 			"parent_id": "0",
 			"title": "new content item",
 			"body_value" : "",
 			"content_type" : 3,
-			"body_format" : 3
+			"body_format" : 3,
+			"created" : d,
+			"changed" : d
 		};
 		
 		//extend options object
@@ -1261,6 +1269,8 @@ func.logAlert(_vars["logMsg"], "error");
 		form.elements["content_type"].selectedIndex = p.content_type-1;
 		form.elements["body_format"].selectedIndex = p.body_format-1;
 //console.log(form.elements["body_format"].selectedIndex);
+		form.elements["created"].setAttribute("value", p.created);
+		form.elements["changed"].setAttribute("value", p.changed);
 
 	}//end updateFormNode()
 	

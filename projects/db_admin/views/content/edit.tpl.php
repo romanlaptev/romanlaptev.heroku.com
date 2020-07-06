@@ -50,6 +50,13 @@
 		</fieldset>
 	</div>
 	
+	<div class="pull-left">	
+		<fieldset><legend><b>created (import/export ID)</b></legend>
+<input type='text' name='created' value='{{created}}' readonly>
+<input type='text' name='changed' value='{{changed}}' readonly>
+		</fieldset>
+	</div>
+	
 </div>
 
 	<fieldset><legend>*<b>body_value</b></legend>

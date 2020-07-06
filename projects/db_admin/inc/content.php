@@ -265,7 +265,9 @@ $_vars["log"][] = array("message" => $msg2, "type" => $msg2_type);
 			"content_type" => "page",//default content type "page"
 			"body_value" => null,
 			"body_format" => "plain text",//default filter type "plain text"
-			"parent_id" => null
+			"parent_id" => null,
+			"created" => null,
+			"changed" => null
 		);
 		
 		//check parameters object (only from array $p[key] )
