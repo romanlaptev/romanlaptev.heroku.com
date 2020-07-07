@@ -59,10 +59,11 @@ var _app = function ( opt ){
 		"inputServerUrl" : func.getById("inp-server-url"),
 		"inputLocalPath" : func.getById("inp-local-path"),
 
-		"nodeModal" : $("#node-modal"),
+		"formNode" : func.getById("form-node"),
+		"formNodeTitle" : func.getById("node-form-title"),
 		"addNodeTitle": "add new content node",
 		"addChildNodeTitle": "add new child node",
-		"addBookTitle": "add new book",
+		//"addBookTitle": "add new book",
 		"editNodeTitle": "edit content node"//,
 	};
 
@@ -164,9 +165,11 @@ _vars["logMsg"] = "form validation error";
 func.logAlert(_vars["logMsg"], "error");
 				return false;
 			}
-			_vars["nodeModal"].modal("hide");
 			
 			_vars["GET"] = func.parseGetParams( "?q=save-node" ); 
+			_urlManager();
+			
+			_vars["GET"] = func.parseGetParams( "?q=close-form-node" ); 
 			_urlManager();
 				
 			return false;
@@ -209,6 +212,8 @@ func.logAlert(_vars["logMsg"], "error");
 			_urlManager();
 			
 			$("#collapse-panel-service").collapse("hide");
+			//_vars["panelService"].classList.remove("show");
+			//_vars["panelService"].classList.add("hide");
 			
 			return false;
 		};//end event
@@ -366,24 +371,33 @@ console.log("-- end rpc_request", resp );
 
 			case "form-add-node":
 				if( _vars["dataSourceType"] === "use-rpc-requests" ){
+
+					//_vars["panelService"].classList.remove("show");
+					//_vars["panelService"].classList.add("hide");
+					$("#collapse-panel-service").collapse("hide");
 					
+					//_vars["contentList"].innerHTML = "";
+					_vars["contentList"].style.display = "none";
+					
+					//_vars["formNode"].style.display = "block";
+					$(_vars["formNode"]).collapse("show");
+
 					var title = _vars["addNodeTitle"];
 					//if(_vars["GET"]["parent_id"] === "0"){
 						//title = _vars["addBookTitle"];
 					//}
 					setWindowTitle( title );
 					updateFormNode();//init form
-					
+
 					//add or update input parent_id
 					if( _vars["GET"]["parent_id"] > 0){
 //console.log(form.elements["parent_id"]);
-							form.elements["parent_id"].setAttribute("value", _vars["GET"]["parent_id"]);
+							document.forms["form_node"].elements["parent_id"].setAttribute("value", _vars["GET"]["parent_id"]);
 //console.log(form);
 //console.log(form.elements, form.elements.length);
 							var title = _vars["addChildNodeTitle"];
 							setWindowTitle( title );
 					}
-					
 				}
 			break;
 			
@@ -402,6 +416,11 @@ console.log("-- end rpc_request", resp );
 						}
 					});
 				}
+			break;
+			
+			case "close-form-node":
+					_vars["contentList"].style.display = "block";
+					$(_vars["formNode"]).collapse("hide");
 			break;
 			
 			case "save-node":
@@ -468,25 +487,45 @@ func.logAlert(_vars["logMsg"], "warning");
 	// //console.log( "preventDefault: " + event.preventDefault );
 			// //event.stopPropagation ? event.stopPropagation() : (event.cancelBubble=true);
 			// //event.preventDefault ? event.preventDefault() : (event.returnValue = false);				
-			
-			if( target.tagName === "A"){
-				//if ( target.href.indexOf("#") !== -1){
-					if (event.preventDefault) { 
-						event.preventDefault();
-					} else {
-						event.returnValue = false;				
-					}
-					_vars["GET"] = func.parseGetParams( target.href ); 
-					_urlManager();
-				//}
-			}
 
-			if( target.tagName === "INPUT"){
-				if ( target.name === "data_source_type"){
-//console.log( event );
-					_vars["dataSourceType"] = target.value; 
-				}
-			}
+			switch( clickContainerName ){
+				
+				case "panelService":
+					if( target.tagName === "A"){
+						if ( target.href.indexOf("?q=") !== -1){
+							if (event.preventDefault) { 
+								event.preventDefault();
+							} else {
+								event.returnValue = false;				
+							}
+							_vars["GET"] = func.parseGetParams( target.href ); 
+							_urlManager();
+						}
+					}
+					
+					if( target.tagName === "INPUT"){
+						if ( target.name === "data_source_type"){
+		//console.log( event );
+							_vars["dataSourceType"] = target.value; 
+						}
+					}
+				break;
+				
+				case "appContainer":
+					if( target.tagName === "A"){
+						if (event.preventDefault) { 
+							event.preventDefault();
+						} else {
+							event.returnValue = false;				
+						}
+						_vars["GET"] = func.parseGetParams( target.href ); 
+						_urlManager();
+					}
+				break;
+
+				//default:
+				
+			}//end switch
 			
 		}//end event
 
@@ -1154,12 +1193,15 @@ console.log( _vars["logMsg"] );
 
 
 			case "set_form_node":
-				var title = _vars["editNodeTitle"];
-				setWindowTitle( title );
-				
+			
 				if( p["data"]){
 					updateFormNode( p["data"] );
-					_vars["nodeModal"].modal("show");
+					
+					_vars["contentList"].style.display = "none";
+					$(_vars["formNode"]).collapse("show");
+					var title = _vars["editNodeTitle"];
+					setWindowTitle( title );
+					
 				} else {
 console.log( p );
 _vars["logMsg"] = "Not find node, id:" + p.id;
@@ -1223,7 +1265,7 @@ func.logAlert(_vars["logMsg"], "error");
 		if(!title){
 			return false;
 		}
-		_vars["nodeModal"].find(".modal-title").text( title );
+		_vars["formNodeTitle"].innerHTML = title;
 	}//end					
 
 	function updateFormNode( opt ){

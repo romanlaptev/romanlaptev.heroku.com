@@ -82,6 +82,9 @@ margin: 0;
 	border-color: #ffb515;
 }
 
+.template {
+ display:none
+}
 
 
 #btn-scroll-to-top {
