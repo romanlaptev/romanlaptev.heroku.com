@@ -1198,6 +1198,9 @@ console.log( _vars["logMsg"] );
 					updateFormNode( p["data"] );
 					
 					_vars["contentList"].style.display = "none";
+					//var nodeBody = func.getById("node-"+p["data"]["id"]);
+					//nodeBody.style.display = "none";
+					
 					$(_vars["formNode"]).collapse("show");
 					var title = _vars["editNodeTitle"];
 					setWindowTitle( title );

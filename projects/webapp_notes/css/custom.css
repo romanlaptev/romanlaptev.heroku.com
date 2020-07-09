@@ -216,7 +216,7 @@ filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#fed081', endCo
 }
 
 
-.bookpage pre {
+.node pre {
 	background-color: #e6eef0;
 	padding:10px;
 }
