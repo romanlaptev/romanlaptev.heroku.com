@@ -187,10 +187,6 @@ method="POST"
 				<input type="text" name="id" size="1" readonly />
 			</div>
 			
-			<div class="margin-small">
-				<label>parent id</label>
-				<input type="text" name="parent_id" value="0" size="1" readonly/>
-			</div>
 		</div>
 	
 		<div class="card">
@@ -212,14 +208,9 @@ method="POST"
 		
 		<div class="card">
 			<div class="card-body">
-				<label>content hierarchy, select parent content item: </label>
-<div>
-	<input name="parent_id_" type="radio" value="remove_link">remove link<br>
-	<input name="parent_id_" type="radio" value="0">set item as new content group (book)<br>
-<input name="parent_id_" type="radio" value="5480" data-parent-id="0" checked="">notes<br>
-&nbsp;&nbsp;|--<input name="parent_id_" type="radio" value="5484" data-parent-id="5480">test4<br>
-<input name="parent_id_" type="radio" value="5485" data-parent-id="0">test5<br>
-</div>				
+				<label>parent id, content hierarchy, select parent content item: </label>
+<input type="text" name="parent_id_input" value="0" size="1"/>
+				<div id="select_content_links"></div>				
 			</div>
 		</div>
         

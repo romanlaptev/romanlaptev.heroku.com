@@ -138,7 +138,21 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		return $data;
 	}//end getHierarchyList()
-	
+
+
+	public function rpc_widgetContentLinks($params){
+		global $_vars;
+		
+		$widget_content_links = widget_content_links();
+//echo _logWrap($widget_content_links);
+
+		$arg = array(
+			"jsonObj" => $widget_content_links
+		);
+		$_vars["app"]->sendResponse($arg);
+		exit();
+	}//end rpc_getItem()
+
 	
 	public function save( $params ){
 //echo _logWrap($params);

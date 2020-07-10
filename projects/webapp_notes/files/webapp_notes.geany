@@ -22,16 +22,14 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=5
+current_page=2
 FILE_NAME_0=690;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fnb.txt;0;4
-FILE_NAME_1=6666;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Findex.html;0;4
-FILE_NAME_2=6411;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fjs%2Fapp.js;0;2
+FILE_NAME_1=7220;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Findex.html;0;4
+FILE_NAME_2=36659;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fjs%2Fapp.js;0;2
 FILE_NAME_3=0;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fjs%2Ffunctions.js;0;2
 FILE_NAME_4=2338;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Ffiles%2Ftest_API.html;0;2
-FILE_NAME_5=45904;XML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fdata%2Fexport.xml;0;2
-FILE_NAME_6=2211;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Findex.html;0;2
-FILE_NAME_7=4038;CSS;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fcss%2Fcustom.css;0;2
-FILE_NAME_8=35607;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fv1%2Fjs%2Fnotes.js;0;2
+FILE_NAME_5=4038;CSS;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fcss%2Fcustom.css;0;2
+FILE_NAME_6=35607;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fv1%2Fjs%2Fnotes.js;0;2
 
 [VTE]
 last_dir=/mnt/d2/www

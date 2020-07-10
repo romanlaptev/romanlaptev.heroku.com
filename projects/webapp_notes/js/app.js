@@ -64,7 +64,9 @@ var _app = function ( opt ){
 		"addNodeTitle": "add new content node",
 		"addChildNodeTitle": "add new child node",
 		//"addBookTitle": "add new book",
-		"editNodeTitle": "edit content node"//,
+		"editNodeTitle": "edit content node",
+		
+		"selectContentLinks" : func.getById("select_content_links")//,
 	};
 
 
@@ -392,7 +394,7 @@ console.log("-- end rpc_request", resp );
 					//add or update input parent_id
 					if( _vars["GET"]["parent_id"] > 0){
 //console.log(form.elements["parent_id"]);
-							document.forms["form_node"].elements["parent_id"].setAttribute("value", _vars["GET"]["parent_id"]);
+							document.forms["form_node"].elements["parent_id_input"].setAttribute("value", _vars["GET"]["parent_id"]);
 //console.log(form);
 //console.log(form.elements, form.elements.length);
 							var title = _vars["addChildNodeTitle"];
@@ -1052,6 +1054,10 @@ console.log(_resp);
 				return;
 			break;
 			
+			case "get_widget_content_links":
+				url = p.url + "?q=content-links/rpc_widget_content_links";
+			break;
+			
 			//default:
 			//break;
 		}//end switch
@@ -1213,6 +1219,18 @@ console.log( _vars["logMsg"] );
 				}
 			break;
 
+			case "get_widget_content_links":
+				if( p["data"] && p["data"].length > 0){
+					return p["data"];
+				} else {
+console.log( p );
+_vars["logMsg"] = "empty widget_content_links";
+func.logAlert(_vars["logMsg"], "warning");
+console.log( _vars["logMsg"] );
+				}
+			break;
+
+
 			case "remove_content_item":
 				_vars["logMsg"] = p["message"];
 				func.logAlert(_vars["logMsg"], p["eventType"] );
@@ -1308,7 +1326,7 @@ func.logAlert(_vars["logMsg"], "error");
 			form.elements["id"].setAttribute("value", p.id);
 		}
 		
-		form.elements["parent_id"].setAttribute("value", p.parent_id);
+		form.elements["parent_id_input"].setAttribute("value", p.parent_id);
 		form.elements["title"].setAttribute("value", p.title);
 		form.elements["body_value"].value = p.body_value;
 		form.elements["content_type"].selectedIndex = p.content_type-1;
@@ -1317,6 +1335,25 @@ func.logAlert(_vars["logMsg"], "error");
 		form.elements["created"].setAttribute("value", p.created);
 		form.elements["changed"].setAttribute("value", p.changed);
 
+//-------------------------------- insert content_links widget
+		var html_content_links = "";
+		html_content_links += '<input name="parent_id" type="radio" value="remove_link">remove link<br>';
+		html_content_links += '<input name="parent_id" type="radio" value="0" checked="">set item as new content group (book)<br>';
+		
+		if( _vars["dataSourceType"] === "use-rpc-requests" ){
+			rpc_action = "get_widget_content_links";
+			sendRPC({
+				"action" : rpc_action,
+				"postFunc" : function( resp ){
+//console.log("-- end rpc_request", resp );
+					resp["action"] = rpc_action;
+					html_content_links += parseServerResponse(resp);
+					_vars["selectContentLinks"].innerHTML = html_content_links;
+				}
+			});
+		}
+		
+		_vars["selectContentLinks"].innerHTML = html_content_links;
 	}//end updateFormNode()
 	
 

@@ -126,12 +126,16 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 					//$_vars["content"]->setContentTypes();
 					$_vars["content"]->setFilterFormats();
 				break;
-				
+
 		//============================= CONTENT LINKS
 				case "content-links/list":
 					$_vars["views_params"]["content_links"] = $_vars["content_links"]->getList();
 					$_vars["views_params"]["hierarchy_list"] = $_vars["content_links"]->getHierarchyList($request);
 					$_vars["views_params"]["tpl_content_filename"] = "views/content_links/list.tpl.php";
+				break;
+
+				case "content-links/rpc_widget_content_links":
+					$_vars["content_links"]->rpc_widgetContentLinks( $request );
 				break;
 				
 				case "content-links/remove":
