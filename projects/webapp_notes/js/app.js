@@ -90,6 +90,9 @@ var _app = function ( opt ){
 
 
 	function _runApp(){
+		
+		$("#collapse-panel-service").collapse("hide");
+
 		var parseUrl = window.location.search; 
 		if( parseUrl.length > 0 ){
 			_vars["GET"] = func.parseGetParams(); 
@@ -124,7 +127,7 @@ var _app = function ( opt ){
 			"containerName":"appContainer"
 		});
 
-//----------------------------------- SERVICE PANEL toggle
+//----------------------------------- btn SERVICE PANEL toggle
 	func.addEvent( func.getById("btn-service-panel"), "click", 
 		function(event){
 //console.log( event.type );
@@ -136,6 +139,23 @@ var _app = function ( opt ){
 				event.returnValue = false;
 			}
 			updateFormSystem();
+		}
+	);//end event
+		
+//----------------------------------- btn RELOAD APP
+	func.addEvent( func.getById("btn-reload-app"), "click", 
+		function(event){
+//console.log( event.type );
+			event = event || window.event;
+			var target = event.target || event.srcElement;
+			if (event.preventDefault) {
+				event.preventDefault();
+			} else {
+				event.returnValue = false;
+			}
+			_runApp();
+			//_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
+			//_urlManager();
 		}
 	);//end event
 		
@@ -233,6 +253,8 @@ func.logAlert(_vars["logMsg"], "error");
 				//_vars["localRequestPath"] = _vars["inputLocalPath"].value;
 				//_vars["dataSourceType"] = 
 				//_runApp();
+			//_vars["GET"] = func.parseGetParams( _vars["init_url"] ); 
+			//_urlManager();
 			//break;
 
 			case "toggle-log":
