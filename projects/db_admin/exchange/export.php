@@ -80,6 +80,7 @@ if ( $_vars["runType"] == "console") {
 	$_vars["content"] = new Content();
 	$_vars["content_links"] = new ContentLinks();
 	$_vars["taxonomy"] = new Taxonomy();
+	//$_vars["db"] = new DB();
 
 	$res = exportProcess( $_vars["config"]["export"] );
 //echo _logWrap($_vars["xml"]);

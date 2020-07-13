@@ -55,6 +55,7 @@ if ( $_vars["runType"] == "console") {
 	
 	//$app = new App();
 	$_vars["app"] = new App();
+	$_vars["db"] = new DB();
 
 	$_vars["db_schema"] = false;//do not check database tables
 	$_vars["display_log"] = false;
@@ -209,7 +210,9 @@ function importContent(){
 	//global $app;
 
 //------------------------------- get content_type (for import 'type_id')
-	$db = DB::getInstance();
+	//$db = DB::getInstance();
+	$db = $_vars["db"];
+	
 	$arg = array(
 		"tableName" => "content_type",
 		"fields" => array("id","name")
@@ -227,7 +230,9 @@ function importContent(){
 //return false;
 
 //------------------------------- get filter_format (for import 'body_format')
-	$db = DB::getInstance();
+	//$db = DB::getInstance();
+	$db = $_vars["db"];
+	
 	$arg = array(
 		"tableName" => "filter_format",
 		"fields" => array("id","format")
@@ -701,7 +706,9 @@ function importTagLinks(){
 			"data" => array( $xmlData[0], $xmlData[1], $xmlData[2])
 		);
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$response = $db->saveRecords($arg);
 		if( $response["status"] ){
 			$_vars["import"]["total"] = count($xmlData);

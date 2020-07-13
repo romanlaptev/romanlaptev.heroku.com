@@ -27,12 +27,14 @@ class DB {
 		),
 	);
 */
-	private function __construct(){
+	//private function __construct(){
+	function __construct(){
 		global $_vars;
 		//$this->config = $params;
 		$msg = "Object of class ".__CLASS__." was created.";
 		$_vars["log"][] = array("message" => $msg, "type" => "info");
 	}
+/*	
 	public static function getInstance() {
 		global $_vars;
 $msg = "get instance ".__CLASS__;
@@ -42,6 +44,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		}
 		return self::$instance;
 	}
+*/
 
 	private function dbConnect( $dsn ){
 		global $_vars;

@@ -43,7 +43,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$msg = "not found <b>term groups</b>";
 		$msg_type = "warning";
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => "taxonomy_groups",
 			//"fields" => array_keys( $db->infoSchema["content"] )
@@ -68,7 +70,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$msg = "not found <b>termins</b>";
 		$msg_type = "warning";
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => "taxonomy_term_data",
 			"fields" => array_keys( $this->infoSchema["taxonomy_term_data"] )
@@ -92,7 +96,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$msg = "not found <b>tag links</b>";
 		$msg_type = "warning";
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => "taxonomy_index",
 			//"fields" => array_keys( $this->infoSchema["taxonomy_index"] )
@@ -144,7 +150,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 //echo _logWrap($p);
 //return false;
 
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
 		
 		$query_condition = false;
 		if( !empty( $p["id"] ) ) {
@@ -181,7 +188,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$msg = "not found <b>term group </b> by id: ".$p["id"];
 		$msg_type = "warning";
 
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$res = $db->getRecords($p);
 		if( !empty($res) ){
 			$msg = "ok, found ".count($res)." records..";
@@ -228,7 +237,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 			return false;
 		}
 
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => "taxonomy_groups",
 			"query_condition" => "id=".$p["id"]//WHERE
@@ -256,7 +267,8 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 			$p["name"] = _filterFormInputValue( $p["name"] );
 		}
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
 
 		$query_condition = false;
 		if( !empty( $p["id"] ) ) {

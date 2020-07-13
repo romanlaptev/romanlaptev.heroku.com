@@ -150,13 +150,16 @@ function _filterFormInputValue( $field ){
 
 
 function widget_type_id( $type_id=0 ){
+	global $_vars;
 
 	$tpl_select =	'<select id="content-type-select" name="type_id" class="form-select">{{options}}</select>';
 	$tpl_option = "<option value='{{id}}'>{{name}}</option>";
 	$tpl_option_selected = "<option value='{{id}}' selected='selected'>{{name}}</option>";
 	$html_options = "";
 	
-	$db = DB::getInstance();
+	//$db = DB::getInstance();
+	$db = $_vars["db"];
+	
 	$arg = array(
 		"tableName" => "content_type",
 		"fields" => array("id", "name")
@@ -180,6 +183,8 @@ function widget_type_id( $type_id=0 ){
 }//end widget_type_id()
 
 function widget_content_type( $content_type="" ){
+	global $_vars;
+	
 	$tpl_select =	'<select id="content-type-select" name="content_type" class="form-select">
 <option value="">any types</option>
 {{options}}
@@ -188,7 +193,9 @@ function widget_content_type( $content_type="" ){
 	$tpl_option_selected = "<option value='{{name}}' selected='selected'>{{name}}</option>";
 	$html_options = "";
 	
-	$db = DB::getInstance();
+	//$db = DB::getInstance();
+	$db = $_vars["db"];
+	
 	$arg = array(
 		"tableName" => "content_type",
 		"fields" => array("id", "name")
@@ -212,6 +219,8 @@ function widget_content_type( $content_type="" ){
 
 
 function widget_body_format( $format_id=1 ){
+	global $_vars;
+	
 	$tpl_select ='<select name="body_format" class="form-select">
 {{options}}
 </select>';
@@ -219,7 +228,9 @@ function widget_body_format( $format_id=1 ){
 	$tpl_option_selected = "<option value='{{id}}' selected='selected'>{{name}}</option>";
 	$html_options = "";
 	
-	$db = DB::getInstance();
+	//$db = DB::getInstance();
+	$db = $_vars["db"];
+	
 	$arg = array(
 		"tableName" => "filter_format",
 		"fields" => array("id", "format", "name")

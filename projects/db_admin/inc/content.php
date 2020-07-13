@@ -151,7 +151,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "warning");
 
 		
 		//$db = new DB();
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$res = $db->saveRecord($arg);
 
 		if( !$res["status"] ){
@@ -386,9 +388,11 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 			$p[ $key ] = $item;
 		}//next
 		
+		
 		//$db = new DB();
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
 //echo _logWrap($p);
+		$db = $_vars["db"];
 		
 		$res = $db->getRecords($p);
 		
@@ -471,7 +475,9 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		$msg = "not found content item...";
 		$msg_type = "error";
 	
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => "content",
 			//"fields" => array("id", "type_id", "title", "body_value", "created", "changed"),
@@ -573,7 +579,9 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		}
 		
 		//$db = new DB();
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => $this->tableName,
 			"query_condition" => "id=".$p["id"]//WHERE
@@ -792,7 +800,9 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		$msg =  "error: database table <b>".$this->tableName."</b> was not cleaned";
 		$msg_type = "warning";
 
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"sql_query" => $sql_query,
 			"query_type" => "exec"
@@ -828,7 +838,9 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 //echo _logWrap( $sql_query );
 //return false;
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"sql_query" => $sql_query,
 			"query_type" => "exec"
@@ -866,7 +878,9 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		}
 		
 		$sql_query = "SELECT id FROM content_type WHERE name='".$p["name"]."';";
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"sql_query" => $sql_query
 		);
@@ -905,7 +919,9 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 //echo _logWrap( $sql_query );
 //return false;
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"sql_query" => $sql_query,
 			"query_type" => "exec"
@@ -943,7 +959,9 @@ $body = str_replace( chr(0x0C), '', $body);//remove Form Feed
 		}
 		
 		$sql_query = "SELECT id FROM filter_format WHERE format='".$p["format"]."';";
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"sql_query" => $sql_query
 		);

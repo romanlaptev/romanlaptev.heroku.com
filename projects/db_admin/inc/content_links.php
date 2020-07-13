@@ -57,7 +57,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$msg = "not found content links...";
 		$msg_type = "warning";
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$res = $db->getRecords($p);
 		if( !empty($res) ){
 			if( $_vars["display_log"] == true ) {
@@ -96,7 +98,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$data = false;
 		
 		//-------------- get node
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => "content",
 			"fields" => array(
@@ -118,7 +122,10 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		//-------------- get children links
 		$msg = "not found children content links, <b>getHierarchyList()</b>, content_id=".$p["content_id"];
 		$msg_type = "warning";
-		$db = DB::getInstance();
+		
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => "content_links, content",
 			"fields" => array("content_id", "parent_id", "content.title" ),
@@ -182,7 +189,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 			//unset( $p["content_id"] );
 		//}
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => $this->tableName,
 			"data" => $p
@@ -215,7 +224,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$msg = "not found content link...";
 		$msg_type = "error";
 		
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+
 		$res = $db->getRecords($p);
 		if( !empty($res) ){
 			$msg = "found ".count($res)." records..";
@@ -262,7 +273,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$_vars["log"][] = array("message" => $msg, "type" => $msg_type);
 		
 
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"tableName" => $this->tableName,
 			"query_condition" => "content_id=".$p["content_id"]//WHERE
@@ -281,7 +294,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 		$msg =  "error: database table <b>".$this->tableName."</b> was not cleaned";
 		$msg_type = "warning";
 
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		$arg = array(
 			"sql_query" => $sql_query,
 			"query_type" => "exec"
@@ -319,7 +334,9 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 //echo _logWrap($sql_query);
 //return false;
 
-		$db = DB::getInstance();
+		//$db = DB::getInstance();
+		$db = $_vars["db"];
+		
 		//$response = $db->runQuery( $db->dbConnection, $sql_query);
 		$arg = array(
 			"sql_query" => $sql_query
