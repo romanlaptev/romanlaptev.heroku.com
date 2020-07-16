@@ -317,7 +317,7 @@ $_vars["log"][] = array("message" => $msg, "type" => "info");
 	// change parent_id of child nodes for content item to be deleted
 	//----------------------- 
 	private function fixChildContentLinks( $params ){
-		//global $_vars;
+		global $_vars;
 		$p = array(
 			"content_id" => false
 		);
