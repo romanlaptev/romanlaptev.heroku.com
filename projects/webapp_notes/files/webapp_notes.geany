@@ -22,8 +22,8 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=8
-FILE_NAME_0=0;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fnb.txt;0;4
+current_page=0
+FILE_NAME_0=725;None;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fnb.txt;0;4
 FILE_NAME_1=2941;HTML;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Findex.html;0;4
 FILE_NAME_2=2854;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fjs%2Fapp.js;0;2
 FILE_NAME_3=0;Javascript;0;EUTF-8;1;1;0;%2Fmnt%2Fd2%2Fwww%2Fprojects%2Fromanlaptev.heroku%2Fprojects%2Fwebapp_notes%2Fjs%2Ffunctions.js;0;2
